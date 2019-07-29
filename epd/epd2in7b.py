@@ -274,6 +274,9 @@ class EPD:
 
         return 0
 
+    def __del__(self):
+        epdconfig.module_deinit()
+
     def getbuffer(self, image):
         # print "bufsiz = ",(self.width/8) * self.height
         buf = [0xFF] * ((self.width // 8) * self.height)

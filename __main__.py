@@ -6,11 +6,11 @@ from controller.home_controller import HomeController
 from platform.platform import Platform
 from stub.stub_platform import StubPlatform
 
-is_simulator_arg = len(sys.argv) > 1 and str(sys.argv[1]) == "simulator"
+is_simulator = len(sys.argv) > 1 and str(sys.argv[1]) == "simulator"
 
 
 def get_platform() -> Platform:
-    if is_simulator_arg:
+    if is_simulator:
         return StubPlatform()
     else:
         from platform_impl import PlatformImpl
@@ -18,7 +18,7 @@ def get_platform() -> Platform:
 
 
 def get_display() -> Display:
-    if is_simulator_arg:
+    if is_simulator:
         return SaveFileDisplay("result.bmp", (264, 176))
     else:
         from epd.epd2in7b_display import EPD2in7BDisplay
@@ -36,7 +36,6 @@ def print_all_sensors_values():
 
 if __name__ == "__main__":
     platform = get_platform()
-
     print_all_sensors_values()
 
     display = get_display()

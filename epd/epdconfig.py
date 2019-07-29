@@ -61,13 +61,15 @@ def spi_writebyte(data):
 
 def module_init():
     GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
     GPIO.setup(RST_PIN, GPIO.OUT)
     GPIO.setup(DC_PIN, GPIO.OUT)
     GPIO.setup(CS_PIN, GPIO.OUT)
     GPIO.setup(BUSY_PIN, GPIO.IN)
     SPI.max_speed_hz = 2000000
     SPI.mode = 0b00
-    return 0;
+    return 0
+
+def module_deinit():
+    GPIO.cleanup([RST_PIN, DC_PIN, CS_PIN, BUSY_PIN])
 
 ### END OF FILE ###

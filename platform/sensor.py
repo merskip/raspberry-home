@@ -13,7 +13,7 @@ class Characteristics(object):
     temperature = Characteristic("temperature", "°C")
     light = Characteristic("light", "lx")
     pressure = Characteristic("pressure", "Pa")
-    door = Characteristic("door")
+    boolean = Characteristic("boolean")
 
 
 class Sensor(ABC):
