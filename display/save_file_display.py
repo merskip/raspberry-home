@@ -1,17 +1,14 @@
-from abc import ABC, abstractmethod
 from PIL import Image
 
-
-class Display(ABC):
-
-    @abstractmethod
-    def display(self, black_image: Image, red_image: Image):
-        pass
+from display.display import Display
 
 
 class SaveFileDisplay(Display):
 
-    def display(self, black_image: Image, red_image: Image):
+    def __init__(self, filename: str):
+        self._filename = filename
+
+    def draw(self, black_image: Image, red_image: Image):
         width = black_image.size[0]
         height = black_image.size[1]
 
@@ -26,4 +23,4 @@ class SaveFileDisplay(Display):
                 if red_image_pixels[x, y] == 0:
                     result_image_pixels[x, y] = (255, 0, 0)
 
-        result_image.save('result.bmp')
+        result_image.save(self._filename)

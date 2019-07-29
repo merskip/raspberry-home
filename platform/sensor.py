@@ -25,6 +25,13 @@ class Sensor(ABC):
     def get_characteristics(self) -> List[Characteristic]:
         pass
 
+    def get_value_with_unit(self, characteristic: Characteristic) -> str:
+        value = self.get_value(characteristic)
+        if characteristic.unit is not None:
+            return "%s %s" % (value, characteristic.unit)
+        else:
+            return str(value)
+
     @abstractmethod
     def get_value(self, characteristic: Characteristic) -> object:
         pass

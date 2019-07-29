@@ -1,11 +1,15 @@
 import sys
+
+from display.display import Display
+from display.save_file_display import SaveFileDisplay
+from display_controller import DisplayController
 from platform.platform import Platform
-from platform.sensor import Characteristic
 from stub.stub_platform import StubPlatform
+
+is_simulator_arg = len(sys.argv) > 1 and str(sys.argv[1]) == "simulator"
 
 
 def get_platform() -> Platform:
-    is_simulator_arg = len(sys.argv) > 1 and str(sys.argv[1]) == "simulator"
     if is_simulator_arg:
         return StubPlatform()
     else:
@@ -13,11 +17,12 @@ def get_platform() -> Platform:
         return PlatformImpl()
 
 
-def format_value(value, characteristic: Characteristic) -> str:
-    if characteristic.unit is not None:
-        return "%s %s" % (value, characteristic.unit)
+def get_display() -> Display:
+    if is_simulator_arg:
+        return SaveFileDisplay("result.bmp")
     else:
-        return str(value)
+        from epd.epd2in7b_display import EPD2in7BDisplay
+        return EPD2in7BDisplay()
 
 
 if __name__ == "__main__":
@@ -26,5 +31,8 @@ if __name__ == "__main__":
         print("Sensor \"%s\" (%s):" % (sensor.name, sensor.__class__.__name__))
         for characteristic in sensor.get_characteristics():
             print(" - characteristic: %s" % characteristic.name)
-            value = sensor.get_value(characteristic)
-            print("   value: %s" % format_value(value, characteristic))
+            value = sensor.get_value_with_unit(characteristic)
+            print("   value: %s" % value)
+
+    display_controller = DisplayController(platform, get_display())
+    display_controller.refresh()
