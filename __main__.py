@@ -25,8 +25,20 @@ def get_display() -> Display:
         return EPD2in7BDisplay()
 
 
+def print_all_sensors_values():
+    for sensor in platform.get_sensors():
+        print("Sensor \"%s\" (%s):" % (sensor.name, sensor.__class__.__name__))
+        for characteristic in sensor.get_characteristics():
+            print(" - characteristic: %s" % characteristic.name)
+            value = sensor.get_value_with_unit(characteristic)
+            print("   value: %s" % value)
+
+
 if __name__ == "__main__":
     platform = get_platform()
+
+    print_all_sensors_values()
+
     display = get_display()
     display_controller = HomeController(platform, display)
     display_controller.refresh()
