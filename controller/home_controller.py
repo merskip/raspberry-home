@@ -26,6 +26,6 @@ class HomeController:
             values = ", ".join(list(map(lambda c: sensor.get_value_with_unit(c), sensor.get_characteristics())))
             text += "%s: %s\n" % (sensor.name, values)
 
-        draw_black.multiline_text((16, 56), text, font=self.font)
+        draw_black.multiline_text((16, 16), text, font=self.font)
 
         self.display.draw(image_black, image_red)

@@ -28,7 +28,7 @@ class StubPlatform(Platform):
     @staticmethod
     def _create_door_sensor():
         return StubSensor("CMD14",
-                          [Characteristics.door],
+                          [Characteristics.boolean],
                           lambda c: True)
 
     @staticmethod

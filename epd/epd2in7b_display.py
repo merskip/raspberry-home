@@ -6,7 +6,7 @@ from epd import epd2in7b
 class EPD2in7BDisplay(Display):
 
     def get_size(self) -> (int, int):
-        return 176, 264
+        return epd2in7b.EPD_HEIGHT, epd2in7b.EPD_WIDTH  # Inverted axis
 
     def __init__(self):
         self.epd = epd2in7b.EPD()
