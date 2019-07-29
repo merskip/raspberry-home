@@ -1,4 +1,4 @@
-from PIL import ImageFont, Image, ImageDraw
+from PIL import ImageFont, Image, ImageDraw, ImageColor
 
 from display.display import Display
 from platform.platform import Platform
@@ -19,13 +19,14 @@ class HomeController:
         image_black = Image.new('1', self.display.get_size(), 255)
         image_red = Image.new('1', self.display.get_size(), 255)
         draw_black = ImageDraw.Draw(image_black)
-        raw_red = ImageDraw.Draw(image_red)
+        draw_red = ImageDraw.Draw(image_red)
 
         text = ""
         for sensor in self.platform.get_sensors():
-            values = ", ".join(list(map(lambda c: sensor.get_value_with_unit(c), sensor.get_characteristics())))
+            values = ",\n ".join(list(map(lambda c: sensor.get_value_with_unit(c), sensor.get_characteristics())))
             text += "%s: %s\n" % (sensor.name, values)
 
-        draw_black.multiline_text((16, 16), text, font=self.font)
+        draw_black.rectangle([(0, 0), self.display.get_size()], fill=ImageColor.colormap["black"])
+        draw_black.multiline_text((16, 16), text, font=self.font, fill=ImageColor.colormap["white"])
 
         self.display.draw(image_black, image_red)

@@ -33,6 +33,12 @@ class StubPlatform(Platform):
 
     @staticmethod
     def _create_pressure_sensor():
-        return StubSensor("BMP280",
-                          [Characteristics.pressure],
-                          lambda c: 995.23)
+        def get_value(c):
+            if c is Characteristics.temperature:
+                return 25.0
+            else:
+                return 980.0
+
+        return StubSensor("BMP180",
+                          [Characteristics.temperature, Characteristics.pressure],
+                          get_value)
