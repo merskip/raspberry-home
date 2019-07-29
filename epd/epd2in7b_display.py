@@ -5,6 +5,9 @@ from epd import epd2in7b
 
 class EPD2in7BDisplay(Display):
 
+    def get_size(self) -> (int, int):
+        return 176, 264
+
     def __init__(self):
         self.epd = epd2in7b.EPD()
         self.epd.init()

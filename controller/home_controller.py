@@ -7,7 +7,7 @@ EPD_WIDTH = 176
 EPD_HEIGHT = 264
 
 
-class DisplayController:
+class HomeController:
 
     font = ImageFont.truetype("fonts/Ubuntu-Medium.ttf", 15)
 
@@ -16,8 +16,8 @@ class DisplayController:
         self.display = display
 
     def refresh(self):
-        image_black = Image.new('1', (EPD_HEIGHT, EPD_WIDTH), 255)
-        image_red = Image.new('1', (EPD_HEIGHT, EPD_WIDTH), 255)
+        image_black = Image.new('1', self.display.get_size(), 255)
+        image_red = Image.new('1', self.display.get_size(), 255)
         draw_black = ImageDraw.Draw(image_black)
         raw_red = ImageDraw.Draw(image_red)
 

@@ -5,12 +5,16 @@ from display.display import Display
 
 class SaveFileDisplay(Display):
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str, size: (int, int)):
         self._filename = filename
+        self._size = size
+
+    def get_size(self) -> (int, int):
+        return self._size
 
     def draw(self, black_image: Image, red_image: Image):
-        width = black_image.size[0]
-        height = black_image.size[1]
+        width = self._size[0]
+        height = self._size[1]
 
         result_image = Image.new('RGB', (width, height), 255)
         result_image.paste(black_image)
