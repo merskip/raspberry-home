@@ -27,6 +27,10 @@ class Sensor(ABC):
 
     def get_value_with_unit(self, characteristic: Characteristic) -> str:
         value = self.get_value(characteristic)
+        if isinstance(value, float):
+            value = "%.2f" % value
+        if isinstance(value, bool):
+            value = value if "True" else "False"
         if characteristic.unit is not None:
             return "%s %s" % (value, characteristic.unit)
         else:
