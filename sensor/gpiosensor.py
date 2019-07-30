@@ -21,4 +21,4 @@ class GPIOSensor(Sensor):
         return [Characteristics.boolean]
 
     def get_value(self, characteristic: Characteristic) -> object:
-        return GPIO.input(self._pin)
+        return GPIO.input(self._pin) == 1
