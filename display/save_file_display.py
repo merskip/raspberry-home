@@ -12,16 +12,15 @@ class SaveFileDisplay(Display):
     def get_size(self) -> (int, int):
         return self._size
 
-    def draw(self, black_image: Image, red_image: Image):
-        width = self._size[0]
-        height = self._size[1]
+    def draw(self):
+        width, height = self.get_size()
 
-        result_image = Image.new('RGB', (width, height), 255)
-        result_image.paste(black_image)
+        result_image = Image.new('RGB', self.get_size(), 255)
+        result_image.paste(self.black_image)
 
         # Draw red image on black image as result image
         result_image_pixels = result_image.load()
-        red_image_pixels = red_image.load()
+        red_image_pixels = self.red_image.load()
         for x in range(width):
             for y in range(height):
                 if red_image_pixels[x, y] == 0:
