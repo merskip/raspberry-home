@@ -8,9 +8,7 @@ from PIL.ImageDraw import ImageDraw
 from display.display import Display
 from platform.platform import Platform
 from platform.sensor import Characteristic, Characteristics, Sensor, SpecificType
-
-EPD_WIDTH = 176
-EPD_HEIGHT = 264
+import time
 
 font = ImageFont.truetype("fonts/Ubuntu-Medium.ttf", 15)
 titleFont = ImageFont.truetype("fonts/Ubuntu-Bold.ttf", 18)
@@ -21,6 +19,15 @@ class HomeController:
     def __init__(self, platform: Platform, display: Display):
         self.platform = platform
         self.display = display
+
+    def begin_refreshing(self):
+        import schedule
+        schedule.every(5).minutes.do(self.refresh)
+        self.refresh()
+
+        while 1:
+            schedule.run_pending()
+            time.sleep(1)
 
     def refresh(self):
         (black_image, red_image) = self.display.new_image_draw()

@@ -41,4 +41,7 @@ if __name__ == "__main__":
 
     display = get_display()
     display_controller = HomeController(platform, display)
-    display_controller.refresh()
+    if is_simulator:
+        display_controller.refresh()
+    else:
+        display_controller.begin_refreshing()
