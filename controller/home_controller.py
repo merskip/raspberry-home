@@ -73,6 +73,8 @@ class HomeController:
                 return "assets/ic-door-closed.bmp" if value else "assets/ic-door-open.bmp"
             else:
                 return "assets/ic-boolean-true.bmp" if value else "assets/ic-boolean-false.bmp"
+        elif characteristic == Characteristics.humidity:
+            return "assets/ic-humidity.bmp"
         else:
             raise ValueError("Unknown characteristic: " + characteristic.name)
 

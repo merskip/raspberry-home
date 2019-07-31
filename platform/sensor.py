@@ -25,8 +25,9 @@ class Characteristic:
 
 class Characteristics(object):
     temperature = Characteristic("temperature", "°C")
+    humidity = Characteristic("humidity", "%", scale=100.0)
     light = Characteristic("light", "lx")
-    pressure = Characteristic("pressure", "hPa", 0.01)
+    pressure = Characteristic("pressure", "hPa", scale=0.01)
     boolean = Characteristic("boolean")
 
 
