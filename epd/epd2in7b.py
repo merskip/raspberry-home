@@ -211,7 +211,7 @@ class EPD:
             self.send_data(self.lut_wb[count])
 
     def init(self):
-        if (epdconfig.module_init() != 0):
+        if epdconfig.module_init() != 0:
             return -1
 
         self.reset()

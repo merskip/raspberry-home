@@ -10,11 +10,11 @@ class EPD2in7BDisplay(Display):
 
     def __init__(self):
         self.epd = epd2in7b.EPD()
-        self.epd.init()
 
     def draw(self):
         black_buffer = self.epd.getbuffer(self.black_image)
         red_buffer = self.epd.getbuffer(self.red_image)
 
+        self.epd.init()
         self.epd.display(black_buffer, red_buffer)
         self.epd.sleep()
