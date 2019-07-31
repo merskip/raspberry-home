@@ -1,5 +1,5 @@
 from platform.platform import Platform
-from platform.sensor import Characteristics
+from platform.sensor import Characteristics, SpecificType
 from stub.stub_sensor import StubSensor
 
 
@@ -8,6 +8,7 @@ class StubPlatform(Platform):
     def __init__(self):
         super().__init__([
             self._create_temperature_sensor(),
+            self._create_temperature_outside_sensor(),
             self._create_light_sensor(),
             self._create_door_sensor(),
             self._create_pressure_sensor()
@@ -15,20 +16,23 @@ class StubPlatform(Platform):
 
     @staticmethod
     def _create_temperature_sensor():
-        return StubSensor("DS18B20",
-                          [Characteristics.temperature],
+        return StubSensor("DS18B20", [Characteristics.temperature],
                           lambda c: 24.5)
 
     @staticmethod
+    def _create_temperature_outside_sensor():
+        return StubSensor("DS18B20 Outside",
+                          [Characteristics.temperature.toggle(SpecificType.temperature_outside)],
+                          lambda c: 30.5)
+
+    @staticmethod
     def _create_light_sensor():
-        return StubSensor("TSL2561",
-                          [Characteristics.light],
+        return StubSensor("TSL2561", [Characteristics.light],
                           lambda c: 250.23)
 
     @staticmethod
     def _create_door_sensor():
-        return StubSensor("CMD14",
-                          [Characteristics.boolean],
+        return StubSensor("CMD14", [Characteristics.boolean.toggle(SpecificType.boolean_door)],
                           lambda c: True)
 
     @staticmethod
@@ -39,6 +43,5 @@ class StubPlatform(Platform):
             else:
                 return 980.0
 
-        return StubSensor("BMP180",
-                          [Characteristics.temperature, Characteristics.pressure],
+        return StubSensor("BMP180", [Characteristics.pressure, Characteristics.temperature],
                           get_value)

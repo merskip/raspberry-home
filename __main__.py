@@ -36,7 +36,8 @@ def print_all_sensors_values():
 
 if __name__ == "__main__":
     platform = get_platform()
-    print_all_sensors_values()
+    if is_simulator:
+        print_all_sensors_values()
 
     display = get_display()
     display_controller = HomeController(platform, display)

@@ -12,14 +12,14 @@ class BMP180Sensor(Sensor):
 
     def get_characteristics(self) -> List[Characteristic]:
         return [
-            Characteristics.temperature,
             Characteristics.pressure,
+            Characteristics.temperature
         ]
 
     def get_value(self, characteristic: Characteristic) -> object:
-        if characteristic == Characteristics.temperature:
-            return self._sensor.get_temp()
-        elif characteristic == Characteristics.pressure:
+        if characteristic == Characteristics.pressure:
             return self._sensor.get_pressure()
+        elif characteristic == Characteristics.temperature:
+            return self._sensor.get_temp()
         else:
             raise ValueError("Unknown characteristic")

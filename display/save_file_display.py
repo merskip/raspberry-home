@@ -27,3 +27,4 @@ class SaveFileDisplay(Display):
                     result_image_pixels[x, y] = (255, 0, 0)
 
         result_image.save(self._filename)
+        result_image.show()
