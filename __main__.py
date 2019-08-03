@@ -1,9 +1,11 @@
 import sys
 
+from controller.home_controller import HomeController
 from display.display import Display
 from display.save_file_display import SaveFileDisplay
-from controller.home_controller import HomeController
+from platform.measurements_scheduler import MeasurementsScheduler
 from platform.platform import Platform
+from platform.platform_measurements_executor import PlatformMeasurementsExecutor
 from stub.stub_platform import StubPlatform
 
 is_simulator = len(sys.argv) > 1 and str(sys.argv[1]) == "simulator"
@@ -40,8 +42,13 @@ if __name__ == "__main__":
         print_all_sensors_values()
 
     display = get_display()
-    display_controller = HomeController(platform, display)
+    home_controller = HomeController(display)
+
+    measurements_executor = PlatformMeasurementsExecutor(platform)
+    measurement_scheduler = MeasurementsScheduler(measurements_executor)
+    measurement_scheduler.append(home_controller)
+
     if is_simulator:
-        display_controller.refresh()
+        measurement_scheduler.perform_single_measurement()
     else:
-        display_controller.begin_refreshing()
+        measurement_scheduler.begin_measurements()

@@ -1,35 +1,27 @@
 from datetime import datetime
-from typing import Callable
+from typing import Callable, List
 
-from PIL import ImageFont
 from PIL import Image
-from PIL.ImageDraw import ImageDraw
+from PIL import ImageFont
 
 from display.display import Display
-from platform.platform import Platform
+from platform.measurement import Measurement
+from platform.measurements_scheduler import MeasurementsListener
 from platform.sensor import Characteristic, Characteristics, Sensor, SpecificType
-import time
 
 font = ImageFont.truetype("fonts/Ubuntu-Medium.ttf", 15)
 titleFont = ImageFont.truetype("fonts/Ubuntu-Bold.ttf", 18)
 
 
-class HomeController:
+class HomeController(MeasurementsListener):
 
-    def __init__(self, platform: Platform, display: Display):
-        self.platform = platform
+    def __init__(self, display: Display):
         self.display = display
 
-    def begin_refreshing(self):
-        import schedule
-        schedule.every(5).minutes.do(self.refresh)
-        self.refresh()
+    def on_measurements(self, measurements: List[Measurement]):
+        self.display_measurements(measurements)
 
-        while 1:
-            schedule.run_pending()
-            time.sleep(1)
-
-    def refresh(self):
+    def display_measurements(self, measurements: List[Measurement]):
         (black_image, red_image) = self.display.new_image_draw()
 
         current_time = datetime.now()
@@ -45,12 +37,16 @@ class HomeController:
                                  size=(display_width, display_height - top_margin),
                                  columns=3, rows=2)
 
-        for sensor in self.platform.get_sensors():
-            primary_characteristic = sensor.get_characteristics()[0]
+        for measurement in measurements:
+            sensor = measurement.sensor
+            characteristic = measurement.characteristic
+            value = measurement.value
+            is_primary_characteristic = sensor.get_characteristics()[0] == characteristic
+            if not is_primary_characteristic:
+                continue
 
-            value = sensor.get_value(primary_characteristic)
-            icon = self._get_icon(primary_characteristic, value)
-            title = self._get_title(sensor, primary_characteristic, value)
+            icon = self._get_icon(characteristic, value)
+            title = self._get_title(sensor, characteristic, value)
 
             grid_layout.add_item(GridLayout.Item(icon, title))
 
