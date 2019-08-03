@@ -1,7 +1,8 @@
 from typing import List
 
-from platform.sensor import Sensor, Characteristic, Characteristics
 import Adafruit_DHT
+
+from platform.sensor import Sensor, Characteristic, Characteristics
 
 
 class DTH11Sensor(Sensor):

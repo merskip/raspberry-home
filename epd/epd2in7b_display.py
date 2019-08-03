@@ -1,4 +1,3 @@
-from PIL import Image, ImageDraw
 from display.display import Display
 from epd import epd2in7b
 

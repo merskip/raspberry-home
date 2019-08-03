@@ -63,4 +63,3 @@ class Sensor(ABC):
             return "%s %s" % (value, characteristic.unit)
         else:
             return str(value)
-

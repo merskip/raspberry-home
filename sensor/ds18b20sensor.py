@@ -1,6 +1,8 @@
 from typing import List
-from platform.sensor import Sensor, Characteristic, Characteristics, SpecificType
+
 from w1thermsensor import W1ThermSensor
+
+from platform.sensor import Sensor, Characteristic, Characteristics, SpecificType
 
 
 class DS18B20Sensor(Sensor):

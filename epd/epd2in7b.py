@@ -48,13 +48,12 @@
 #
 
 
-import epd.epdconfig as epdconfig
-from PIL import Image
-import RPi.GPIO as GPIO
-import random
 import time
-from pprint import pprint
 from datetime import datetime
+
+import RPi.GPIO as GPIO
+
+import epd.epdconfig as epdconfig
 
 # Display resolution
 EPD_WIDTH = 176
@@ -386,4 +385,3 @@ class EPD:
         self.send_command(0X07)
         self.send_data(0xA5)
 ### END OF FILE ###
-

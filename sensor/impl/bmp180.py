@@ -6,16 +6,17 @@ Copyright 2015-2017
 Released under the MIT license.
 """
 
-import smbus
 import math
 from time import sleep
+
+import smbus
 
 
 class bmp180:
     # Global variables
     address = None
     bus = smbus.SMBus(1)
-    mode = 1 # TODO: Add a way to change the mode
+    mode = 1  # TODO: Add a way to change the mode
 
     # BMP180 registers
     CONTROL_REG = 0xF4
@@ -46,7 +47,6 @@ class bmp180:
     calMB = 0
     calMC = 0
     calMD = 0
-
 
     def __init__(self, address):
         self.address = address
@@ -181,7 +181,7 @@ class bmp180:
         X1 = self.calAC3 * B6 / math.pow(2, 13)
         X2 = (self.calB1 * (B6 * B6 / math.pow(2, 12))) / math.pow(2, 16)
         X3 = ((X1 + X2) + 2) / math.pow(2, 2)
-        B4 = self.calAC4 * (X3 + 32768) / math.pow(2,15)
+        B4 = self.calAC4 * (X3 + 32768) / math.pow(2, 15)
         B7 = (UP - B3) * (50000 >> self.mode)
 
         if B7 < 0x80000000:
@@ -196,7 +196,7 @@ class bmp180:
 
         return pressure
 
-    def get_altitude(self, sea_level_pressure = 101325):
+    def get_altitude(self, sea_level_pressure=101325):
         """Calulates the altitude.
         This method calculates the altitude using the pressure.
         This method is not reliable when the sensor is inside.
@@ -212,6 +212,7 @@ class bmp180:
         altitude = 44330.0 * (1.0 - math.pow(pressure / sea_level_pressure, 0.00019029495))
 
         return altitude
+
 
 if __name__ == "__main__":
     bmp = bmp180(0x77)

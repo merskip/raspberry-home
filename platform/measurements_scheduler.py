@@ -20,7 +20,6 @@ class MeasurementsListener(ABC):
 
 
 class MeasurementsScheduler:
-
     measurements_executor: MeasurementsExecutor
     listeners: List[MeasurementsListener]
 

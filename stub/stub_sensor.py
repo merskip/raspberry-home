@@ -1,4 +1,5 @@
 from typing import Callable, List
+
 from platform.sensor import Sensor, Characteristic
 
 

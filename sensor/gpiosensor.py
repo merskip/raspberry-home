@@ -1,6 +1,7 @@
 from typing import List
 
 import RPi.GPIO as GPIO
+
 from platform.sensor import Sensor, Characteristic, Characteristics
 
 

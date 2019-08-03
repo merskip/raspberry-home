@@ -1,5 +1,7 @@
 import sys
 
+from sqlalchemy import engine, create_engine
+
 from controller.home_controller import HomeController
 from display.display import Display
 from display.save_file_display import SaveFileDisplay
@@ -27,6 +29,13 @@ def get_display() -> Display:
         return EPD2in7BDisplay()
 
 
+def get_database_engine() -> engine:
+    if is_simulator:
+        return create_engine('sqlite:///:memory:', echo=True)
+    else:
+        raise RuntimeError("Not implemented yet")
+
+
 def print_all_sensors_values():
     for sensor in platform.get_sensors():
         print("Sensor \"%s\" (%s):" % (sensor.name, sensor.__class__.__name__))
@@ -40,6 +49,17 @@ if __name__ == "__main__":
     platform = get_platform()
     if is_simulator:
         print_all_sensors_values()
+
+    # engine = get_database_engine()
+    # Session = sessionmaker(bind=engine)
+    # session = Session()
+    #
+    # Base.metadata.create_all(engine)
+    #
+    # session.add(Measurement(characteristic="temperature", value="12.0", formatted_value="12.0 *C"))
+    # session.add(Measurement(characteristic="temperature", value="232.0", formatted_value="1232.0 *C"))
+    #
+    # measurements = session.query(Measurement).all()
 
     display = get_display()
     home_controller = HomeController(display)

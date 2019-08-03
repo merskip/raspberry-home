@@ -34,30 +34,36 @@
 #
 
 
-import spidev
-import RPi.GPIO as GPIO
 import time
 
+import RPi.GPIO as GPIO
+import spidev
+
 # Pin definition
-RST_PIN         = 17
-DC_PIN          = 25
-CS_PIN          = 8
-BUSY_PIN        = 24
+RST_PIN = 17
+DC_PIN = 25
+CS_PIN = 8
+BUSY_PIN = 24
 
 # SPI device, bus = 0, device = 0
 SPI = spidev.SpiDev(0, 0)
 
+
 def digital_write(pin, value):
     GPIO.output(pin, value)
+
 
 def digital_read(pin):
     return GPIO.input(BUSY_PIN)
 
+
 def delay_ms(delaytime):
     time.sleep(delaytime / 1000.0)
 
+
 def spi_writebyte(data):
     SPI.writebytes(data)
+
 
 def module_init():
     GPIO.setmode(GPIO.BCM)
@@ -68,6 +74,7 @@ def module_init():
     SPI.max_speed_hz = 2000000
     SPI.mode = 0b00
     return 0
+
 
 def module_deinit():
     GPIO.cleanup([RST_PIN, DC_PIN, CS_PIN, BUSY_PIN])

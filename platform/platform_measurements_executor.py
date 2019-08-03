@@ -15,7 +15,6 @@ class PlatformMeasurementsExecutor(MeasurementsExecutor):
         measurements = []
         for sensor in self.platform.get_sensors():
             for characteristic in sensor.get_characteristics():
-
                 start_time = datetime.now()
                 value = sensor.get_value(characteristic)
                 end_time = datetime.now()

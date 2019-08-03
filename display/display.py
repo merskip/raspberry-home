@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
+
 from PIL import Image, ImageDraw
 
 
 class Display(ABC):
-
     black_image = None
     red_image = None
 
