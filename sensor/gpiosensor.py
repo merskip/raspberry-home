@@ -2,15 +2,15 @@ from typing import List
 
 import RPi.GPIO as GPIO
 
-from platform.sensor import Sensor, Characteristic, Characteristics
+from platform.characteristic import Characteristic, Characteristics
+from platform.sensor import Sensor
 
 
 class GPIOSensor(Sensor):
 
-    def __init__(self, name: str, pin: int, specific_type: str = None):
-        super().__init__(name)
+    def __init__(self, id: int, name: str, pin: int):
+        super().__init__(id, name)
         self._pin = pin
-        self._specific_type = specific_type
 
         if GPIO.getmode() is None:
             GPIO.setmode(GPIO.BCM)
@@ -20,7 +20,7 @@ class GPIOSensor(Sensor):
         GPIO.cleanup(self._pin)
 
     def get_characteristics(self) -> List[Characteristic]:
-        return [Characteristics.boolean.toggle(self._specific_type)]
+        return [Characteristics.boolean]
 
     def get_value(self, characteristic: Characteristic) -> object:
         return GPIO.input(self._pin) == 1

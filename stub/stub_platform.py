@@ -1,5 +1,5 @@
+from platform.characteristic import Characteristics
 from platform.platform import Platform
-from platform.sensor import Characteristics, SpecificType
 from stub.stub_sensor import StubSensor
 
 
@@ -16,32 +16,40 @@ class StubPlatform(Platform):
 
     @staticmethod
     def _create_temperature_sensor():
-        return StubSensor("DS18B20", [Characteristics.temperature],
-                          lambda c: 24.5)
+        return StubSensor(
+            1, "DS18B20",
+            [Characteristics.temperature],
+            lambda c: 24.5
+        )
 
     @staticmethod
     def _create_temperature_outside_sensor():
-        return StubSensor("DS18B20 Outside",
-                          [Characteristics.temperature.toggle(SpecificType.temperature_outside)],
-                          lambda c: 30.5)
+        return StubSensor(
+            2, "DS18B20 Outside",
+            [Characteristics.temperature],
+            lambda c: 30.5
+        ).with_flag("outside")
 
     @staticmethod
     def _create_light_sensor():
-        return StubSensor("TSL2561", [Characteristics.light],
-                          lambda c: 250.23)
+        return StubSensor(
+            3, "TSL2561",
+            [Characteristics.light],
+            lambda c: 250.23
+        )
 
     @staticmethod
     def _create_door_sensor():
-        return StubSensor("CMD14", [Characteristics.boolean.toggle(SpecificType.boolean_door)],
-                          lambda c: True)
+        return StubSensor(
+            4, "CMD14",
+            [Characteristics.boolean],
+            lambda c: True
+        ).with_flag("door")
 
     @staticmethod
     def _create_pressure_sensor():
-        def get_value(c):
-            if c is Characteristics.temperature:
-                return 25.0
-            else:
-                return 980.0
-
-        return StubSensor("BMP180", [Characteristics.pressure, Characteristics.temperature],
-                          get_value)
+        return StubSensor(
+            5, "BMP180",
+            [Characteristics.pressure, Characteristics.temperature],
+            lambda c: 25.0 if c is Characteristics.temperature else 980.0
+        )

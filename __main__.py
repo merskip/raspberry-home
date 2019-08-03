@@ -1,8 +1,10 @@
 import sys
+from configparser import ConfigParser
 
 from sqlalchemy import engine, create_engine
 
 from controller.home_controller import HomeController
+from database.DatabaseWriter import DatabaseWriter
 from display.display import Display
 from display.save_file_display import SaveFileDisplay
 from platform.measurements_scheduler import MeasurementsScheduler
@@ -11,6 +13,16 @@ from platform.platform_measurements_executor import PlatformMeasurementsExecutor
 from stub.stub_platform import StubPlatform
 
 is_simulator = len(sys.argv) > 1 and str(sys.argv[1]) == "simulator"
+
+
+def read_config():
+    parser = ConfigParser()
+    if not parser.read("config.ini"):
+        raise RuntimeError("Failed read config file: config.ini")
+    return parser
+
+
+config = read_config()
 
 
 def get_platform() -> Platform:
@@ -30,10 +42,7 @@ def get_display() -> Display:
 
 
 def get_database_engine() -> engine:
-    if is_simulator:
-        return create_engine('sqlite:///:memory:', echo=True)
-    else:
-        raise RuntimeError("Not implemented yet")
+    return create_engine(config["database"]["url"])
 
 
 def print_all_sensors_values():
@@ -50,23 +59,15 @@ if __name__ == "__main__":
     if is_simulator:
         print_all_sensors_values()
 
-    # engine = get_database_engine()
-    # Session = sessionmaker(bind=engine)
-    # session = Session()
-    #
-    # Base.metadata.create_all(engine)
-    #
-    # session.add(Measurement(characteristic="temperature", value="12.0", formatted_value="12.0 *C"))
-    # session.add(Measurement(characteristic="temperature", value="232.0", formatted_value="1232.0 *C"))
-    #
-    # measurements = session.query(Measurement).all()
-
     display = get_display()
     home_controller = HomeController(display)
 
     measurements_executor = PlatformMeasurementsExecutor(platform)
-    measurement_scheduler = MeasurementsScheduler(measurements_executor)
+    measurement_scheduler = MeasurementsScheduler(config["scheduler"]["every_minutes"], measurements_executor)
     measurement_scheduler.append(home_controller)
+
+    database_writer = DatabaseWriter(get_database_engine(), platform)
+    measurement_scheduler.append(database_writer)
 
     if is_simulator:
         measurement_scheduler.perform_single_measurement()

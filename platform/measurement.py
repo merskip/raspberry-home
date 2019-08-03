@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from platform.sensor import Sensor, Characteristic
+from platform.characteristic import Characteristic
+from platform.sensor import Sensor
 
 
 class Measurement:

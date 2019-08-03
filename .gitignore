@@ -279,3 +279,6 @@ fabric.properties
 .idea/webServers.xml
 .idea/misc.xml
 result.bmp
+config.ini
+.idea/dataSources.xml
+database.sqlite

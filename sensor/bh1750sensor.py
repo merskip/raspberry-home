@@ -1,13 +1,14 @@
 from typing import List
 
-from platform.sensor import Sensor, Characteristic, Characteristics
+from platform.characteristic import Characteristic, Characteristics
+from platform.sensor import Sensor
 from sensor.impl import bh1750
 
 
 class BH1750Sensor(Sensor):
 
-    def __init__(self, name: str, address: int):
-        super().__init__(name)
+    def __init__(self, id: int, name: str, address: int):
+        super().__init__(id, name)
         self._address = address
 
     def get_characteristics(self) -> List[Characteristic]:

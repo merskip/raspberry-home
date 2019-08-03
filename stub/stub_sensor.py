@@ -1,13 +1,14 @@
 from typing import Callable, List
 
-from platform.sensor import Sensor, Characteristic
+from platform.characteristic import Characteristic
+from platform.sensor import Sensor
 
 
 class StubSensor(Sensor):
 
-    def __init__(self, name: str, characteristics: List[Characteristic],
+    def __init__(self, id: int, name: str, characteristics: List[Characteristic],
                  get_value: Callable[[Characteristic], object]):
-        super().__init__(name)
+        super().__init__(id, name)
         self._characteristics = characteristics
         self._get_value = get_value
 

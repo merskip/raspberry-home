@@ -20,11 +20,10 @@ class MeasurementsListener(ABC):
 
 
 class MeasurementsScheduler:
-    measurements_executor: MeasurementsExecutor
-    listeners: List[MeasurementsListener]
 
-    def __init__(self, measurements_executor: MeasurementsExecutor):
+    def __init__(self, every_minute: int, measurements_executor: MeasurementsExecutor):
         self.listeners = []
+        self.every_minute = every_minute
         self.measurements_executor = measurements_executor
 
     def append(self, listener: MeasurementsListener):
@@ -32,7 +31,7 @@ class MeasurementsScheduler:
 
     def begin_measurements(self):
         import schedule
-        schedule.every(5).minutes.do(self.perform_single_measurement)
+        schedule.every(self.every_minute).minutes.do(self.perform_single_measurement)
         self.perform_single_measurement()
 
         while 1:

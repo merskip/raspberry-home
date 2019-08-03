@@ -5,9 +5,10 @@ from PIL import Image
 from PIL import ImageFont
 
 from display.display import Display
+from platform.characteristic import Characteristic, Characteristics
 from platform.measurement import Measurement
 from platform.measurements_scheduler import MeasurementsListener
-from platform.sensor import Characteristic, Characteristics, Sensor, SpecificType
+from platform.sensor import Sensor
 
 font = ImageFont.truetype("fonts/Ubuntu-Medium.ttf", 15)
 titleFont = ImageFont.truetype("fonts/Ubuntu-Bold.ttf", 18)
@@ -45,7 +46,7 @@ class HomeController(MeasurementsListener):
             if not is_primary_characteristic:
                 continue
 
-            icon = self._get_icon(characteristic, value)
+            icon = self._get_icon(sensor, characteristic, value)
             title = self._get_title(sensor, characteristic, value)
 
             grid_layout.add_item(GridLayout.Item(icon, title))
@@ -61,9 +62,9 @@ class HomeController(MeasurementsListener):
         self.display.draw()
 
     @staticmethod
-    def _get_icon(characteristic: Characteristic, value):
+    def _get_icon(sensor: Sensor, characteristic: Characteristic, value):
         if characteristic == Characteristics.temperature:
-            if characteristic.specific_type == SpecificType.temperature_outside:
+            if sensor.has_flag("outside"):
                 return "assets/ic-temperature-outside.bmp"
             else:
                 return "assets/ic-temperature.bmp"
@@ -72,7 +73,7 @@ class HomeController(MeasurementsListener):
         elif characteristic == Characteristics.pressure:
             return "assets/ic-pressure-gauge.bmp"
         elif characteristic == Characteristics.boolean:
-            if characteristic.specific_type == SpecificType.boolean_door:
+            if sensor.has_flag("door"):
                 return "assets/ic-door-closed.bmp" if value else "assets/ic-door-open.bmp"
             else:
                 return "assets/ic-boolean-true.bmp" if value else "assets/ic-boolean-false.bmp"
@@ -83,7 +84,7 @@ class HomeController(MeasurementsListener):
 
     @staticmethod
     def _get_title(sensor: Sensor, characteristic: Characteristic, value):
-        if characteristic == Characteristics.boolean and characteristic.specific_type == SpecificType.boolean_door:
+        if characteristic == Characteristics.boolean and sensor.has_flag("door"):
             return sensor.name
         else:
             return Sensor.format_value_with_unit(characteristic, value)

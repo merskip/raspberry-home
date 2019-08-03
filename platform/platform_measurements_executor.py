@@ -19,6 +19,11 @@ class PlatformMeasurementsExecutor(MeasurementsExecutor):
                 value = sensor.get_value(characteristic)
                 end_time = datetime.now()
 
+                print("%s [PlatformMeasurementsExecutor]: {sensor: %s, characteristic: %s} value: %s (in %f ms)"
+                      % (datetime.now().strftime("%H:%M:%S.%f"), sensor.name, characteristic.name,
+                         sensor.format_value_with_unit(characteristic, value),
+                         (end_time - start_time).total_seconds() * 1000.0))
+
                 measurement = Measurement(sensor, characteristic, value, start_time, end_time)
                 measurements.append(measurement)
 
