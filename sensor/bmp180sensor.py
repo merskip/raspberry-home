@@ -13,8 +13,8 @@ class BMP180Sensor(Sensor):
 
     def get_characteristics(self) -> List[Characteristic]:
         return [
-            Characteristics.pressure,
-            Characteristics.temperature
+            Characteristics.pressure.set(min_value=300, max_value=1100, accuracy=0.12),
+            Characteristics.temperature.set(min_value=0, max_value=65, accuracy=0.5)
         ]
 
     def get_value(self, characteristic: Characteristic) -> object:

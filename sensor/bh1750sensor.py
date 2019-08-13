@@ -12,7 +12,9 @@ class BH1750Sensor(Sensor):
         self._address = address
 
     def get_characteristics(self) -> List[Characteristic]:
-        return [Characteristics.light]
+        return [
+            Characteristics.light.set(min_value=1, max_value=65535, accuracy=1)
+        ]
 
     def get_value(self, characteristic: Characteristic) -> object:
         return bh1750.readLight(self._address)
