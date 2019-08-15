@@ -1,4 +1,6 @@
+import math
 from abc import ABC, abstractmethod
+from math import floor
 from typing import List
 
 from platform.characteristic import Characteristic
@@ -24,22 +26,53 @@ class Sensor(ABC):
 
     def get_value_with_unit(self, characteristic: Characteristic) -> str:
         value = self.get_value(characteristic)
-        return self.format_value_with_unit(characteristic, value)
+        return self.formatted_value_with_unit(characteristic, value)
 
     @abstractmethod
     def get_value(self, characteristic: Characteristic) -> object:
         pass
 
     @staticmethod
-    def format_value_with_unit(characteristic: Characteristic, value):
-        if isinstance(value, float):
-            value = "%.2f" % value
-        if isinstance(value, bool):
-            value = value if "True" else "False"
+    def formatted_value_with_unit(characteristic: Characteristic, value):
+        formatted_value = Sensor.formatted_value(characteristic, value)
         if characteristic.unit is not None:
-            return "%s %s" % (value, characteristic.unit)
+            return "{} {}".format(formatted_value, characteristic.unit)
+        else:
+            return formatted_value
+
+    @staticmethod
+    def formatted_value(characteristic: Characteristic, value):
+        if isinstance(value, bool):
+            return value if "True" else "False"
+        elif isinstance(value, float):
+            if isinstance(characteristic.accuracy, float):
+                value = Sensor.round_value(value, characteristic.min_value, characteristic.accuracy)
+                return Sensor.format_value_to_string(value, characteristic.accuracy)
+            else:
+                return "{}".format(value)
         else:
             return str(value)
+
+    @staticmethod
+    def round_value(value, min_value: float, accuracy: float):
+        if not isinstance(value, float) or min_value is None or accuracy is None:
+            return value
+
+        rounded_value = math.floor((value - min_value) / accuracy) * accuracy + min_value
+        if value - rounded_value >= accuracy / 2.0:
+            rounded_value += accuracy
+        return rounded_value
+
+    @staticmethod
+    def format_value_to_string(value, accuracy: float):
+        if not isinstance(value, float):
+            return value
+        decimal_part = "{}".format(accuracy).split('.')[1]
+        if decimal_part != "0":
+            decimal_places = len(decimal_part)
+            return ("{:.%df}" % decimal_places).format(value)
+        else:
+            return "{:.0f}".format(value)
 
     @property
     def id(self):

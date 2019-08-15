@@ -34,7 +34,7 @@ class StubPlatform(Platform):
     def _create_light_sensor():
         return StubSensor(
             3, "TSL2561",
-            [Characteristics.light],
+            [Characteristics.light.set(min_value=1.0, accuracy=1.0)],
             lambda c: 250.23
         )
 
@@ -50,6 +50,6 @@ class StubPlatform(Platform):
     def _create_pressure_sensor():
         return StubSensor(
             5, "BMP180",
-            [Characteristics.pressure, Characteristics.temperature],
+            [Characteristics.pressure.set(accuracy=10.0), Characteristics.temperature],
             lambda c: 25.0 if c is Characteristics.temperature else 980.0
         )

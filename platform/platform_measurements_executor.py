@@ -21,7 +21,7 @@ class PlatformMeasurementsExecutor(MeasurementsExecutor):
 
                 print("%s [PlatformMeasurementsExecutor]: {sensor: %s, characteristic: %s} value: %s (in %f ms)"
                       % (datetime.now().strftime("%H:%M:%S.%f"), sensor.name, characteristic.name,
-                         sensor.format_value_with_unit(characteristic, value),
+                         sensor.formatted_value_with_unit(characteristic, value),
                          (end_time - start_time).total_seconds() * 1000.0))
 
                 measurement = Measurement(sensor, characteristic, value, start_time, end_time)

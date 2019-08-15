@@ -87,7 +87,7 @@ class HomeController(MeasurementsListener):
         if characteristic == Characteristics.boolean and sensor.has_flag("door"):
             return sensor.name
         else:
-            return Sensor.format_value_with_unit(characteristic, value)
+            return Sensor.formatted_value_with_unit(characteristic, value)
 
 
 class GridLayout:
