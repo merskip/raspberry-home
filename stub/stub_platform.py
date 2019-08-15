@@ -18,8 +18,8 @@ class StubPlatform(Platform):
     def _create_temperature_sensor():
         return StubSensor(
             1, "DS18B20",
-            [Characteristics.temperature],
-            lambda c: 24.5
+            [Characteristics.temperature.set(min_value=0, accuracy=0.5)],
+            lambda c: 24.33
         )
 
     @staticmethod

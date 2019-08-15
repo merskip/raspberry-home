@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, ForeignKey, Float, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, Float, BigInteger, String
 from sqlalchemy.orm import relationship
 
 from database import Base
 from database.DBCharacteristic import DBCharacteristic
 from platform.measurement import Measurement
+from platform.sensor import Sensor
 
 
 class DBMeasurement(Base):
@@ -16,11 +17,14 @@ class DBMeasurement(Base):
     characteristic_id = Column(Integer, ForeignKey('characteristics.id'), nullable=False)
     characteristic = relationship("DBCharacteristic")
     value = Column(Float, nullable=False)
-    time_start = Column(DateTime, nullable=False)
-    time_end = Column(DateTime, nullable=False)
+    formatted_value = Column(String, nullable=False)
+    time_start = Column(BigInteger, nullable=False)
+    time_end = Column(BigInteger, nullable=False)
 
     @staticmethod
     def create(m: Measurement):
         db_characteristic = DBCharacteristic.create(m.sensor, m.characteristic)
-        return DBMeasurement(sensor_id=m.sensor.id, characteristic_id=db_characteristic.id, value=m.value,
-                             time_start=m.time_start, time_end=m.time_end)
+        return DBMeasurement(sensor_id=m.sensor.id, characteristic_id=db_characteristic.id,
+                             value=m.value, formatted_value=Sensor.formatted_value(m.characteristic, m.value),
+                             time_start=m.time_start.timestamp() * 1e6,
+                             time_end=m.time_end.timestamp() * 1e6)
