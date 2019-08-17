@@ -14,10 +14,10 @@ class DBMeasurement(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     sensor_id = Column(Integer, ForeignKey('sensors.id'), nullable=False)
     sensor = relationship("DBSensor")
-    characteristic_id = Column(Integer, ForeignKey('characteristics.id'), nullable=False)
+    characteristic_id = Column(String(64), ForeignKey('characteristics.id'), nullable=False)
     characteristic = relationship("DBCharacteristic")
     value = Column(Float, nullable=False)
-    formatted_value = Column(String, nullable=False)
+    formatted_value = Column(String(32), nullable=False)
     time_start = Column(BigInteger, nullable=False)
     time_end = Column(BigInteger, nullable=False)
 

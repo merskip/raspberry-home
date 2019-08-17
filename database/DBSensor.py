@@ -16,7 +16,7 @@ class DBSensor(Base):
     characteristics = relationship("DBCharacteristic", secondary=Table(
         'sensors_to_characteristics', Base.metadata,
         Column('sensor_id', Integer, ForeignKey('sensors.id'), nullable=False),
-        Column('characteristic_id', Integer, ForeignKey('characteristics.id'), nullable=False)
+        Column('characteristic_id', String(64), ForeignKey('characteristics.id'), nullable=False)
     ))
 
     @staticmethod
