@@ -32,6 +32,7 @@ class Sensor(ABC):
     def get_value(self, characteristic: Characteristic) -> object:
         pass
 
+    # TODO: Move to new class - ValueFormatter
     @staticmethod
     def formatted_value_with_unit(characteristic: Characteristic, value):
         formatted_value = Sensor.formatted_value(characteristic, value)
@@ -49,7 +50,7 @@ class Sensor(ABC):
                 value = Sensor.round_value(value, characteristic.min_value, characteristic.accuracy)
                 return Sensor.format_value_to_string(value, characteristic.accuracy)
             else:
-                return "{}".format(value)
+                return "{:.2f}".format(value)
         else:
             return str(value)
 
@@ -67,12 +68,12 @@ class Sensor(ABC):
     def format_value_to_string(value, accuracy: float):
         if not isinstance(value, float):
             return value
-        decimal_part = "{}".format(accuracy).split('.')[1]
-        if decimal_part != "0":
-            decimal_places = len(decimal_part)
-            return ("{:.%df}" % decimal_places).format(value)
-        else:
+        if accuracy % 1 == 0:  # Accuracy is integer
             return "{:.0f}".format(value)
+
+        decimal_part = "{}".format(accuracy).split('.')[1]
+        decimal_places = len(decimal_part)
+        return ("{:.%df}" % decimal_places).format(value)
 
     @property
     def id(self):
