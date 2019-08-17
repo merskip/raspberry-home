@@ -63,7 +63,7 @@ if __name__ == "__main__":
     home_controller = HomeController(display)
 
     measurements_executor = PlatformMeasurementsExecutor(platform)
-    measurement_scheduler = MeasurementsScheduler(config["scheduler"]["every_minutes"], measurements_executor)
+    measurement_scheduler = MeasurementsScheduler(int(config["scheduler"]["every_minutes"]), measurements_executor)
     measurement_scheduler.append(home_controller)
 
     database_writer = DatabaseWriter(get_database_engine(), platform)
