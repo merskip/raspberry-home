@@ -1,6 +1,7 @@
 import hashlib
 
-from sqlalchemy import Column, String, Float
+from sqlalchemy import Column, String, Float, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 
 from database import Base
 from platform.characteristic import Characteristic
@@ -17,6 +18,8 @@ class DBCharacteristic(Base):
     min_value = Column(Float, nullable=True)
     max_value = Column(Float, nullable=True)
     accuracy = Column(Float, nullable=True)
+    last_measurement_id = Column(Integer, ForeignKey('measurements.id'), nullable=True)
+    last_measurement = relationship("DBMeasurement", foreign_keys=[last_measurement_id])
 
     @staticmethod
     def create(s: Sensor, c: Characteristic):

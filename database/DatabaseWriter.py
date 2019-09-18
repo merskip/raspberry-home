@@ -4,6 +4,7 @@ from sqlalchemy import engine
 from sqlalchemy.orm import sessionmaker
 
 from database import Base
+from database.DBCharacteristic import DBCharacteristic
 from database.DBMeasurement import DBMeasurement
 from database.DBSensor import DBSensor
 from platform.measurement import Measurement
@@ -27,5 +28,12 @@ class DatabaseWriter(MeasurementsListener):
     def on_measurements(self, measurements: List[Measurement]):
         for measurement in measurements:
             db_measurement = DBMeasurement.create(measurement)
+
             self.session.add(db_measurement)
+            self.session.flush()
+
+            self.session.query(DBCharacteristic)\
+                .filter_by(id=db_measurement.characteristic_id)\
+                .update(dict(last_measurement_id=db_measurement.id))
+
         self.session.commit()

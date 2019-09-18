@@ -15,7 +15,7 @@ class DBMeasurement(Base):
     sensor_id = Column(Integer, ForeignKey('sensors.id'), nullable=False)
     sensor = relationship("DBSensor")
     characteristic_id = Column(String(64), ForeignKey('characteristics.id'), nullable=False)
-    characteristic = relationship("DBCharacteristic")
+    characteristic = relationship("DBCharacteristic", foreign_keys=[characteristic_id])
     value = Column(Float, nullable=False)
     formatted_value = Column(String(32), nullable=False)
     time_start = Column(BigInteger, nullable=False)
