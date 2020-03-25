@@ -19,10 +19,10 @@ class COVID19Monitor(Sensor):
         url = "https://corona.lmao.ninja/countries/" + self.country
         response = requests.get(url=url)
         json = response.json()
-        active = json['active']
+        cases = json['cases']
         recovered = json['recovered']
         deaths = json['deaths']
-        return [active, recovered, deaths]
+        return [cases, recovered, deaths]
 
     def is_storable(self):
         return False
