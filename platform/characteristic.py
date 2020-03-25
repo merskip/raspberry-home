@@ -31,3 +31,4 @@ class Characteristics(object):
     pressure = Characteristic("pressure", float, "hPa")
     boolean = Characteristic("boolean", bool)
     virusCases = Characteristic("virus", list)
+    soilMoisture = Characteristic("soil_moisture", float, "%")
