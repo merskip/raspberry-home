@@ -12,7 +12,7 @@ class PlatformImpl(Platform):
         super().__init__([
             DS18B20Sensor(1, "DS18B20 Inside", "01186e6706ff"),
             DS18B20Sensor(2, "DS18B20 Outside", "0114659b7dff").with_flag("outside"),
-            BMP180Sensor(3, "BMP180", 0x77),
+            BMP180Sensor(3, "BMP180", 0x77, 1.029850746268657),
             BH1750Sensor(4, "BH1750", 0x23),
             DTH11Sensor(5, "DTH11", 27),
             COVID19Monitor(6, "COVID19-Poland", "poland"),

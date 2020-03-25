@@ -53,5 +53,5 @@ class StubPlatform(Platform):
         return StubSensor(
             5, "BMP180",
             [Characteristics.pressure.set(accuracy=10.0), Characteristics.temperature],
-            lambda c: 25.0 if c is Characteristics.temperature else 980.0
+            lambda c: 25.0 if c is Characteristics.temperature else 980.0 * 1.029850746268657
         )
