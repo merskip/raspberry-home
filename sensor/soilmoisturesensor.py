@@ -14,8 +14,8 @@ class SoilMoistureSensor(Sensor):
         self._port = port
         self._baudrate = baudrate
         self._pin = pin
-        self._minValue = 0.4
-        self._maxValue = 1.0
+        self._minValue = 0.3
+        self._maxValue = 0.9
 
     def get_characteristics(self) -> List[Characteristic]:
         return [Characteristics.soilMoisture.set(min_value=0, max_value=100, accuracy=1)]
