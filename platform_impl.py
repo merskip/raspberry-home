@@ -3,7 +3,7 @@ from sensor.bh1750sensor import BH1750Sensor
 from sensor.bmp180sensor import BMP180Sensor
 from sensor.covid19monitor import COVID19Monitor
 from sensor.ds18b20sensor import DS18B20Sensor
-from sensor.dth11sensor import DTH11Sensor
+from sensor.soilmoisturesensor import SoilMoistureSensor
 
 
 class PlatformImpl(Platform):
@@ -14,6 +14,6 @@ class PlatformImpl(Platform):
             DS18B20Sensor(2, "DS18B20 Outside", "0114659b7dff").with_flag("outside"),
             BMP180Sensor(3, "BMP180", 0x77, 1.029850746268657),
             BH1750Sensor(4, "BH1750", 0x23),
-            DTH11Sensor(5, "DTH11", 27),
+            SoilMoistureSensor(5, "Right flower", "/dev/ttyACM0", 9600, pin=0),
             COVID19Monitor(6, "COVID19-Poland", "poland"),
         ])
