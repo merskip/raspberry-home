@@ -79,6 +79,8 @@ class HomeController(MeasurementsListener):
                 return "assets/ic-boolean-true.bmp" if value else "assets/ic-boolean-false.bmp"
         elif characteristic == Characteristics.humidity:
             return "assets/ic-humidity.bmp"
+        elif characteristic == Characteristics.virusCases:
+            return "assets/ic-virus.bmp"
         else:
             raise ValueError("Unknown characteristic: " + characteristic.name)
 

@@ -27,6 +27,9 @@ class DatabaseWriter(MeasurementsListener):
 
     def on_measurements(self, measurements: List[Measurement]):
         for measurement in measurements:
+            if not measurement.sensor.is_storable():
+                continue
+
             db_measurement = DBMeasurement.create(measurement)
 
             self.session.add(db_measurement)

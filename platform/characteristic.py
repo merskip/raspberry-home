@@ -30,3 +30,4 @@ class Characteristics(object):
     light = Characteristic("light", float, "lx")
     pressure = Characteristic("pressure", float, "hPa")
     boolean = Characteristic("boolean", bool)
+    virusCases = Characteristic("virus", list)

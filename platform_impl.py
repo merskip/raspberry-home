@@ -1,9 +1,9 @@
 from platform.platform import Platform
 from sensor.bh1750sensor import BH1750Sensor
 from sensor.bmp180sensor import BMP180Sensor
+from sensor.covid19monitor import COVID19Monitor
 from sensor.ds18b20sensor import DS18B20Sensor
 from sensor.dth11sensor import DTH11Sensor
-from sensor.gpiosensor import GPIOSensor
 
 
 class PlatformImpl(Platform):
@@ -15,5 +15,5 @@ class PlatformImpl(Platform):
             BMP180Sensor(3, "BMP180", 0x77),
             BH1750Sensor(4, "BH1750", 0x23),
             DTH11Sensor(5, "DTH11", 27),
-            GPIOSensor(6, "Balcony", 23).with_flag("door"),
+            COVID19Monitor(6, "COVID19-Poland", "poland"),
         ])

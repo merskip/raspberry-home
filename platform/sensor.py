@@ -32,6 +32,9 @@ class Sensor(ABC):
     def get_value(self, characteristic: Characteristic) -> object:
         pass
 
+    def is_storable(self):
+        return True
+
     # TODO: Move to new class - ValueFormatter
     @staticmethod
     def formatted_value_with_unit(characteristic: Characteristic, value):
@@ -51,6 +54,8 @@ class Sensor(ABC):
                 return Sensor.format_value_to_string(value, characteristic.accuracy)
             else:
                 return "{:.2f}".format(value)
+        elif isinstance(value, list):
+            return "/".join(map(str, value))
         else:
             return str(value)
 
