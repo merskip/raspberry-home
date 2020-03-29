@@ -20,6 +20,7 @@ class HomeController(MeasurementsListener):
         self.display = display
 
     def on_measurements(self, measurements: List[Measurement]):
+        print("Displaying measurements")
         self.display_measurements(measurements)
 
     def display_measurements(self, measurements: List[Measurement]):

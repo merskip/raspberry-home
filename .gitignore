@@ -278,7 +278,7 @@ fabric.properties
 .idea/deployment.xml
 .idea/webServers.xml
 .idea/misc.xml
-result.bmp
+result*.bmp
 config.ini
 .idea/dataSources.xml
 database.sqlite

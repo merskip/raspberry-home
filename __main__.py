@@ -1,8 +1,6 @@
 import sys
 from configparser import ConfigParser
-
 from sqlalchemy import engine, create_engine
-
 from controller.home_controller import HomeController
 from database.DatabaseWriter import DatabaseWriter
 from display.display import Display
@@ -11,7 +9,6 @@ from platform.measurements_scheduler import MeasurementsScheduler
 from platform.platform import Platform
 from platform.platform_measurements_executor import PlatformMeasurementsExecutor
 from stub.stub_platform import StubPlatform
-
 is_simulator = len(sys.argv) > 1 and str(sys.argv[1]) == "simulator"
 
 
@@ -35,10 +32,10 @@ def get_platform() -> Platform:
 
 def get_display() -> Display:
     if is_simulator:
-        return SaveFileDisplay("result.bmp", (264, 176))
+        return SaveFileDisplay("result", (264, 176))
     else:
-        from epd.epd2in7b_display import EPD2in7BDisplay
-        return EPD2in7BDisplay()
+        from display.epd.epd2in7_display import EPD2in7Display
+        return EPD2in7Display()
 
 
 def get_database_engine() -> engine:
@@ -55,6 +52,7 @@ def print_all_sensors_values():
 
 
 if __name__ == "__main__":
+    print("init")
     platform = get_platform()
     if is_simulator:
         print_all_sensors_values()

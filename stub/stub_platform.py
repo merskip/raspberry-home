@@ -1,7 +1,6 @@
 from platform.characteristic import Characteristics
 from platform.platform import Platform
 from sensor.covid19monitor import COVID19Monitor
-from sensor.soilmoisturesensor import SoilMoistureSensor
 from stub.stub_sensor import StubSensor
 
 
@@ -13,7 +12,6 @@ class StubPlatform(Platform):
             self._create_temperature_outside_sensor(),
             self._create_light_sensor(),
             self._create_door_sensor(),
-            SoilMoistureSensor(7, "Right flower", "COM3", 9600, pin=0),
             COVID19Monitor(6, "COVID19-Poland", "poland")
         ])
 
