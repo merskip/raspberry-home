@@ -58,7 +58,11 @@ if __name__ == "__main__":
         print_all_sensors_values()
 
     display = get_display()
-    home_controller = HomeController(display)
+    home_controller = HomeController(
+        display,
+        coordinates={'longitude': 22.4937312, 'latitude': 51.2181956},
+        timezone_offset=7200  # UTC+2
+    )
 
     measurements_executor = PlatformMeasurementsExecutor(platform)
     measurement_scheduler = MeasurementsScheduler(int(config["scheduler"]["every_minutes"]), measurements_executor)

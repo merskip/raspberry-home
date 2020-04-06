@@ -1,3 +1,5 @@
+from PIL import Image
+
 from display.display import Display
 from display.epd.epd2in7_driver import EPD2in7Driver
 from display.epd.epd_hardware import EPDHardware
@@ -14,7 +16,10 @@ class EPD2in7Display(Display):
     def get_size(self) -> (int, int):
         return self._driver.width, self._driver.height
 
-    def draw(self):
+    def show(self, image):
+        black_image = image.convert('1')
+        red_image = Image.new('1', self.get_size(), 255)
+
         self._driver.init_sequence(EPD2in7DefaultLUTSet())
-        self._driver.display(self.black_image, self.red_image)
+        self._driver.display(black_image, red_image)
         self._driver.deep_sleep()

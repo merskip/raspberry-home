@@ -12,22 +12,7 @@ class SaveFileDisplay(Display):
     def get_size(self) -> (int, int):
         return self._size
 
-    def draw(self):
-        width, height = self.get_size()
-
-        self.black_image.save(self._filename + "_black.bmp")
-        self.red_image.save(self._filename + "_red.bmp")
-
-        result_image = Image.new('RGB', self.get_size(), 255)
-        result_image.paste(self.black_image)
-
-        # Draw red image on black image as result image
-        result_image_pixels = result_image.load()
-        red_image_pixels = self.red_image.load()
-        for x in range(width):
-            for y in range(height):
-                if red_image_pixels[x, y] == 0:
-                    result_image_pixels[x, y] = (255, 0, 0)
-
-        result_image.save(self._filename + ".bmp")
-        result_image.show()
+    def show(self, image: Image):
+        image = image.convert('1')
+        image.save(self._filename + ".bmp")
+        image.show()
