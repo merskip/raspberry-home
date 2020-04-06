@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Callable, List
 
-from PIL import Image as PILImage, ImageDraw, ImageOps
-from PIL import ImageFont
+from PIL import Image as PILImage, ImageDraw
 
 from controller.font import Font, FontWight
 from controller.moon import MoonPhase, Moon

@@ -1,8 +1,7 @@
 import sys
 from configparser import ConfigParser
-from sqlalchemy import engine, create_engine
+# from sqlalchemy import engine, create_engine
 from controller.home_controller import HomeController
-from database.DatabaseWriter import DatabaseWriter
 from display.display import Display
 from display.save_file_display import SaveFileDisplay
 from platform.measurements_scheduler import MeasurementsScheduler
@@ -38,8 +37,8 @@ def get_display() -> Display:
         return EPD2in7Display()
 
 
-def get_database_engine() -> engine:
-    return create_engine(config["database"]["url"])
+# def get_database_engine() -> engine:
+#     return create_engine(config["database"]["url"])
 
 
 def print_all_sensors_values():
@@ -68,8 +67,8 @@ if __name__ == "__main__":
     measurement_scheduler = MeasurementsScheduler(int(config["scheduler"]["every_minutes"]), measurements_executor)
     measurement_scheduler.append(home_controller)
 
-    database_writer = DatabaseWriter(get_database_engine(), platform)
-    measurement_scheduler.append(database_writer)
+    # database_writer = DatabaseWriter(get_database_engine(), platform)
+    # measurement_scheduler.append(database_writer)
 
     if is_simulator:
         measurement_scheduler.perform_single_measurement()
