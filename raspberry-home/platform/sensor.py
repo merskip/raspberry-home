@@ -1,6 +1,5 @@
 import math
 from abc import ABC, abstractmethod
-from math import floor
 from typing import List
 
 from platform.characteristic import Characteristic
