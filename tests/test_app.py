@@ -1,9 +1,13 @@
 import unittest
 
+from raspberry_home.main import run_simulator
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, True)
+
+class SimulatorPlatformTests(unittest.TestCase):
+
+    @staticmethod
+    def test_end_to_end():
+        run_simulator()
 
 
 if __name__ == '__main__':
