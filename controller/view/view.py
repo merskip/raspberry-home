@@ -4,7 +4,7 @@ from PIL import ImageOps
 from PIL.ImageDraw import ImageDraw
 import PIL.Image as PILImage
 
-from controller.font import Font
+from controller.utils.font import Font
 from controller.view.geometry import Point, Size, Rect
 
 

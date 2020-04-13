@@ -1,12 +1,11 @@
 from datetime import datetime
 from typing import Callable, List
 
-from PIL import Image as PILImage, ImageDraw, ImageOps
-from PIL import ImageFont
+from PIL import Image as PILImage, ImageDraw
 
-from controller.font import Font, FontWight
-from controller.moon import MoonPhase, Moon
-from controller.sun import Sun
+from controller.utils.font import Font, FontWight
+from controller.utils.moon import MoonPhase, Moon
+from controller.utils.sun import Sun
 from controller.view.geometry import Size
 from controller.view.view import Label, Image
 from display.display import Display
