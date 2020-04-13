@@ -24,7 +24,7 @@ jobs:
           pytest
 
       - name: Save result.bmp
-          uses: actions/upload-artifact@v1
-          with:
-            name: result.bmp
-            path: result.bmp
+        uses: actions/upload-artifact@v1
+        with:
+          name: result.bmp
+          path: result.bmp
