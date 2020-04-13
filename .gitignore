@@ -279,6 +279,6 @@ fabric.properties
 .idea/webServers.xml
 .idea/misc.xml
 result*.bmp
-raspberry_home/config.ini
+config.ini
 .idea/dataSources.xml
-raspberry_home/database.sqlite
+database.sqlite
