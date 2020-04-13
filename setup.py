@@ -8,7 +8,6 @@ setup(
     license='',
     author='Piotr Merski',
     author_email='merskip@gmail.com',
-    description='Manage your home with raspberry Pi',
-    install_requires=['Pillow']
-
+    description='Manage your home with Raspberry Pi',
+    install_requires=['Pillow', 'SQLAlchemy'],
 )
