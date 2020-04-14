@@ -3,13 +3,10 @@ from configparser import ConfigParser
 
 from raspberry_home.controller.home_controller import HomeController
 from raspberry_home.controller.led_controller import LEDController
-from raspberry_home.simulator.simulator_led_output import SimulatorLEDOutput
 from raspberry_home.display.save_file_display import SaveFileDisplay
 from raspberry_home.display.display import Display
 from raspberry_home.platform.measurements_scheduler import MeasurementsScheduler
 from raspberry_home.platform.platform_measurements_executor import PlatformMeasurementsExecutor
-from raspberry_home.simulator.simulator_display import SimulatorDisplay
-from raspberry_home.simulator.simulator_window import SimulatorWindow
 from raspberry_home.stub.stub_platform import StubPlatform
 from raspberry_home.platform.platform import Platform
 
@@ -78,6 +75,9 @@ def run(is_simulator: bool, gui: bool):
             from PyQt5.QtWidgets import QApplication
             app = QApplication([])
 
+            from raspberry_home.simulator.simulator_led_output import SimulatorLEDOutput
+            from raspberry_home.simulator.simulator_display import SimulatorDisplay
+            from raspberry_home.simulator.simulator_window import SimulatorWindow
             simulator_window = SimulatorWindow()
             home_controller.display = SimulatorDisplay((264, 176), simulator_window)
 
