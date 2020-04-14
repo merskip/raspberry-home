@@ -1,6 +1,8 @@
+import threading
 import time
 from abc import ABC, abstractmethod
 from typing import List
+import schedule
 
 from raspberry_home.platform.measurement import Measurement
 
@@ -14,14 +16,19 @@ class MeasurementsExecutor(ABC):
 
 class MeasurementsListener(ABC):
 
-    @abstractmethod
+    def on_begin_measurements(self):
+        pass
+
     def on_measurements(self, measurements: List[Measurement]):
         pass
 
 
 class MeasurementsScheduler:
+    active = False
+    listeners: List[MeasurementsListener]
 
     def __init__(self, every_minute: int, measurements_executor: MeasurementsExecutor):
+        self.thread = threading.Thread(target=self.begin_measurements, name='measuring-thread')
         self.listeners = []
         self.every_minute = every_minute
         self.measurements_executor = measurements_executor
@@ -29,16 +36,33 @@ class MeasurementsScheduler:
     def append(self, listener: MeasurementsListener):
         self.listeners.append(listener)
 
-    def begin_measurements(self):
-        import schedule
-        schedule.every(self.every_minute).minutes.do(self.perform_single_measurement)
-        self.perform_single_measurement()
+    def begin_measurements_in_thread(self):
+        self.active = True
+        self.thread.start()
 
-        while 1:
+    def wait_until_finish_measurements(self):
+        self.thread.join()
+
+    def stop_measurements(self):
+        self.active = False
+
+    def begin_measurements(self):
+        schedule.every(self.every_minute).minutes.do(self._perform_single_measurement)
+        self._perform_single_measurement()
+
+        while self.active:
             schedule.run_pending()
             time.sleep(1)
 
-    def perform_single_measurement(self):
+    def _perform_single_measurement(self):
+        self._notify_on_begin_measurements()
         measurements = self.measurements_executor.perform_measurements()
+        self._notify_on_measurements(measurements)
+
+    def _notify_on_begin_measurements(self):
+        for listener in self.listeners:
+            listener.on_begin_measurements()
+
+    def _notify_on_measurements(self, measurements):
         for listener in self.listeners:
             listener.on_measurements(measurements)

@@ -14,7 +14,10 @@ setup(
     install_requires=[
         'Pillow',
         'SQLAlchemy',
-        'requests'
+        'schedule',
+        'requests',
+        'PyQT5',
+        'pyqt-led'
     ],
     entry_points={
         'console_scripts': [

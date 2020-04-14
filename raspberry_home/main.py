@@ -2,10 +2,14 @@ import sys
 from configparser import ConfigParser
 
 from raspberry_home.controller.home_controller import HomeController
+from raspberry_home.controller.led_controller import LEDController
+from raspberry_home.simulator.simulator_led_output import SimulatorLEDOutput
 from raspberry_home.display.save_file_display import SaveFileDisplay
 from raspberry_home.display.display import Display
 from raspberry_home.platform.measurements_scheduler import MeasurementsScheduler
 from raspberry_home.platform.platform_measurements_executor import PlatformMeasurementsExecutor
+from raspberry_home.simulator.simulator_display import SimulatorDisplay
+from raspberry_home.simulator.simulator_window import SimulatorWindow
 from raspberry_home.stub.stub_platform import StubPlatform
 from raspberry_home.platform.platform import Platform
 
@@ -72,10 +76,22 @@ def run(is_simulator: bool):
         database_writer = DatabaseWriter(database_engine, platform)
         measurement_scheduler.append(database_writer)
 
+    measurement_scheduler.begin_measurements_in_thread()
     if is_simulator:
-        measurement_scheduler.perform_single_measurement()
-    else:
-        measurement_scheduler.begin_measurements()
+        from PyQt5.QtWidgets import QApplication
+        app = QApplication([])
+
+        simulator_window = SimulatorWindow()
+        home_controller.display = SimulatorDisplay((264, 176), simulator_window)
+
+        led_controller = LEDController(SimulatorLEDOutput(simulator_window))
+        measurement_scheduler.append(led_controller)
+
+        simulator_window.show()
+        app.exec()
+        measurement_scheduler.stop_measurements()
+
+    measurement_scheduler.wait_until_finish_measurements()
 
 
 if __name__ == "__main__":
