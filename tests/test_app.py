@@ -1,13 +1,13 @@
 import unittest
 
-from raspberry_home.main import run_simulator
+from raspberry_home.main import run
 
 
 class SimulatorPlatformTests(unittest.TestCase):
 
     @staticmethod
     def test_end_to_end():
-        run_simulator()
+        run(is_simulator=True, gui=False)
 
 
 if __name__ == '__main__':

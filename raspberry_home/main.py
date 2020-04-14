@@ -49,11 +49,7 @@ def get_display(is_simulator) -> Display:
         return EPD2in7Display()
 
 
-def run_simulator():
-    run(True)
-
-
-def run(is_simulator: bool):
+def run(is_simulator: bool, gui: bool):
     platform = get_platform(is_simulator)
     if is_simulator:
         print_all_sensors_values(platform)
@@ -78,21 +74,25 @@ def run(is_simulator: bool):
 
     measurement_scheduler.begin_measurements_in_thread()
     if is_simulator:
-        from PyQt5.QtWidgets import QApplication
-        app = QApplication([])
+        if gui:
+            from PyQt5.QtWidgets import QApplication
+            app = QApplication([])
 
-        simulator_window = SimulatorWindow()
-        home_controller.display = SimulatorDisplay((264, 176), simulator_window)
+            simulator_window = SimulatorWindow()
+            home_controller.display = SimulatorDisplay((264, 176), simulator_window)
 
-        led_controller = LEDController(SimulatorLEDOutput(simulator_window))
-        measurement_scheduler.append(led_controller)
+            led_controller = LEDController(SimulatorLEDOutput(simulator_window))
+            measurement_scheduler.append(led_controller)
 
-        simulator_window.show()
-        app.exec()
-        measurement_scheduler.stop_measurements()
+            simulator_window.show()
+            app.exec()
+            measurement_scheduler.stop_measurements()
+        else:
+            measurement_scheduler.stop_measurements()
 
     measurement_scheduler.wait_until_finish_measurements()
 
 
 if __name__ == "__main__":
-    run(is_simulator="--simulator" in sys.argv)
+    run(is_simulator="--simulator" in sys.argv,
+        gui="--gui" in sys.argv)
