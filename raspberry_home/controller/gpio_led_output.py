@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 
-from raspberry_home.controller.utils.led_output import LEDOutput
+from raspberry_home.controller.led_output import LEDOutput
 
 
 class GPIOLEDOutput(LEDOutput):

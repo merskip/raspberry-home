@@ -1,6 +1,6 @@
 from typing import List
 
-from raspberry_home.controller.utils.led_output import LEDOutput
+from raspberry_home.controller.led_output import LEDOutput
 from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 

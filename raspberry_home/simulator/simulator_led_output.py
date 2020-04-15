@@ -1,4 +1,4 @@
-from raspberry_home.controller.utils.led_output import LEDOutput
+from raspberry_home.controller.led_output import LEDOutput
 from raspberry_home.simulator.simulator_window import SimulatorWindow
 
 

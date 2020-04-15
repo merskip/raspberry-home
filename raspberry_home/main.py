@@ -2,6 +2,7 @@ import sys
 from configparser import ConfigParser
 
 from raspberry_home.controller.home_controller import HomeController
+from raspberry_home.controller.input_controller import InputController
 from raspberry_home.controller.led_controller import LEDController
 from raspberry_home.display.save_file_display import SaveFileDisplay
 from raspberry_home.display.display import Display
@@ -78,11 +79,17 @@ def run(is_simulator: bool, gui: bool):
             from raspberry_home.simulator.simulator_led_output import SimulatorLEDOutput
             from raspberry_home.simulator.simulator_display import SimulatorDisplay
             from raspberry_home.simulator.simulator_window import SimulatorWindow
+            from raspberry_home.simulator.simulator_input_controls import SimulatorInputControls
+
             simulator_window = SimulatorWindow()
             home_controller.display = SimulatorDisplay((264, 176), simulator_window)
 
             led_controller = LEDController(SimulatorLEDOutput(simulator_window))
             measurement_scheduler.append(led_controller)
+
+            input_controls = SimulatorInputControls(simulator_window)
+            input_controller = InputController()
+            input_controls.add_listener(input_controller)
 
             simulator_window.show()
             app.exec()
