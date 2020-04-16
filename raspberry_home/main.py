@@ -1,4 +1,5 @@
 import sys
+from abc import ABC, abstractmethod
 from configparser import ConfigParser
 
 from raspberry_home.controller.chart_controller import ChartController
