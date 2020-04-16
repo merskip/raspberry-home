@@ -4,16 +4,17 @@ from typing import List
 from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsExecutor
 from raspberry_home.platform.platform import Platform
+from raspberry_home.platform.sensor import Sensor
 
 
 class PlatformMeasurementsExecutor(MeasurementsExecutor):
 
-    def __init__(self, platform: Platform):
-        self.platform = platform
+    def __init__(self, sensors: [Sensor]):
+        self.sensors = sensors
 
     def perform_measurements(self) -> List[Measurement]:
         measurements = []
-        for sensor in self.platform.get_sensors():
+        for sensor in self.sensors:
             for characteristic in sensor.get_characteristics():
                 start_time = datetime.now()
                 value = sensor.get_value(characteristic)

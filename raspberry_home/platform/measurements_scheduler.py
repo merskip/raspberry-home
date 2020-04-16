@@ -27,10 +27,10 @@ class MeasurementsScheduler:
     active = False
     listeners: List[MeasurementsListener]
 
-    def __init__(self, every_minute: int, measurements_executor: MeasurementsExecutor):
+    def __init__(self, time_intervals: int, measurements_executor: MeasurementsExecutor):
         self.thread = threading.Thread(target=self.begin_measurements, name='measuring-thread')
         self.listeners = []
-        self.every_minute = every_minute
+        self.time_intervals = time_intervals
         self.measurements_executor = measurements_executor
 
     def append(self, listener: MeasurementsListener):
@@ -47,7 +47,7 @@ class MeasurementsScheduler:
         self.active = False
 
     def begin_measurements(self):
-        schedule.every(self.every_minute).minutes.do(self._perform_single_measurement)
+        schedule.every(self.time_intervals).seconds.do(self._perform_single_measurement)
         self._perform_single_measurement()
 
         while self.active:

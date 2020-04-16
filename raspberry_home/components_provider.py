@@ -6,7 +6,7 @@ from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 
 
-class Factory(ABC):
+class ComponentsProvider(ABC):
 
     def __init__(self):
         self.config = ConfigParser()
@@ -23,4 +23,8 @@ class Factory(ABC):
 
     @abstractmethod
     def get_measurements_listeners(self) -> [MeasurementsListener]:
+        pass
+
+    @abstractmethod
+    def get_scheduler_time_intervals(self) -> int:
         pass
