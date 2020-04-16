@@ -7,7 +7,7 @@ class SimulatorPlatformTests(unittest.TestCase):
 
     @staticmethod
     def test_end_to_end():
-        run(is_simulator=True, gui=False)
+        run(is_simulator=True, is_gui=False)
 
 
 if __name__ == '__main__':

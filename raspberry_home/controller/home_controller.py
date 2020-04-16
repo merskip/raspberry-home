@@ -4,6 +4,7 @@ from typing import Callable, List
 from PIL import Image as PILImage, ImageDraw
 
 from raspberry_home.assets import Assets
+from raspberry_home.controller.input_controller import NavigationItem
 from raspberry_home.controller.utils.font import Font, FontWight
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
@@ -23,12 +24,15 @@ class Fonts:
     valueFont = Font(15, FontWight.MEDIUM)
 
 
-class HomeController(MeasurementsListener):
+class HomeController(MeasurementsListener, NavigationItem):
 
     def __init__(self, display: Display, coordinates, timezone_offset):
         self.display = display
         self.coordinates = coordinates
         self.timezone_offset = timezone_offset
+
+    def selected_show(self):
+        pass
 
     def on_measurements(self, measurements: List[Measurement]):
         self.display_measurements(measurements)

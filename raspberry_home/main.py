@@ -1,6 +1,7 @@
 import sys
 from configparser import ConfigParser
 
+from raspberry_home.controller.chart_controller import ChartController
 from raspberry_home.controller.home_controller import HomeController
 from raspberry_home.controller.input_controller import InputController
 from raspberry_home.controller.led_controller import LEDController
@@ -39,20 +40,28 @@ def print_all_sensors_values(platform: Platform):
             print("   value: %s" % value)
 
 
-def get_display(is_simulator) -> Display:
+def get_display(is_simulator, is_gui, simulator_window) -> Display:
     if is_simulator:
-        return SaveFileDisplay("result", (264, 176))
+        if is_gui:
+            from raspberry_home.simulator.simulator_display import SimulatorDisplay
+            return SimulatorDisplay((264, 176), simulator_window)
+        else:
+            return SaveFileDisplay("result", (264, 176))
     else:
         from raspberry_home.display.epd.epd2in7_display import EPD2in7Display
         return EPD2in7Display()
 
 
-def run(is_simulator: bool, gui: bool):
+def run(is_simulator: bool, is_gui: bool):
     platform = get_platform(is_simulator)
     if is_simulator:
         print_all_sensors_values(platform)
+        from raspberry_home.simulator.simulator_window import SimulatorWindow
+        simulator_window = SimulatorWindow()
+    else:
+        simulator_window = None
 
-    display = get_display(is_simulator)
+    display = get_display(is_simulator, is_gui, simulator_window)
     home_controller = HomeController(
         display,
         coordinates={'longitude': 22.4937312, 'latitude': 51.2181956},  # Lublin
@@ -70,36 +79,37 @@ def run(is_simulator: bool, gui: bool):
         database_writer = DatabaseWriter(database_engine, platform)
         measurement_scheduler.append(database_writer)
 
-    measurement_scheduler.begin_measurements_in_thread()
+
     if is_simulator:
-        if gui:
+        if is_gui:
             from PyQt5.QtWidgets import QApplication
             app = QApplication([])
 
             from raspberry_home.simulator.simulator_led_output import SimulatorLEDOutput
             from raspberry_home.simulator.simulator_display import SimulatorDisplay
-            from raspberry_home.simulator.simulator_window import SimulatorWindow
             from raspberry_home.simulator.simulator_input_controls import SimulatorInputControls
-
-            simulator_window = SimulatorWindow()
-            home_controller.display = SimulatorDisplay((264, 176), simulator_window)
 
             led_controller = LEDController(SimulatorLEDOutput(simulator_window))
             measurement_scheduler.append(led_controller)
 
+            chart_controller = ChartController(display)
+
             input_controls = SimulatorInputControls(simulator_window)
-            input_controller = InputController()
+            input_controller = InputController([home_controller, chart_controller])
             input_controls.add_listener(input_controller)
 
+            measurement_scheduler.begin_measurements_in_thread()
             simulator_window.show()
             app.exec()
             measurement_scheduler.stop_measurements()
         else:
             measurement_scheduler.stop_measurements()
+    else:
+        measurement_scheduler.begin_measurements_in_thread()
 
     measurement_scheduler.wait_until_finish_measurements()
 
 
 if __name__ == "__main__":
     run(is_simulator="--simulator" in sys.argv,
-        gui="--gui" in sys.argv)
+        is_gui="--gui" in sys.argv)
