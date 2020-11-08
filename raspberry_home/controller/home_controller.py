@@ -8,7 +8,7 @@ from raspberry_home.controller.input_controller import NavigationItem
 from raspberry_home.controller.utils.font import Font, FontWight
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
-from raspberry_home.controller.view.geometry import Size
+from raspberry_home.controller.view.geometry import Size, Rect
 from raspberry_home.controller.view.view import Label, Image
 from raspberry_home.display.display import Display
 from raspberry_home.platform.characteristic import Characteristic, Characteristics
@@ -137,8 +137,6 @@ class HomeController(MeasurementsListener, NavigationItem):
                                                    second_measurement.value)
         title_label = Label(title, font=Fonts.valueFont).centered(in_width=cell_size.width)
         title_label.set_origin(y=icon_image.get_frame().max_y + 4)
-        if "\n" in title:
-            title_label.set_origin(x=16)
         title_label.draw(image_draw)
 
     @staticmethod
@@ -173,7 +171,7 @@ class HomeController(MeasurementsListener, NavigationItem):
         if characteristic.name == "pressure":
             return str(round(value)) + " " + characteristic.unit
         elif isinstance(sensor, COVID19Monitor):
-            return str(value[0]) + "\n" + str(value[1]) + "/" + str(value[2])
+            return "{:,}".format(value[0]) + "\n" + "{:,}".format(value[1])
         else:
             return Sensor.formatted_value_with_unit(characteristic, value)
 
@@ -203,11 +201,12 @@ class GridLayout:
             cell_image = PILImage.new('RGB', (self._column_width, self._column_width), color=(255, 255, 255))
             cell_image_draw = ImageDraw.Draw(cell_image)
             callback(cell_image_draw, Size(self._column_width, self._row_height))
+            # cell_image_draw.rectangle(
+            #     xy=Rect.zero().adding(width=self._column_width,height=self._row_height).xy,
+            #     outline=(0, 0, 64)
+            # )
 
             self.image.paste(cell_image, (x, y))
-
-        # ImageDraw.Draw(self.image) \
-        #     .rectangle([x, y, x + self._column_width - 1, y + self._row_height - 1], outline=0)
 
         self._current_column += 1
         if self._current_column >= self.columns:

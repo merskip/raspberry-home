@@ -20,9 +20,8 @@ class COVID19Monitor(Sensor):
         response = requests.get(url=url)
         json = response.json()
         cases = json['cases']
-        recovered = json['recovered']
-        deaths = json['deaths']
-        return [cases, recovered, deaths]
+        today_cases = json['todayCases']
+        return [cases, today_cases]
 
     def is_storable(self):
         return False

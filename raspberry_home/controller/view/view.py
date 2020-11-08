@@ -42,7 +42,8 @@ class View(ABC):
 
     @abstractmethod
     def draw(self, draw: ImageDraw):
-        draw.rectangle(xy=self.get_frame().xy, outline=127)
+        pass
+        # draw.rectangle(xy=self.get_frame().xy, outline=127)
 
 
 class Label(View):
@@ -53,7 +54,7 @@ class Label(View):
         self.font = font
 
     def get_content_size(self) -> Size:
-        width, height = self.font.load().getsize(self.text)
+        width, height = self.font.load().getsize_multiline(self.text)
         return Size(width, height)
 
     def draw(self, draw: ImageDraw):
