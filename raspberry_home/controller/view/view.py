@@ -42,7 +42,7 @@ class View(ABC):
 
     @abstractmethod
     def draw(self, draw: ImageDraw):
-        pass
+        draw.rectangle(xy=self.get_frame().xy, outline=127)
 
 
 class Label(View):
@@ -58,6 +58,7 @@ class Label(View):
 
     def draw(self, draw: ImageDraw):
         draw.multiline_text(xy=self.origin.xy, text=self.text, fill=0, font=self.font.load(), align='center')
+        super().draw(draw)
 
 
 class Image(View):
@@ -75,3 +76,4 @@ class Image(View):
 
     def draw(self, draw: ImageDraw):
         draw.bitmap(self.origin.xy, self._image, fill=0)
+        super().draw(draw)

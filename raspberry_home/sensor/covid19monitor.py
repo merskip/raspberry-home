@@ -16,7 +16,7 @@ class COVID19Monitor(Sensor):
         return [Characteristics.virusCases]
 
     def get_value(self, characteristic: Characteristic) -> object:
-        url = "https://corona.lmao.ninja/countries/" + self.country
+        url = "https://corona.lmao.ninja/v3/covid-19/countries/" + self.country
         response = requests.get(url=url)
         json = response.json()
         cases = json['cases']

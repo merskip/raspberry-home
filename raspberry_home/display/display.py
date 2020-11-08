@@ -13,5 +13,9 @@ class Display(ABC):
         pass
 
     @abstractmethod
+    def begin(self):
+        pass
+
+    @abstractmethod
     def show(self, image: Image):
         pass

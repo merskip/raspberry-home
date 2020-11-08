@@ -2,6 +2,8 @@ import sys
 from abc import ABC, abstractmethod
 from configparser import ConfigParser
 
+from PyQt5 import QtWidgets
+
 from raspberry_home.board_components_provider import BoardComponentsProvider
 from raspberry_home.controller.chart_controller import ChartController
 from raspberry_home.controller.home_controller import HomeController
@@ -107,7 +109,6 @@ from raspberry_home.platform.platform import Platform
 #
 if __name__ == "__main__":
     is_simulator = "--simulator" in sys.argv
-    is_gui = "--gui" in sys.argv
     if is_simulator:
         from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider
         components_provider = SimulatorComponentsProvider()
@@ -119,5 +120,20 @@ if __name__ == "__main__":
     time_intervals = components_provider.get_scheduler_time_intervals()
     measurement_scheduler = MeasurementsScheduler(time_intervals, measurements_executor)
 
+    display = components_provider.get_display()
+
+    home_controller = HomeController(
+        display=display,
+        coordinates={'longitude': 22.4937312, 'latitude': 51.2181956},  # Lublin
+        timezone_offset=7200  # UTC+2
+    )
+
     for measurements_listener in components_provider.get_measurements_listeners():
-        measurement_scheduler.append()
+        measurement_scheduler.append(measurements_listener)
+    measurement_scheduler.append(home_controller)
+
+    measurement_scheduler.begin_measurements_in_thread()
+
+    display.begin()
+    measurement_scheduler.stop_measurements()
+    sys.exit(0)

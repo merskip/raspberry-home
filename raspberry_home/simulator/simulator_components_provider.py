@@ -1,3 +1,7 @@
+import sys
+
+from PyQt5.QtWidgets import QApplication
+
 from raspberry_home.controller.home_controller import HomeController
 from raspberry_home.display.display import Display
 from raspberry_home.components_provider import ComponentsProvider
@@ -12,14 +16,7 @@ class SimulatorComponentsProvider(ComponentsProvider):
 
     def __init__(self):
         super().__init__()
-        self.simulator_window = SimulatorWindow()
-        self.display = SimulatorDisplay((264, 176), self.simulator_window)
-        self.home_controller = HomeController(
-            display=self.display,
-            # TODO: Move to config.ini
-            coordinates={'longitude': 22.4937312, 'latitude': 51.2181956},  # Lublin
-            timezone_offset=7200 # UTC+2
-        )
+        self.display = SimulatorDisplay((264, 176))
 
     def get_display(self) -> Display:
         return self.display
@@ -28,7 +25,7 @@ class SimulatorComponentsProvider(ComponentsProvider):
         return StubPlatform().get_sensors()  # TODO: Remove Platform class
 
     def get_measurements_listeners(self) -> [MeasurementsListener]:
-        pass
+        return []
 
     def get_scheduler_time_intervals(self) -> int:
-        return 60  # 1 minute
+        return 10  # 10 seconds

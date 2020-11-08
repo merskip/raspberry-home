@@ -34,6 +34,8 @@ class Rect:
     min_y = property(lambda self: self.origin.y)
     max_y = property(lambda self: self.origin.y + self.size.height)
 
+    xy = property(lambda self: ((self.min_x, self.min_y), (self.max_x, self.max_y)))
+
     def __init__(self, origin: Point, size: Size):
         self.origin = origin
         self.size = size
