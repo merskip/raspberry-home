@@ -20,7 +20,7 @@ class BoardComponentsProvider(ComponentsProvider):
         return PlatformImpl().get_sensors()
 
     def get_measurements_listeners(self) -> [MeasurementsListener]:
-        pass
+        return []
 
     def get_scheduler_time_intervals(self) -> int:
         return 10 * 60  # 10 minutes

@@ -10,7 +10,10 @@ class InputControls(ABC):
         def on_clicked_button(self, index: int):
             pass
 
-    listeners: List[Listener] = []
+    # listeners: List[Listener]
+
+    def __init__(self):
+        self.listeners = []
 
     def add_listener(self, listener: Listener):
         self.listeners.append(listener)

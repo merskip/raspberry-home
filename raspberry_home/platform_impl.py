@@ -14,6 +14,6 @@ class PlatformImpl(Platform):
             DS18B20Sensor(2, "DS18B20 Outside", "0114659b7dff").with_flag("outside"),
             BMP180Sensor(3, "BMP180", 0x77, 1.029850746268657),
             BH1750Sensor(4, "BH1750", 0x23),
-            SoilMoistureSensor(5, "Right flower", "/dev/ttyACM0", 9600, pin=0),
+            # SoilMoistureSensor(5, "Right flower", "/dev/ttyACM0", 9600, pin=0),
             COVID19Monitor(6, "COVID19-Poland", "poland"),
         ])

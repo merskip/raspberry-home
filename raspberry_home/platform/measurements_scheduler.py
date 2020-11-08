@@ -25,7 +25,7 @@ class MeasurementsListener(ABC):
 
 class MeasurementsScheduler:
     active = False
-    listeners: List[MeasurementsListener]
+    # listeners: List[MeasurementsListener]
 
     def __init__(self, time_intervals: int, measurements_executor: MeasurementsExecutor):
         self.thread = threading.Thread(target=self.begin_measurements, name='measuring-thread')

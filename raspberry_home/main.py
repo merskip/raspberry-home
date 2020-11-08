@@ -1,21 +1,8 @@
 import sys
-from abc import ABC, abstractmethod
-from configparser import ConfigParser
 
-from PyQt5 import QtWidgets
-
-from raspberry_home.controller.chart_controller import ChartController
 from raspberry_home.controller.home_controller import HomeController
-from raspberry_home.controller.input_controller import InputController
-from raspberry_home.controller.led_controller import LEDController
-from raspberry_home.display.save_file_display import SaveFileDisplay
-from raspberry_home.display.display import Display
 from raspberry_home.platform.measurements_scheduler import MeasurementsScheduler
 from raspberry_home.platform.platform_measurements_executor import PlatformMeasurementsExecutor
-
-from raspberry_home.stub.stub_platform import StubPlatform
-from raspberry_home.platform.platform import Platform
-
 
 #
 #
@@ -106,8 +93,9 @@ from raspberry_home.platform.platform import Platform
 #     measurement_scheduler.wait_until_finish_measurements()
 #
 #
-if __name__ == "__main__":
-    is_simulator = "--simulator" in sys.argv
+
+
+def run(is_simulator: bool):
     if is_simulator:
         from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider
         components_provider = SimulatorComponentsProvider()

@@ -54,7 +54,12 @@ class Label(View):
         self.font = font
 
     def get_content_size(self) -> Size:
-        width, height = self.font.load().getsize_multiline(self.text)
+        width, height = 0, 0
+        font = self.font.load()
+        for line in self.text.splitlines():
+            line_width, line_height = font.getsize(line)
+            width = max(width, line_width)
+            height += line_height
         return Size(width, height)
 
     def draw(self, draw: ImageDraw):
