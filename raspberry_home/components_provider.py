@@ -28,3 +28,7 @@ class ComponentsProvider(ABC):
     @abstractmethod
     def get_scheduler_time_intervals(self) -> int:
         pass
+
+    @abstractmethod
+    def on_measurement_begin(self):
+        pass

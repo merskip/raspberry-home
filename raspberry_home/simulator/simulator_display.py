@@ -10,18 +10,13 @@ from raspberry_home.simulator.simulator_window import SimulatorWindow
 
 class SimulatorDisplay(Display):
 
-    def __init__(self, size: (int, int)):
-        self.app = QApplication(sys.argv)
+    def __init__(self, size: (int, int), simulator_window: SimulatorWindow):
         self.size = size
-        self.simulator_window = SimulatorWindow()
+        self.simulator_window = simulator_window
         self.show(self.create_image())
 
     def get_size(self) -> (int, int):
         return self.size
-
-    def begin(self):
-        self.simulator_window.show()
-        self.app.exec()
 
     def show(self, image: Image):
         image = self._convert_image(image)

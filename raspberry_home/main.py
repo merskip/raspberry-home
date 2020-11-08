@@ -4,7 +4,6 @@ from configparser import ConfigParser
 
 from PyQt5 import QtWidgets
 
-from raspberry_home.board_components_provider import BoardComponentsProvider
 from raspberry_home.controller.chart_controller import ChartController
 from raspberry_home.controller.home_controller import HomeController
 from raspberry_home.controller.input_controller import InputController
@@ -113,6 +112,7 @@ if __name__ == "__main__":
         from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider
         components_provider = SimulatorComponentsProvider()
     else:
+        from raspberry_home.board_components_provider import BoardComponentsProvider
         components_provider = BoardComponentsProvider()
 
     measurements_executor = PlatformMeasurementsExecutor(components_provider.get_sensors())
@@ -133,7 +133,5 @@ if __name__ == "__main__":
     measurement_scheduler.append(home_controller)
 
     measurement_scheduler.begin_measurements_in_thread()
-
-    display.begin()
-    measurement_scheduler.stop_measurements()
-    sys.exit(0)
+    components_provider.on_measurement_begin()
+    measurement_scheduler.wait_until_finish_measurements()

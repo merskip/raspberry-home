@@ -16,7 +16,13 @@ class SimulatorComponentsProvider(ComponentsProvider):
 
     def __init__(self):
         super().__init__()
-        self.display = SimulatorDisplay((264, 176))
+        self.app = QApplication(sys.argv)
+        self.simulator_window = SimulatorWindow()
+        self.display = SimulatorDisplay((264, 176), self.simulator_window)
+
+    def on_measurement_begin(self):
+        self.simulator_window.show()
+        self.app.exec()
 
     def get_display(self) -> Display:
         return self.display
