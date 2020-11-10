@@ -1,11 +1,7 @@
-import sys
-
 from raspberry_home.controller.utils.font import Font, FontWeight
-from raspberry_home.controller.view.geometry import Size, Point
+from raspberry_home.controller.view.geometry import Size
+from raspberry_home.view import *
 
-from raspberry_home.controller.home_controller import HomeController
-from raspberry_home.platform.measurements_scheduler import MeasurementsScheduler
-from raspberry_home.platform.platform_measurements_executor import PlatformMeasurementsExecutor
 
 #
 #
@@ -96,9 +92,12 @@ from raspberry_home.platform.platform_measurements_executor import PlatformMeasu
 #     measurement_scheduler.wait_until_finish_measurements()
 #
 #
-from raspberry_home.view.render import FixedSizeRender, FlexibleSizeRender
-from raspberry_home.view.view import ColorSpace, Text, View, Stack, Container, VerticalStack, HorizontalStack, Center, \
-    Padding
+from raspberry_home.view.center import Center
+from raspberry_home.view.padding import Padding
+from raspberry_home.view.render import FixedSizeRender, ColorSpace, FlexibleSizeRender
+from raspberry_home.view.stack import VerticalStack, HorizontalStack, StackDistribution
+from raspberry_home.view.text import Text
+from raspberry_home.view.view import View
 
 
 def run(is_simulator: bool):
@@ -107,16 +106,35 @@ def run(is_simulator: bool):
 
     view = Center(
         Padding(
-            padding=8,
+            padding=0,
             child=VerticalStack(
                 spacing=8,
                 children=[
-                    Text("Hello world!"),
+                    Text("Hello world! Witaj świecie."),
                     HorizontalStack(
                         spacing=4,
                         children=[
-                            Text("*****"),
-                            Text("***", font=Font(18, FontWeight.BOLD))
+                            Text("123", font=Font(24, FontWeight.BOLD)),
+                            Text("45"),
+                            Text("567"),
+                        ]
+                    ),
+                    HorizontalStack(
+                        spacing=4,
+                        distribution=StackDistribution.End,
+                        children=[
+                            Text("123"),
+                            Text("45", font=Font(24, FontWeight.BOLD)),
+                            Text("567"),
+                        ]
+                    ),
+                    HorizontalStack(
+                        spacing=4,
+                        distribution=StackDistribution.EqualSpacing,
+                        children=[
+                            Text("123"),
+                            Text("45"),
+                            Text("567", font=Font(24, FontWeight.BOLD)),
                         ]
                     )
                 ]
