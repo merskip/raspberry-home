@@ -6,7 +6,7 @@ from PIL import ImageFont
 from raspberry_home.assets import Assets
 
 
-class FontWight(Enum):
+class FontWeight(Enum):
     REGULAR = 'Regular'
     MEDIUM = 'Medium'
     BOLD = 'Bold'
@@ -14,7 +14,7 @@ class FontWight(Enum):
 
 class Font:
 
-    def __init__(self, size: int, weight: FontWight = FontWight.REGULAR):
+    def __init__(self, size: int, weight: FontWeight = FontWeight.REGULAR):
         self.size = size
         self.weight = weight
 
@@ -23,11 +23,11 @@ class Font:
 
     def get_path(self):
         return {
-            FontWight.REGULAR: Assets.Fonts.ubuntu_regular,
-            FontWight.MEDIUM: Assets.Fonts.ubuntu_medium,
-            FontWight.BOLD: Assets.Fonts.ubuntu_bold,
+            FontWeight.REGULAR: Assets.Fonts.ubuntu_regular,
+            FontWeight.MEDIUM: Assets.Fonts.ubuntu_medium,
+            FontWeight.BOLD: Assets.Fonts.ubuntu_bold,
         }[self.weight]
 
     @staticmethod
     def get_default():
-        return Font(15, FontWight.MEDIUM)
+        return Font(15, FontWeight.MEDIUM)

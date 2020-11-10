@@ -1,5 +1,3 @@
-
-
 class Point:
     xy = property(lambda self: (self.x, self.y))
 
@@ -11,11 +9,16 @@ class Point:
     def zero():
         return Point(0, 0)
 
+    def __add__(self, other):
+        return self.adding(x=other.x, y=other.y)
+
     def adding(self, x=0, y=0):
         return Point(self.x + x, self.y + y)
 
 
 class Size:
+    xy = property(lambda self: (self.width, self.height))
+
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height

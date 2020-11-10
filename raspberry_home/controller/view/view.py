@@ -8,7 +8,7 @@ from raspberry_home.controller.utils.font import Font
 from raspberry_home.controller.view.geometry import Point, Size, Rect
 
 
-class View(ABC):
+class _View(ABC):
 
     def __init__(self):
         self.origin = Point.zero()
@@ -43,10 +43,10 @@ class View(ABC):
     @abstractmethod
     def draw(self, draw: ImageDraw):
         pass
-        # draw.rectangle(xy=self.get_frame().xy, outline=127)
+        draw.rectangle(xy=self.get_frame().xy, outline=127)
 
 
-class Label(View):
+class _Label(_View):
 
     def __init__(self, text: str, font: Font = Font.get_default()):
         super().__init__()
@@ -67,7 +67,7 @@ class Label(View):
         super().draw(draw)
 
 
-class Image(View):
+class _Image(_View):
 
     def __init__(self, filename: str, invert=True):
         super().__init__()

@@ -5,11 +5,11 @@ from PIL import Image as PILImage, ImageDraw
 
 from raspberry_home.assets import Assets
 from raspberry_home.controller.input_controller import NavigationItem
-from raspberry_home.controller.utils.font import Font, FontWight
+from raspberry_home.controller.utils.font import Font, FontWeight
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
 from raspberry_home.controller.view.geometry import Size, Rect
-from raspberry_home.controller.view.view import Label, Image
+from raspberry_home.controller.view.view import _Label, _Image
 from raspberry_home.display.display import Display
 from raspberry_home.platform.characteristic import Characteristic, Characteristics
 from raspberry_home.platform.measurement import Measurement
@@ -19,9 +19,9 @@ from raspberry_home.sensor.covid19monitor import COVID19Monitor
 
 
 class Fonts:
-    timeFont = Font(32, FontWight.BOLD)
-    dateFont = Font(18, FontWight.MEDIUM)
-    valueFont = Font(15, FontWight.MEDIUM)
+    timeFont = Font(32, FontWeight.BOLD)
+    dateFont = Font(18, FontWeight.MEDIUM)
+    valueFont = Font(15, FontWeight.MEDIUM)
 
 
 class HomeController(MeasurementsListener, NavigationItem):
@@ -64,40 +64,40 @@ class HomeController(MeasurementsListener, NavigationItem):
         now = datetime.now()
 
         time = now.strftime("%H:%M")
-        time_label = Label(time, Fonts.timeFont).centered(in_width=cell_size.width)
+        time_label = _Label(time, Fonts.timeFont).centered(in_width=cell_size.width)
         time_label.draw(image_draw)
 
         date = now.strftime("%d.%m")
-        date_label = Label(date, Fonts.dateFont).centered(in_width=cell_size.width)
+        date_label = _Label(date, Fonts.dateFont).centered(in_width=cell_size.width)
         date_label.layout_bottom(time_label, margin=2)
         date_label.draw(image_draw)
 
-        moon_image = Image(self._get_moon_phase_filename())
+        moon_image = _Image(self._get_moon_phase_filename())
         moon_image.set_origin(x=4, y=cell_size.height - moon_image.get_content_size().height - 4)
         moon_image.draw(image_draw)
 
         sun = Sun()
 
         # Sun rise
-        sunrise_icon = Image(Assets.Images.sunrise)
+        sunrise_icon = _Image(Assets.Images.sunrise)
         sunrise_icon.set_origin(x=moon_image.get_frame().max_x + 8,
                                 y=moon_image.get_frame().min_y - 2)
         sunrise_icon.draw(image_draw)
 
         sunrise_time = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=True))
-        sunrise_label = Label(sunrise_time, font=Font(12, FontWight.MEDIUM))
+        sunrise_label = _Label(sunrise_time, font=Font(12, FontWeight.MEDIUM))
         sunrise_label.set_origin(x=sunrise_icon.get_frame().max_x + 2,
                                  y=sunrise_icon.get_frame().min_y - 1)
         sunrise_label.draw(image_draw)
 
         # Sun set
-        sunset_icon = Image(Assets.Images.sunset)
+        sunset_icon = _Image(Assets.Images.sunset)
         sunset_icon.set_origin(x=sunrise_icon.get_frame().min_x,
                                y=sunrise_icon.get_frame().max_y + 2)
         sunset_icon.draw(image_draw)
 
         sunset_time = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=False))
-        sunset_label = Label(sunset_time, font=Font(12, FontWight.MEDIUM))
+        sunset_label = _Label(sunset_time, font=Font(12, FontWeight.MEDIUM))
         sunset_label.set_origin(x=sunrise_label.get_frame().min_x,
                                 y=sunset_icon.get_frame().min_y - 1)
         sunset_label.draw(image_draw)
@@ -127,7 +127,7 @@ class HomeController(MeasurementsListener, NavigationItem):
         value = measurement.value
 
         icon_filename = self._get_icon(sensor, characteristic, value)
-        icon_image = Image(icon_filename, invert=False).centered(in_width=cell_size.width)
+        icon_image = _Image(icon_filename, invert=False).centered(in_width=cell_size.width)
         icon_image.set_origin(y=8)
         icon_image.draw(image_draw)
 
@@ -135,7 +135,7 @@ class HomeController(MeasurementsListener, NavigationItem):
         if second_measurement is not None:  # TODO: Cleanup
             title = title + "\n" + self._get_title(second_measurement.sensor, second_measurement.characteristic,
                                                    second_measurement.value)
-        title_label = Label(title, font=Fonts.valueFont).centered(in_width=cell_size.width)
+        title_label = _Label(title, font=Fonts.valueFont).centered(in_width=cell_size.width)
         title_label.set_origin(y=icon_image.get_frame().max_y + 4)
         title_label.draw(image_draw)
 

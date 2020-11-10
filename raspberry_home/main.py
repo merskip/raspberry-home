@@ -1,5 +1,8 @@
 import sys
 
+from raspberry_home.controller.utils.font import Font, FontWeight
+from raspberry_home.controller.view.geometry import Size, Point
+
 from raspberry_home.controller.home_controller import HomeController
 from raspberry_home.platform.measurements_scheduler import MeasurementsScheduler
 from raspberry_home.platform.platform_measurements_executor import PlatformMeasurementsExecutor
@@ -93,33 +96,69 @@ from raspberry_home.platform.platform_measurements_executor import PlatformMeasu
 #     measurement_scheduler.wait_until_finish_measurements()
 #
 #
+from raspberry_home.view.render import FixedSizeRender, FlexibleSizeRender
+from raspberry_home.view.view import ColorSpace, Text, View, Stack, Container, VerticalStack, HorizontalStack, Center, \
+    Padding
 
 
 def run(is_simulator: bool):
     if is_simulator:
-        from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider
-        components_provider = SimulatorComponentsProvider()
-    else:
-        from raspberry_home.board_components_provider import BoardComponentsProvider
-        components_provider = BoardComponentsProvider()
+        View.set_show_bounds(True)
 
-    measurements_executor = PlatformMeasurementsExecutor(components_provider.get_sensors())
-
-    time_intervals = components_provider.get_scheduler_time_intervals()
-    measurement_scheduler = MeasurementsScheduler(time_intervals, measurements_executor)
-
-    display = components_provider.get_display()
-
-    home_controller = HomeController(
-        display=display,
-        coordinates={'longitude': 22.4937312, 'latitude': 51.2181956},  # Lublin
-        timezone_offset=7200  # UTC+2
+    view = Center(
+        Padding(
+            padding=8,
+            child=VerticalStack(
+                spacing=8,
+                children=[
+                    Text("Hello world!"),
+                    HorizontalStack(
+                        spacing=4,
+                        children=[
+                            Text("*****"),
+                            Text("***", font=Font(18, FontWeight.BOLD))
+                        ]
+                    )
+                ]
+            )
+        )
     )
 
-    for measurements_listener in components_provider.get_measurements_listeners():
-        measurement_scheduler.append(measurements_listener)
-    measurement_scheduler.append(home_controller)
+    FixedSizeRender(
+        size=Size(width=320, height=240),
+        color_space=ColorSpace.RGB
+    ).render(view).save("result-fixed.png")
 
-    measurement_scheduler.begin_measurements_in_thread()
-    components_provider.on_measurement_begin()
-    measurement_scheduler.wait_until_finish_measurements()
+    FlexibleSizeRender(
+        color_space=ColorSpace.RGB
+    ).render(view).save("result-flexible.png")
+
+    print("wait...")
+
+    # if is_simulator:
+    #     from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider
+    #     components_provider = SimulatorComponentsProvider()
+    # else:
+    #     from raspberry_home.board_components_provider import BoardComponentsProvider
+    #     components_provider = BoardComponentsProvider()
+    #
+    # measurements_executor = PlatformMeasurementsExecutor(components_provider.get_sensors())
+    #
+    # time_intervals = components_provider.get_scheduler_time_intervals()
+    # measurement_scheduler = MeasurementsScheduler(time_intervals, measurements_executor)
+    #
+    # display = components_provider.get_display()
+    #
+    # home_controller = HomeController(
+    #     display=display,
+    #     coordinates={'longitude': 22.4937312, 'latitude': 51.2181956},  # Lublin
+    #     timezone_offset=7200  # UTC+2
+    # )
+    #
+    # for measurements_listener in components_provider.get_measurements_listeners():
+    #     measurement_scheduler.append(measurements_listener)
+    # measurement_scheduler.append(home_controller)
+    #
+    # measurement_scheduler.begin_measurements_in_thread()
+    # components_provider.on_measurement_begin()
+    # measurement_scheduler.wait_until_finish_measurements()
