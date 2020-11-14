@@ -2,7 +2,6 @@ from raspberry_home.controller.utils.font import Font, FontWeight
 from raspberry_home.controller.view.geometry import Size
 from raspberry_home.view import *
 
-
 #
 #
 # def get_platform(is_simulator) -> Platform:
@@ -95,7 +94,7 @@ from raspberry_home.view import *
 from raspberry_home.view.center import Center
 from raspberry_home.view.padding import Padding
 from raspberry_home.view.render import FixedSizeRender, ColorSpace, FlexibleSizeRender
-from raspberry_home.view.stack import VerticalStack, HorizontalStack, StackDistribution
+from raspberry_home.view.stack import VerticalStack, HorizontalStack, StackDistribution, StackAlignment
 from raspberry_home.view.text import Text
 from raspberry_home.view.view import View
 
@@ -104,43 +103,65 @@ def run(is_simulator: bool):
     if is_simulator:
         View.set_show_bounds(True)
 
-    view = Center(
-        Padding(
-            padding=0,
-            child=VerticalStack(
-                spacing=8,
-                children=[
-                    Text("Hello world! Witaj świecie."),
-                    HorizontalStack(
+    view = Padding(
+        padding=16,
+        child=VerticalStack(
+            spacing=8,
+            distribution=StackDistribution.EqualSpacing,
+            alignment=StackAlignment.Center,
+            children=[
+                Text("Hello world! Witaj świecie."),
+                HorizontalStack(
+                    spacing=4,
+                    distribution=StackDistribution.Start,
+                    alignment=StackAlignment.Start,
+                    children=[
+                        Text("123", font=Font(36, FontWeight.BOLD)),
+                        Text("45"),
+                        Text("567"),
+                    ]
+                ),
+                Padding(
+                    padding=24,
+                    child=HorizontalStack(
                         spacing=4,
-                        children=[
-                            Text("123", font=Font(24, FontWeight.BOLD)),
-                            Text("45"),
-                            Text("567"),
-                        ]
-                    ),
-                    HorizontalStack(
-                        spacing=4,
-                        distribution=StackDistribution.End,
-                        children=[
-                            Text("123"),
-                            Text("45", font=Font(24, FontWeight.BOLD)),
-                            Text("567"),
-                        ]
-                    ),
-                    HorizontalStack(
-                        spacing=4,
-                        distribution=StackDistribution.EqualSpacing,
+                        distribution=StackDistribution.Start,
+                        alignment=StackAlignment.Center,
                         children=[
                             Text("123"),
                             Text("45"),
-                            Text("567", font=Font(24, FontWeight.BOLD)),
+                            Text("567", font=Font(36, FontWeight.BOLD)),
                         ]
                     )
-                ]
-            )
+                ),
+                HorizontalStack(
+                    spacing=4,
+                    distribution=StackDistribution.Start,
+                    alignment=StackAlignment.End,
+                    children=[
+                        Text("123"),
+                        Text("45"),
+                        Text("567", font=Font(36, FontWeight.BOLD)),
+                    ]
+                )
+            ]
         )
     )
+
+    # view = Padding(
+    #     padding=8,
+    #     child=
+    #     VerticalStack(
+    #         spacing=4,
+    #         distribution=StackDistribution.EqualSpacing,
+    #         alignment=StackAlignment.Center,
+    #         children=[
+    #             Text("123"),
+    #             Text("45"),
+    #             Text("567", font=Font(36, FontWeight.BOLD)),
+    #         ]
+    #     )
+    # )
 
     FixedSizeRender(
         size=Size(width=320, height=240),
