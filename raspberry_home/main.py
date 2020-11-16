@@ -1,5 +1,10 @@
+import sys
+
+from PyQt5.QtWidgets import QApplication
+
 from raspberry_home.controller.utils.font import Font, FontWeight
 from raspberry_home.controller.view.geometry import Size
+from raspberry_home.test_window import TestWindow
 from raspberry_home.view import *
 
 #
@@ -163,16 +168,19 @@ def run(is_simulator: bool):
     #     )
     # )
 
-    FixedSizeRender(
-        size=Size(width=320, height=240),
-        color_space=ColorSpace.RGB
-    ).render(view).save("result-fixed.png")
+    # FixedSizeRender(
+    #     size=Size(width=320, height=240),
+    #     color_space=ColorSpace.RGB
+    # ).render(view).save("result-fixed.png")
+    #
+    # FlexibleSizeRender(
+    #     color_space=ColorSpace.RGB
+    # ).render(view).save("result-flexible.png")
 
-    FlexibleSizeRender(
-        color_space=ColorSpace.RGB
-    ).render(view).save("result-flexible.png")
-
-    print("wait...")
+    app = QApplication(sys.argv)
+    window = TestWindow(view)
+    window.show()
+    app.exec()
 
     # if is_simulator:
     #     from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider
