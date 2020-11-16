@@ -28,10 +28,9 @@ class Padding(View):
             origin=child_origin,
             container_size=child_container_size
         ))
-        child_content_size = self.child.content_size(child_container_size)
         self.render_bounds(
             context,
-            frame=Rect(context.origin, child_content_size.adding(width=self.padding * 2, height=self.padding * 2)),
+            frame=Rect(context.origin, child_container_size.adding(width=self.padding * 2, height=self.padding * 2)),
             color=(255, 0, 127, 32),
             width=self.padding
         )

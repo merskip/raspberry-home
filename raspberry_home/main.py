@@ -130,7 +130,7 @@ def run(is_simulator: bool):
                     padding=24,
                     child=HorizontalStack(
                         spacing=4,
-                        distribution=StackDistribution.Start,
+                        distribution=StackDistribution.EqualSpacing,
                         alignment=StackAlignment.Center,
                         children=[
                             Text("123"),
@@ -152,30 +152,6 @@ def run(is_simulator: bool):
             ]
         )
     )
-
-    # view = Padding(
-    #     padding=8,
-    #     child=
-    #     VerticalStack(
-    #         spacing=4,
-    #         distribution=StackDistribution.EqualSpacing,
-    #         alignment=StackAlignment.Center,
-    #         children=[
-    #             Text("123"),
-    #             Text("45"),
-    #             Text("567", font=Font(36, FontWeight.BOLD)),
-    #         ]
-    #     )
-    # )
-
-    # FixedSizeRender(
-    #     size=Size(width=320, height=240),
-    #     color_space=ColorSpace.RGB
-    # ).render(view).save("result-fixed.png")
-    #
-    # FlexibleSizeRender(
-    #     color_space=ColorSpace.RGB
-    # ).render(view).save("result-flexible.png")
 
     app = QApplication(sys.argv)
     window = TestWindow(view)
