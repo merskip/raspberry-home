@@ -20,8 +20,5 @@ class TestWindow(QMainWindow):
             size=Size(size.width(), size.height()),
             color_space=ColorSpace.RGB
         )
-        image = render.render(self.root_view).convert("RGBA")
-        image.save("render.png")
-
-        # qimage = QImage(image.tobytes("raw", "RGB"), image.size[0], image.size[1], QImage.Format_ARGB32)
+        image = render.render(self.root_view)
         painter.drawImage(QPoint(0, 0), ImageQt(image))
