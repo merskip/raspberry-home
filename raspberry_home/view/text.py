@@ -17,39 +17,55 @@ class Text(View, Renderable):
             text: str,
             align: Align = Align.LEFT,
             color: Color = Color.black(),
-            font: Font = Font.default()
+            font: Font = Font.default(),
+            spacing: int = None,
     ):
         self.text = text
         self.align = align
         self.color = color
-        self.font = font
-        self.spacing = font.size * 0.25
+        self.font = font.load()
+        self.spacing = spacing if spacing is not None else font.size * 0.25
 
     def content_size(self, container_size: Size) -> Size:
         width = 0
-        font = self.font.load()
         lines = self.text.splitlines()
         for line in lines:
-            line_width, _ = font.getsize(line)
+            line_width, _ = self.font.getsize(line)
             width = max(width, line_width)
 
-        ascent, descent = font.getmetrics()
-        line_height = ascent + descent
+        ascent, descent = self.font.getmetrics()
+        line_height = ascent
         height = len(lines) * line_height + (len(lines) - 1) * self.spacing
 
         return Size(width, height)
 
     def render(self, context: RenderContext):
+        ascent, descent = self.font.getmetrics()
         context.draw.multiline_text(
-            xy=context.origin.xy,
+            xy=context.origin.adding(y=-descent).xy,
             text=self.text,
             align=self.align.value,
             fill=self.color.rgba,
-            font=self.font.load(),
+            font=self.font,
             spacing=self.spacing
         )
+        self._render_debug(context)
+
+    def _render_debug(self, context: RenderContext):
+        content_size = self.content_size(context.container_size)
         Renderable.render_view_bounds(
             context,
-            frame=Rect(context.origin, self.content_size(context.container_size)),
+            frame=Rect(context.origin, content_size),
             color=Color.blue().copy(alpha=0.5)
         )
+        ascent, descent = self.font.getmetrics()
+
+        x, y = context.origin.adding(y=-descent).xy
+        for _ in self.text.splitlines():
+            Renderable.render_view_line(
+                context,
+                start=Point(x + 1, y + ascent - 1),
+                end=Point(x + content_size.width - 2, y + ascent - 1),
+                color=Color.blue().copy(alpha=0.3)
+            )
+            y += ascent + self.spacing

@@ -148,7 +148,7 @@ def run(is_simulator: bool):
 
     app = QApplication(sys.argv)
     window = TestWindow(
-        root_view=Text("AjąTWiA\nAjąTWiA", font=Font(size=28))
+        root_view=Text("Hellą world!\nAjąTWiA\nądfgdfg\ndfgdfg")
     )
     window.show()
     app.exec()
