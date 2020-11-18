@@ -1,3 +1,4 @@
+from PIL.ImageQt import ImageQt
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QWindow, QResizeEvent, QImage, QPixmap, QPageLayout, QPainter, QPaintEvent
 from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QStackedLayout, QGridLayout, QMainWindow
@@ -20,5 +21,7 @@ class TestWindow(QMainWindow):
             color_space=ColorSpace.RGB
         )
         image = render.render(self.root_view).convert("RGBA")
-        qimage = QImage(image.tobytes("raw", "RGBA"), image.size[0], image.size[1], QImage.Format_ARGB32)
-        painter.drawImage(QPoint(0, 0), qimage)
+        image.save("render.png")
+
+        # qimage = QImage(image.tobytes("raw", "RGB"), image.size[0], image.size[1], QImage.Format_ARGB32)
+        painter.drawImage(QPoint(0, 0), ImageQt(image))

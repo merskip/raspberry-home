@@ -48,7 +48,7 @@ class _View(ABC):
 
 class _Label(_View):
 
-    def __init__(self, text: str, font: Font = Font.get_default()):
+    def __init__(self, text: str, font: Font = Font.default()):
         super().__init__()
         self.text = text
         self.font = font

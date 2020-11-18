@@ -1,11 +1,11 @@
 class Color:
-    rgba = property(lambda self: (self.red, self.green, self.blue, round(self.alpha * 255) % 256))
+    rgba = property(lambda self: (self.red, self.green, self.blue, round(self.alpha * 255)))
 
     def __init__(self, red: int, green: int, blue: int, alpha: float = 1.0):
         self.red = red % 256
         self.green = green % 256
         self.blue = blue % 256
-        self.alpha = alpha % 1.0
+        self.alpha = alpha
 
     def copy(self, red: int = None, green: int = None, blue: int = None, alpha: float = None):
         return Color(
@@ -25,28 +25,28 @@ class Color:
         return "#%02x%02x%02x%02x" % (self.red, self.green, self.blue, round(self.alpha * 255) % 256)
 
     @staticmethod
-    def clear(): Color(0, 0, 0, 0.0)
+    def clear(): return Color(255, 255, 255, 0.0)
 
     @staticmethod
-    def black(): Color(0, 0, 0)
+    def black(): return Color(0, 0, 0)
 
     @staticmethod
-    def white(): Color(255, 255, 255)
+    def white(): return Color(255, 255, 255)
 
     @staticmethod
-    def red(): Color(255, 0, 0)
+    def red(): return Color(255, 0, 0)
 
     @staticmethod
-    def green(): Color(0, 255, 0)
+    def green(): return Color(0, 255, 0)
 
     @staticmethod
-    def blue(): Color(0, 0, 255)
+    def blue(): return Color(0, 0, 255)
 
     @staticmethod
-    def yellow(): Color(255, 255, 0)
+    def yellow(): return Color(255, 255, 0)
 
     @staticmethod
-    def magnate(): Color(255, 0, 255)
+    def magnate(): return Color(255, 0, 255)
 
     @staticmethod
-    def cyan(): Color(0, 255, 255)
+    def cyan(): return Color(0, 255, 255)

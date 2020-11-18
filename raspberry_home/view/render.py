@@ -6,6 +6,8 @@ from PIL.ImageDraw import ImageDraw
 from raspberry_home.controller.view.geometry import Size, Point
 import PIL.Image as PILImage
 
+from raspberry_home.view.color import Color
+
 
 class ColorSpace(Enum):
     BINARY = '1'
@@ -43,7 +45,7 @@ class FixedSizeRender(Render):
         self.color_space = color_space
 
     def render(self, root_view) -> PILImage.Image:
-        image = PILImage.new(self.color_space.value, self.size.xy, (255, 255, 255, 255))
+        image = PILImage.new(self.color_space.value, self.size.xy, Color.clear().rgba)
 
         context = RenderContext(
             origin=Point.zero(),
@@ -62,12 +64,12 @@ class FlexibleSizeRender(Render):
 
     def render(self, root_view) -> PILImage.Image:
         content_size = root_view.content_size(Size.zero())
-        image = PILImage.new(self.color_space.value, content_size.xy, (255, 255, 255, 255))
+        image = PILImage.new(self.color_space.value, content_size.xy, Color.clear().rgba)
 
         context = RenderContext(
             origin=Point.zero(),
             container_size=content_size,
-            draw=ImageDraw(image, mode='RGBA'),
+            draw=ImageDraw(image, mode=self.color_space.value),
             color_space=self.color_space
         )
         root_view.render(context)

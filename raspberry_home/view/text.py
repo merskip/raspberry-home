@@ -1,28 +1,55 @@
+from enum import Enum
+
 from raspberry_home.controller.utils.font import Font
+from raspberry_home.view.renderable import *
 from raspberry_home.view.view import *
 
 
-class Text(View):
+class Text(View, Renderable):
 
-    def __init__(self, text: str, font: Font = Font.get_default()):
+    class Align(Enum):
+        LEFT = 'left'
+        CENTER = 'center'
+        RIGHT = 'right'
+
+    def __init__(
+            self,
+            text: str,
+            align: Align = Align.LEFT,
+            color: Color = Color.black(),
+            font: Font = Font.default()
+    ):
         self.text = text
+        self.align = align
+        self.color = color
         self.font = font
+        self.spacing = font.size * 0.25
 
     def content_size(self, container_size: Size) -> Size:
-        width, height = 0, 0
+        width = 0
         font = self.font.load()
-        for line in self.text.splitlines():
-            line_width, line_height = font.getsize(line)
+        lines = self.text.splitlines()
+        for line in lines:
+            line_width, _ = font.getsize(line)
             width = max(width, line_width)
-            height += line_height
+
+        ascent, descent = font.getmetrics()
+        line_height = ascent + descent
+        height = len(lines) * line_height + (len(lines) - 1) * self.spacing
+
         return Size(width, height)
 
     def render(self, context: RenderContext):
         context.draw.multiline_text(
             xy=context.origin.xy,
             text=self.text,
-            fill=(0, 0, 0, 255),
+            align=self.align.value,
+            fill=self.color.rgba,
             font=self.font.load(),
-            align='center',
+            spacing=self.spacing
         )
-        self.render_bounds(context)
+        Renderable.render_view_bounds(
+            context,
+            frame=Rect(context.origin, self.content_size(context.container_size)),
+            color=Color.blue().copy(alpha=0.5)
+        )

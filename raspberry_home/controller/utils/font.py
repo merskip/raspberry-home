@@ -2,6 +2,7 @@ import os
 from enum import Enum
 
 from PIL import ImageFont
+from PIL.ImageFont import FreeTypeFont
 
 from raspberry_home.assets import Assets
 
@@ -18,7 +19,7 @@ class Font:
         self.size = size
         self.weight = weight
 
-    def load(self):
+    def load(self) -> FreeTypeFont:
         return ImageFont.truetype(self.get_path(), self.size)
 
     def get_path(self):
@@ -29,5 +30,5 @@ class Font:
         }[self.weight]
 
     @staticmethod
-    def get_default():
+    def default():
         return Font(15, FontWeight.MEDIUM)
