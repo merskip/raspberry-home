@@ -12,6 +12,8 @@ class TestWindow(QMainWindow):
     def __init__(self, root_view: View):
         self.root_view = root_view
         super(TestWindow, self).__init__()
+        min_size = root_view.content_size(Size.zero())
+        self.setMinimumSize(min_size.width, min_size.height)
 
     def paintEvent(self, a0: QPaintEvent) -> None:
         painter = QPainter(self)
