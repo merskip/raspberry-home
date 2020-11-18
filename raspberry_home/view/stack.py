@@ -84,7 +84,7 @@ class _AbsStack(View):
                         origin=self.axes_to_point((main_axis - spacing_list[index], start_cross_axis + 1)),
                         size=self.axes_to_size((spacing_list[index], container_cross_size - 2))
                     ),
-                    color=Color(127, 0, 255, 16/255),
+                    color=Color.blue().copy(alpha=0.05),
                 )
 
         self.render_view_bounds(
@@ -93,7 +93,7 @@ class _AbsStack(View):
                 origin=self.axes_to_point((start_main_axis, start_cross_axis)),
                 size=self.axes_to_size((content_main_size, content_cross_size))
             ),
-            color=Color(127, 0, 255, 64/255)
+            color=Color.blue().copy(alpha=0.4),
         )
 
     def get_axes_content_size(self, container_size: Size) -> (int, int):

@@ -34,7 +34,7 @@ class Text(View, Renderable):
             width = max(width, line_width)
 
         ascent, descent = self.font.getmetrics()
-        line_height = ascent
+        line_height = ascent + descent
         height = len(lines) * line_height + (len(lines) - 1) * self.spacing
 
         return Size(width, height)
@@ -42,7 +42,7 @@ class Text(View, Renderable):
     def render(self, context: RenderContext):
         ascent, descent = self.font.getmetrics()
         context.draw.multiline_text(
-            xy=context.origin.adding(y=-descent).xy,
+            xy=context.origin.xy,
             text=self.text,
             align=self.align.value,
             fill=self.color.rgba,
@@ -53,14 +53,14 @@ class Text(View, Renderable):
 
     def _render_debug(self, context: RenderContext):
         content_size = self.content_size(context.container_size)
+        ascent, descent = self.font.getmetrics()
         Renderable.render_view_bounds(
             context,
             frame=Rect(context.origin, content_size),
             color=Color.blue().copy(alpha=0.5)
         )
-        ascent, descent = self.font.getmetrics()
 
-        x, y = context.origin.adding(y=-descent).xy
+        x, y = context.origin.xy
         for _ in self.text.splitlines():
             Renderable.render_view_line(
                 context,

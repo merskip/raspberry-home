@@ -33,6 +33,6 @@ class Padding(View):
         self.render_view_bounds(
             context,
             frame=Rect(context.origin, child_container_size.adding(width=self.padding * 2, height=self.padding * 2)),
-            color=Color.magnate().copy(alpha=0.5),
+            color=Color.magnate().copy(alpha=0.1),
             width=self.padding
         )

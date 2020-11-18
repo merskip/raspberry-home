@@ -110,7 +110,7 @@ def run(is_simulator: bool):
             distribution=StackDistribution.EqualSpacing,
             alignment=StackAlignment.Center,
             children=[
-                Text("Hello world! Witaj świecie."),
+                Text("Hello world! Witaj Świecie.\nAaańŚ"),
                 HorizontalStack(
                     spacing=4,
                     distribution=StackDistribution.Start,
