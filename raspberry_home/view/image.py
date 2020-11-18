@@ -1,7 +1,7 @@
+import PIL.Image as PILImage
 from PIL import ImageOps
 
 from raspberry_home.view.view import *
-import PIL.Image as PILImage
 
 
 class Image(View):

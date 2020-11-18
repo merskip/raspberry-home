@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
+import PIL.Image as PILImage
 from PIL import ImageOps
 from PIL.ImageDraw import ImageDraw
-import PIL.Image as PILImage
 
 from raspberry_home.controller.utils.font import Font
 from raspberry_home.controller.view.geometry import Point, Size, Rect

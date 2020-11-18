@@ -1,10 +1,10 @@
 import time
 from typing import List
 
+import serial
+
 from raspberry_home.platform.characteristic import Characteristic, Characteristics
 from raspberry_home.platform.sensor import Sensor
-
-import serial
 
 
 class SoilMoistureSensor(Sensor):

@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List
 
+from raspberry_home.view.color import Color
+from raspberry_home.view.render import RenderContext
 from raspberry_home.view.view import *
 
 
@@ -76,23 +78,22 @@ class _AbsStack(View):
 
             if index < len(spacing_list):
                 main_axis += content_main_axis + spacing_list[index]
-                self.render_bounds(
+                self.render_view_filled_bounds(
                     context,
                     frame=Rect(
                         origin=self.axes_to_point((main_axis - spacing_list[index], start_cross_axis + 1)),
                         size=self.axes_to_size((spacing_list[index], container_cross_size - 2))
                     ),
-                    color=(127, 0, 255, 16),
-                    fill=True
+                    color=Color(127, 0, 255, 16/255),
                 )
 
-        self.render_bounds(
+        self.render_view_bounds(
             context,
             frame=Rect(
                 origin=self.axes_to_point((start_main_axis, start_cross_axis)),
                 size=self.axes_to_size((content_main_size, content_cross_size))
             ),
-            color=(127, 0, 255, 64)
+            color=Color(127, 0, 255, 64/255)
         )
 
     def get_axes_content_size(self, container_size: Size) -> (int, int):

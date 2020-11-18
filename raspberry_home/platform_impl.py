@@ -3,7 +3,6 @@ from raspberry_home.sensor.bh1750sensor import BH1750Sensor
 from raspberry_home.sensor.bmp180sensor import BMP180Sensor
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
 from raspberry_home.sensor.ds18b20sensor import DS18B20Sensor
-from raspberry_home.sensor.soilmoisturesensor import SoilMoistureSensor
 
 
 class PlatformImpl(Platform):

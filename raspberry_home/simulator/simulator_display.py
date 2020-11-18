@@ -1,8 +1,5 @@
-import sys
-
 from PIL import Image
 from PyQt5.QtGui import QImage
-from PyQt5.QtWidgets import QApplication
 
 from raspberry_home.display.display import Display
 from raspberry_home.simulator.simulator_window import SimulatorWindow

@@ -1,6 +1,6 @@
+import math
 from datetime import datetime
 from decimal import Decimal
-import math
 from enum import Enum
 
 

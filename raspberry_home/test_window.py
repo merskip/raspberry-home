@@ -1,7 +1,7 @@
 from PIL.ImageQt import ImageQt
 from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import QWindow, QResizeEvent, QImage, QPixmap, QPageLayout, QPainter, QPaintEvent
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QStackedLayout, QGridLayout, QMainWindow
+from PyQt5.QtGui import QPainter, QPaintEvent
+from PyQt5.QtWidgets import QMainWindow
 
 from raspberry_home.view.render import FixedSizeRender, ColorSpace
 from raspberry_home.view.view import View, Size

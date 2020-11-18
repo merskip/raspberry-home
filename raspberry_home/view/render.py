@@ -1,11 +1,10 @@
 from abc import abstractmethod
 from enum import Enum
 
+import PIL.Image as PILImage
 from PIL.ImageDraw import ImageDraw
 
 from raspberry_home.controller.view.geometry import Size, Point
-import PIL.Image as PILImage
-
 from raspberry_home.view.color import Color
 
 

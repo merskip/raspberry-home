@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from raspberry_home.controller.utils.font import Font
+from raspberry_home.controller.utils.font import Font, FontWeight
 from raspberry_home.test_window import TestWindow
 #
 #
@@ -93,7 +93,9 @@ from raspberry_home.test_window import TestWindow
 #     measurement_scheduler.wait_until_finish_measurements()
 #
 #
+from raspberry_home.view.padding import Padding
 from raspberry_home.view.renderable import Renderable
+from raspberry_home.view.stack import VerticalStack, StackDistribution, StackAlignment, HorizontalStack
 from raspberry_home.view.text import Text
 
 
@@ -101,54 +103,54 @@ def run(is_simulator: bool):
     if is_simulator:
         Renderable.set_show_bounds(True)
 
-    # view = Padding(
-    #     padding=16,
-    #     child=VerticalStack(
-    #         spacing=8,
-    #         distribution=StackDistribution.EqualSpacing,
-    #         alignment=StackAlignment.Center,
-    #         children=[
-    #             Text("Hello world! Witaj świecie."),
-    #             HorizontalStack(
-    #                 spacing=4,
-    #                 distribution=StackDistribution.Start,
-    #                 alignment=StackAlignment.Start,
-    #                 children=[
-    #                     Text("123", font=Font(36, FontWeight.BOLD)),
-    #                     Text("45"),
-    #                     Text("567"),
-    #                 ]
-    #             ),
-    #             Padding(
-    #                 padding=24,
-    #                 child=HorizontalStack(
-    #                     spacing=4,
-    #                     distribution=StackDistribution.EqualSpacing,
-    #                     alignment=StackAlignment.Center,
-    #                     children=[
-    #                         Text("123"),
-    #                         Text("45"),
-    #                         Text("567", font=Font(36, FontWeight.BOLD)),
-    #                     ]
-    #                 )
-    #             ),
-    #             HorizontalStack(
-    #                 spacing=4,
-    #                 distribution=StackDistribution.Start,
-    #                 alignment=StackAlignment.End,
-    #                 children=[
-    #                     Text("123"),
-    #                     Text("45"),
-    #                     Text("567", font=Font(36, FontWeight.BOLD)),
-    #                 ]
-    #             )
-    #         ]
-    #     )
-    # )
+    view = Padding(
+        padding=16,
+        child=VerticalStack(
+            spacing=8,
+            distribution=StackDistribution.EqualSpacing,
+            alignment=StackAlignment.Center,
+            children=[
+                Text("Hello world! Witaj świecie."),
+                HorizontalStack(
+                    spacing=4,
+                    distribution=StackDistribution.Start,
+                    alignment=StackAlignment.Start,
+                    children=[
+                        Text("123", font=Font(36, FontWeight.BOLD)),
+                        Text("45"),
+                        Text("567"),
+                    ]
+                ),
+                Padding(
+                    padding=24,
+                    child=HorizontalStack(
+                        spacing=4,
+                        distribution=StackDistribution.EqualSpacing,
+                        alignment=StackAlignment.Center,
+                        children=[
+                            Text("123"),
+                            Text("45"),
+                            Text("567", font=Font(36, FontWeight.BOLD)),
+                        ]
+                    )
+                ),
+                HorizontalStack(
+                    spacing=4,
+                    distribution=StackDistribution.Start,
+                    alignment=StackAlignment.End,
+                    children=[
+                        Text("123"),
+                        Text("45"),
+                        Text("567", font=Font(36, FontWeight.BOLD)),
+                    ]
+                )
+            ]
+        )
+    )
 
     app = QApplication(sys.argv)
     window = TestWindow(
-        root_view=Text("Hellą world!\nAjąTWiA\nądfgdfg\ndfgdfg")
+        root_view=view
     )
     window.show()
     app.exec()

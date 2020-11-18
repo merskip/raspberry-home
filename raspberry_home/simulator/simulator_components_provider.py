@@ -2,9 +2,8 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from raspberry_home.controller.home_controller import HomeController
-from raspberry_home.display.display import Display
 from raspberry_home.components_provider import ComponentsProvider
+from raspberry_home.display.display import Display
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.simulator.simulator_display import SimulatorDisplay

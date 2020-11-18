@@ -1,9 +1,9 @@
 from typing import List
 
+import requests
+
 from raspberry_home.platform.characteristic import Characteristic, Characteristics
 from raspberry_home.platform.sensor import Sensor
-
-import requests
 
 
 class COVID19Monitor(Sensor):

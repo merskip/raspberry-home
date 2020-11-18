@@ -8,7 +8,7 @@ from raspberry_home.controller.input_controller import NavigationItem
 from raspberry_home.controller.utils.font import Font, FontWeight
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
-from raspberry_home.controller.view.geometry import Size, Rect
+from raspberry_home.controller.view.geometry import Size
 from raspberry_home.controller.view.view import _Label, _Image
 from raspberry_home.display.display import Display
 from raspberry_home.platform.characteristic import Characteristic, Characteristics

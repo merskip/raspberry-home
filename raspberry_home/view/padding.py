@@ -1,3 +1,5 @@
+from raspberry_home.view.color import Color
+from raspberry_home.view.render import RenderContext
 from raspberry_home.view.view import *
 
 
@@ -28,9 +30,9 @@ class Padding(View):
             origin=child_origin,
             container_size=child_container_size
         ))
-        self.render_bounds(
+        self.render_view_bounds(
             context,
             frame=Rect(context.origin, child_container_size.adding(width=self.padding * 2, height=self.padding * 2)),
-            color=(255, 0, 127, 32),
+            color=Color.magnate().copy(alpha=0.5),
             width=self.padding
         )

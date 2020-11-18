@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 from raspberry_home.controller.view.geometry import Rect, Size, Point
 from raspberry_home.view.color import Color
-
 from raspberry_home.view.render import RenderContext
 
 

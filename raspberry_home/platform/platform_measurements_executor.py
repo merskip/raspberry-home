@@ -3,7 +3,6 @@ from typing import List
 
 from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsExecutor
-from raspberry_home.platform.platform import Platform
 from raspberry_home.platform.sensor import Sensor
 
 

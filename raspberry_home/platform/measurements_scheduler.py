@@ -2,6 +2,7 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from typing import List
+
 import schedule
 
 from raspberry_home.platform.measurement import Measurement
