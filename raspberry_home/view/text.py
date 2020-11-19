@@ -1,6 +1,6 @@
 from enum import Enum
 
-from raspberry_home.controller.utils.font import Font
+from raspberry_home.view.font import Font
 from raspberry_home.view.renderable import *
 from raspberry_home.view.view import *
 
