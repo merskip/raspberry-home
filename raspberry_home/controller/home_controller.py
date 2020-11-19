@@ -1,21 +1,24 @@
 from datetime import datetime
 from typing import Callable, List
 
-from PIL import Image as PILImage, ImageDraw
-
 from raspberry_home.assets import Assets
 from raspberry_home.controller.input_controller import NavigationItem
 from raspberry_home.controller.utils.font import Font, FontWeight
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
 from raspberry_home.controller.view.geometry import Size
-from raspberry_home.controller.view.view import _Label, _Image
 from raspberry_home.display.display import Display
 from raspberry_home.platform.characteristic import Characteristic, Characteristics
 from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
+from raspberry_home.view.image import Image
+from raspberry_home.view.render import FixedSizeRender, ColorSpace
+from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackDistribution, StackAlignment
+from raspberry_home.view.text import Text
+from raspberry_home.view.view import View
+from raspberry_home.view.widget import Widget
 
 
 class Fonts:
@@ -38,69 +41,61 @@ class HomeController(MeasurementsListener, NavigationItem):
         self.display_measurements(measurements)
 
     def display_measurements(self, measurements: List[Measurement]):
-        image = self.display.create_image()
+        width, height = self.display.get_size()
+        render = FixedSizeRender(size=Size(width, height), color_space=ColorSpace.RGB)
 
-        grid_layout = GridLayout(image=image,
-                                 rect=((0, 0), self.display.get_size()),
-                                 columns=3, rows=2)
-
-        grid_layout.next_cell(self._draw_time_cell)
-
-        grid_layout.next_cell(
-            lambda cell_draw, cell_size: self._draw_measurement_cell(measurements[0], cell_draw, cell_size,
-                                                                     measurements[1])
-        )
-        for measurement in measurements[2:]:
-            is_primary_characteristic = measurement.sensor.get_characteristics()[0] == measurement.characteristic
-            if not is_primary_characteristic:
-                continue
-            grid_layout.next_cell(
-                lambda cell_draw, cell_size: self._draw_measurement_cell(measurement, cell_draw, cell_size)
+        image = render.render(
+            root_view=GridWidget(
+                rows=2,
+                columns=3,
+                builder=lambda index, row, col: self._get_cell(index, row, col, measurements)
             )
-
+        )
         self.display.show(image)
 
-    def _draw_time_cell(self, image_draw: ImageDraw, cell_size: Size):
+    def _get_cell(self, index: int, row: int, column: int, measurements: List[Measurement]):
+        if row == 0 and column == 0:
+            return self._get_time_cell()
+        else:
+            index -= 1
+            measurement = measurements[index]
+            return self._get_measurement_cell(measurement)
+
+    def _get_time_cell(self):
         now = datetime.now()
-
         time = now.strftime("%H:%M")
-        time_label = _Label(time, Fonts.timeFont).centered(in_width=cell_size.width)
-        time_label.draw(image_draw)
-
         date = now.strftime("%d.%m")
-        date_label = _Label(date, Fonts.dateFont).centered(in_width=cell_size.width)
-        date_label.layout_bottom(time_label, margin=2)
-        date_label.draw(image_draw)
 
-        moon_image = _Image(self._get_moon_phase_filename())
-        moon_image.set_origin(x=4, y=cell_size.height - moon_image.get_content_size().height - 4)
-        moon_image.draw(image_draw)
+        return VerticalStack(
+            alignment=StackAlignment.Center,
+            children=[
+                Text(time, font=Fonts.timeFont),
+                Text(date, font=Fonts.dateFont),
+                self._get_moon_and_sun()
+            ]
+        )
 
+    def _get_moon_and_sun(self):
         sun = Sun()
-
-        # Sun rise
-        sunrise_icon = _Image(Assets.Images.sunrise)
-        sunrise_icon.set_origin(x=moon_image.get_frame().max_x + 8,
-                                y=moon_image.get_frame().min_y - 2)
-        sunrise_icon.draw(image_draw)
-
-        sunrise_time = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=True))
-        sunrise_label = _Label(sunrise_time, font=Font(12, FontWeight.MEDIUM))
-        sunrise_label.set_origin(x=sunrise_icon.get_frame().max_x + 2,
-                                 y=sunrise_icon.get_frame().min_y - 1)
-        sunrise_label.draw(image_draw)
-
-        # Sun set
-        sunset_icon = _Image(Assets.Images.sunset)
-        sunset_icon.set_origin(x=sunrise_icon.get_frame().min_x,
-                               y=sunrise_icon.get_frame().max_y + 2)
-        sunset_icon.draw(image_draw)
-
-        sunset_time = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=False))
-        sunset_label = _Label(sunset_time, font=Font(12, FontWeight.MEDIUM))
-        sunset_label.set_origin(x=sunrise_label.get_frame().min_x,
-                                y=sunset_icon.get_frame().min_y - 1)
-        sunset_label.draw(image_draw)
+        sun_rise = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=True))
+        sun_set = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=False))
+        return HorizontalStack(
+            spacing=4,
+            alignment=StackAlignment.Center,
+            children=[
+                Image(self._get_moon_phase_filename()),
+                VerticalStack([
+                    HorizontalStack([
+                        Image(Assets.Images.sunrise),
+                        Text(sun_rise)
+                    ]),
+                    HorizontalStack([
+                        Image(Assets.Images.sunset),
+                        Text(sun_set)
+                    ])
+                ])
+            ]
+        )
 
     def time_to_text(self, time):
         shifted_time = time['decimal'] + self.timezone_offset / 3600
@@ -120,27 +115,19 @@ class HomeController(MeasurementsListener, NavigationItem):
             MoonPhase.WANING_CRESCENT: Assets.Images.moon_waning_crescent,
         }[phase]
 
-    def _draw_measurement_cell(self, measurement: Measurement, image_draw: ImageDraw, cell_size: Size,
-                               second_measurement=None):
-        sensor = measurement.sensor
-        characteristic = measurement.characteristic
-        value = measurement.value
-
-        icon_filename = self._get_icon(sensor, characteristic, value)
-        icon_image = _Image(icon_filename, invert=False).centered(in_width=cell_size.width)
-        icon_image.set_origin(y=8)
-        icon_image.draw(image_draw)
-
-        title = self._get_title(sensor, characteristic, value)
-        if second_measurement is not None:  # TODO: Cleanup
-            title = title + "\n" + self._get_title(second_measurement.sensor, second_measurement.characteristic,
-                                                   second_measurement.value)
-        title_label = _Label(title, font=Fonts.valueFont).centered(in_width=cell_size.width)
-        title_label.set_origin(y=icon_image.get_frame().max_y + 4)
-        title_label.draw(image_draw)
+    def _get_measurement_cell(self, measurement: Measurement) -> View:
+        icon = self._get_icon_filename(measurement.sensor, measurement.characteristic, measurement.value)
+        value_text = self._get_title(measurement.sensor, measurement.characteristic, measurement.value)
+        return VerticalStack(
+            alignment=StackAlignment.Center,
+            children=[
+                Image(icon, invert=False),
+                Text(value_text, font=Fonts.valueFont)
+            ]
+        )
 
     @staticmethod
-    def _get_icon(sensor: Sensor, characteristic: Characteristic, value):
+    def _get_icon_filename(sensor: Sensor, characteristic: Characteristic, value):
         if characteristic == Characteristics.temperature:
             if sensor.has_flag("outside"):
                 return Assets.Images.ic_temperature_outside
@@ -176,39 +163,28 @@ class HomeController(MeasurementsListener, NavigationItem):
             return Sensor.formatted_value_with_unit(characteristic, value)
 
 
-class GridLayout:
+class GridWidget(Widget):
 
-    def __init__(self, image: ImageDraw, rect: ((int, int), (int, int)), columns: int, rows: int):
-        self.image = image
-        self.rect = rect
+    def __init__(self, columns: int, rows: int, builder: Callable[[int, int, int], View]):
         self.columns = columns
         self.rows = rows
-        width, height = rect[1]
-        self._column_width = width // self.columns
-        self._row_height = height // self.rows
-        self._current_column = 0
-        self._current_row = 0
+        self.builder = builder
 
-    def next_cell(self, callback: Callable[[any, Size], None]):
-        """
-        :param callback: Called for each item with: item, x, y, column width, row height
-        """
-        origin_x, origin_y = self.rect[0]
-        x = origin_x + self._current_column * self._column_width
-        y = origin_y + self._current_row * self._row_height
-
-        if callback is not None:
-            cell_image = PILImage.new('RGB', (self._column_width, self._column_width), color=(255, 255, 255))
-            cell_image_draw = ImageDraw.Draw(cell_image)
-            callback(cell_image_draw, Size(self._column_width, self._row_height))
-            # cell_image_draw.rectangle(
-            #     xy=Rect.zero().adding(width=self._column_width,height=self._row_height).xy,
-            #     outline=(0, 0, 64)
-            # )
-
-            self.image.paste(cell_image, (x, y))
-
-        self._current_column += 1
-        if self._current_column >= self.columns:
-            self._current_column = 0
-            self._current_row += 1
+    def build(self) -> View:
+        rows = []
+        index = 0
+        for row in range(0, self.rows):
+            cells = []
+            for column in range(0, self.columns):
+                cell = self.builder(index, row, column)
+                index += 1
+                cells.append(cell)
+            rows.append(HorizontalStack(
+                distribution=StackDistribution.EqualSpacing,
+                alignment=StackAlignment.Center,
+                children=cells
+            ))
+        return VerticalStack(
+            distribution=StackDistribution.EqualSpacing,
+            children=rows
+        )
