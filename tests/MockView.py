@@ -33,10 +33,14 @@ class MockView(View):
             self.check_origin(context.origin)
 
     @staticmethod
-    def render_context(container_size: Size) -> RenderContext:
-        return RenderContext(
+    def test_render(root_view: View, container_size: Size, check_content_size: Callable[[Size], None]):
+        context = RenderContext(
             origin=Point.zero(),
             container_size=container_size,
             draw=ImageDraw(PILImage.new(ColorSpace.RGB.value, container_size.xy, Color.clear().rgba)),
             color_space=ColorSpace.RGB
         )
+        content_size = root_view.content_size(container_size)
+        check_content_size(content_size)
+        root_view.render(context)
+

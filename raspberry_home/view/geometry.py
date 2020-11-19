@@ -20,6 +20,12 @@ class Point:
             return False
         return self.xy == o.xy
 
+    def __str__(self) -> str:
+        return "Point(%s, %s)" % (self.x, self.y)
+
+    def __repr__(self) -> str:
+        return "Point(%s, %s)" % (self.x, self.y)
+
 
 class Size:
     xy = property(lambda self: (self.width, self.height))
@@ -39,6 +45,33 @@ class Size:
         if o is Size:
             return False
         return self.xy == o.xy
+
+    def __str__(self) -> str:
+        return "Size(%s, %s)" % (self.width, self.height)
+
+    def __repr__(self) -> str:
+        return "Size(%s, %s)" % (self.width, self.height)
+
+
+class EdgeInsets:
+
+    def __init__(self, left: int = 0, top: int = 0, right: int = 0, bottom: int = 0):
+        self.left = left
+        self.top = top
+        self.right = right
+        self.bottom = bottom
+
+    @staticmethod
+    def symmetric(horizontal: int = 0, vertical: int = 0):
+        return EdgeInsets(horizontal, vertical, horizontal, vertical)
+
+    @staticmethod
+    def all(value: int = 0):
+        return EdgeInsets(value, value, value, value)
+
+    @staticmethod
+    def zero():
+        return EdgeInsets(0, 0, 0, 0)
 
 
 class Rect:

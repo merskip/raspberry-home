@@ -59,11 +59,13 @@ class Renderable(ABC):
 
     @staticmethod
     def render_view_line(context: RenderContext, start: Point, end: Point, color: Color):
+        if not Renderable.is_show_bounds:
+            return
         context.draw.line((start.xy, end.xy), fill=color.rgba)
 
     @staticmethod
     def render_view_filled_bounds(context: RenderContext, frame: Rect, color: Color):
         if not Renderable.is_show_bounds:
             return
-
+        frame = frame.adding(width=-1, height=-1)
         context.draw.rectangle(xy=frame.xy, fill=color.rgba)
