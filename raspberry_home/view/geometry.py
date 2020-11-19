@@ -15,6 +15,11 @@ class Point:
     def adding(self, x=0, y=0):
         return Point(self.x + x, self.y + y)
 
+    def __eq__(self, o: object) -> bool:
+        if o is Size:
+            return False
+        return self.xy == o.xy
+
 
 class Size:
     xy = property(lambda self: (self.width, self.height))
@@ -29,6 +34,11 @@ class Size:
 
     def adding(self, width=0, height=0):
         return Size(self.width + width, self.height + height)
+
+    def __eq__(self, o: object) -> bool:
+        if o is Size:
+            return False
+        return self.xy == o.xy
 
 
 class Rect:
