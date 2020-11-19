@@ -48,20 +48,22 @@ class HomeController(MeasurementsListener, NavigationItem):
             root_view=GridWidget(
                 rows=2,
                 columns=3,
-                builder=lambda index, row, col: self._get_cell(index, row, col, measurements)
+                builder=lambda index, row, col: self._build_cell(index, row, col, measurements)
             )
         )
         self.display.show(image)
 
-    def _get_cell(self, index: int, row: int, column: int, measurements: List[Measurement]):
+    def _build_cell(self, index: int, row: int, column: int, measurements: List[Measurement]):
         if row == 0 and column == 0:
-            return self._get_time_cell()
+            return self._build_time_and_date()
+        elif row == 0 and column == 1:
+            return self._build_moon_and_sun()
         else:
-            index -= 1
+            index -= 2
             measurement = measurements[index]
-            return self._get_measurement_cell(measurement)
+            return self._build_measurement(measurement)
 
-    def _get_time_cell(self):
+    def _build_time_and_date(self):
         now = datetime.now()
         time = now.strftime("%H:%M")
         date = now.strftime("%d.%m")
@@ -70,12 +72,11 @@ class HomeController(MeasurementsListener, NavigationItem):
             alignment=StackAlignment.Center,
             children=[
                 Text(time, font=Fonts.timeFont),
-                Text(date, font=Fonts.dateFont),
-                self._get_moon_and_sun()
+                Text(date, font=Fonts.dateFont)
             ]
         )
 
-    def _get_moon_and_sun(self):
+    def _build_moon_and_sun(self):
         sun = Sun()
         sun_rise = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=True))
         sun_set = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=False))
@@ -115,10 +116,11 @@ class HomeController(MeasurementsListener, NavigationItem):
             MoonPhase.WANING_CRESCENT: Assets.Images.moon_waning_crescent,
         }[phase]
 
-    def _get_measurement_cell(self, measurement: Measurement) -> View:
+    def _build_measurement(self, measurement: Measurement) -> View:
         icon = self._get_icon_filename(measurement.sensor, measurement.characteristic, measurement.value)
         value_text = self._get_title(measurement.sensor, measurement.characteristic, measurement.value)
         return VerticalStack(
+            spacing=4,
             alignment=StackAlignment.Center,
             children=[
                 Image(icon, invert=False),
