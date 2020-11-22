@@ -3,16 +3,16 @@ from typing import Callable, List
 
 from raspberry_home.assets import Assets
 from raspberry_home.controller.input_controller import NavigationItem
-from raspberry_home.view.font import Font, FontWeight
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
-from raspberry_home.view.geometry import Size
 from raspberry_home.display.display import Display
 from raspberry_home.platform.characteristic import Characteristic, Characteristics
 from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
+from raspberry_home.view.font import Font, FontWeight
+from raspberry_home.view.geometry import Size
 from raspberry_home.view.image import Image
 from raspberry_home.view.render import FixedSizeRender, ColorSpace
 from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackDistribution, StackAlignment

@@ -40,7 +40,6 @@ class Text(View, Renderable):
         return Size(width, height)
 
     def render(self, context: RenderContext):
-        ascent, descent = self.font.getmetrics()
         context.draw.multiline_text(
             xy=context.origin.xy,
             text=self.text,
