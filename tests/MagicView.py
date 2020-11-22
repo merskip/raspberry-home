@@ -1,5 +1,6 @@
 from typing import Callable
 from unittest.case import TestCase
+from unittest.mock import MagicMock
 
 import PIL.Image as PILImage
 from PIL.ImageDraw import ImageDraw
@@ -11,6 +12,7 @@ from raspberry_home.view.view import View, Point
 
 
 class MagicView(View):
+    renders_called = []
 
     def __init__(
             self,
@@ -18,11 +20,13 @@ class MagicView(View):
             expected_container_size: Size = None,
             expected_origin: Point = None
     ):
+        self.name = None
         self._content_size = content_size
         self.expected_container_size = expected_container_size
         self.expected_origin = expected_origin
         self.test_case = TestCase()
-        self.name = None
+        self.render_called = MagicMock()
+        MagicView.renders_called.append(self.render_called)
 
     def named(self, name: str):
         self.name = name
@@ -41,6 +45,7 @@ class MagicView(View):
         if self.expected_origin is not None:
             self.test_case.assertEqual(self.expected_origin, context.origin,
                                        msg=self._msg("Origin while call render"))
+        self.render_called()
 
     def _msg(self, msg: str):
         msg += " (in "
@@ -48,6 +53,10 @@ class MagicView(View):
             msg += "name=\"%s\", " % self.name
         msg += "content_size=%s)" % self._content_size
         return msg
+
+    @staticmethod
+    def reset():
+        MagicView.renders_called = []
 
     @staticmethod
     def test_render(root_view: View, container_size: Size, expected_content_size: Size = None):
@@ -60,3 +69,6 @@ class MagicView(View):
         content_size = root_view.content_size(container_size)
         TestCase().assertTrue(expected_content_size, content_size)
         root_view.render(context)
+
+        for render_call in MagicView.renders_called:
+            render_call.assert_called_once()

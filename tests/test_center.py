@@ -2,11 +2,14 @@ import unittest
 
 from raspberry_home.view.center import Center
 from raspberry_home.view.geometry import Point
-from raspberry_home.view.padding import Padding, Size, EdgeInsets
+from raspberry_home.view.padding import Size
 from tests.MagicView import MagicView
 
 
 class TestCenter(unittest.TestCase):
+
+    def setUp(self):
+        MagicView.reset()
 
     def test_center(self):
         center = Center(
@@ -19,7 +22,7 @@ class TestCenter(unittest.TestCase):
         MagicView.test_render(
             root_view=center,
             container_size=Size(200, 200),
-            expected_content_size=Size(100, 100),
+            expected_content_size=Size(200, 200),
         )
 
 

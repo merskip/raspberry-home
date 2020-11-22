@@ -26,6 +26,7 @@ class Fonts:
     timeFont = Font(32, FontWeight.BOLD)
     dateFont = Font(18, FontWeight.MEDIUM)
     valueFont = Font(15, FontWeight.MEDIUM)
+    sunTimeFont = Font(12, FontWeight.MEDIUM)
 
 
 class HomeController(MeasurementsListener, NavigationItem):
@@ -50,21 +51,19 @@ class HomeController(MeasurementsListener, NavigationItem):
                 rows=2,
                 columns=3,
                 builder=lambda index, row, col: self._build_cell(index, row, col, measurements)
-            )
+            ),
         )
         self.display.show(image)
 
     def _build_cell(self, index: int, row: int, column: int, measurements: List[Measurement]) -> View:
         if row == 0 and column == 0:
-            return self._build_time_and_date()
-        elif row == 1 and column == 0:
-            return self._build_moon_and_sun()
+            return self._build_time_cell()
         else:
-            index -= 2
+            index -= 1
             measurement = measurements[index]
             return self._build_measurement(measurement)
 
-    def _build_time_and_date(self) -> View:
+    def _build_time_cell(self) -> View:
         now = datetime.now()
         time = now.strftime("%H:%M")
         date = now.strftime("%d.%m")
@@ -73,7 +72,8 @@ class HomeController(MeasurementsListener, NavigationItem):
             alignment=StackAlignment.Center,
             children=[
                 Text(time, font=Fonts.timeFont),
-                Text(date, font=Fonts.dateFont)
+                Text(date, font=Fonts.dateFont),
+                self._build_moon_and_sun(),
             ]
         ))
 
@@ -89,11 +89,11 @@ class HomeController(MeasurementsListener, NavigationItem):
                 VerticalStack([
                     HorizontalStack([
                         Image(Assets.Images.sunrise),
-                        Text(sun_rise)
+                        Text(sun_rise, font=Fonts.sunTimeFont)
                     ]),
                     HorizontalStack([
                         Image(Assets.Images.sunset),
-                        Text(sun_set)
+                        Text(sun_set, font=Fonts.sunTimeFont)
                     ])
                 ])
             ]

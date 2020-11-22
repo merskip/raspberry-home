@@ -8,6 +8,9 @@ from tests.MagicView import MagicView
 
 class TestStack(unittest.TestCase):
 
+    def setUp(self):
+        MagicView.reset()
+
     def test_horizontal_spacing_ten_dist_start_align_start(self):
         MagicView.test_render(
             container_size=Size(200, 200),
@@ -143,7 +146,7 @@ class TestStack(unittest.TestCase):
                 distribution=StackDistribution.Start,
                 alignment=StackAlignment.Start
             ),
-            expected_content_size=Size(50, 60),
+            expected_content_size=Size(50, 200),
         )
 
 

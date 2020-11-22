@@ -7,6 +7,9 @@ from tests.MagicView import MagicView
 
 class TestPadding(unittest.TestCase):
 
+    def setUp(self):
+        MagicView.reset()
+
     def test_padding_zero(self):
         padding = Padding(
             padding=EdgeInsets.zero(),

@@ -9,7 +9,7 @@ class Center(View):
         self.child = child
 
     def content_size(self, container_size: Size) -> Size:
-        return self.child.content_size(container_size)
+        return container_size
 
     def render(self, context: RenderContext):
         content_size = self.child.content_size(context.container_size)

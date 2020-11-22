@@ -61,7 +61,7 @@ class _StackItem:
 
 class _StackLayout:
 
-    def __init__(self, items: [_StackItem], container_size: AxisSize):
+    def __init__(self, items: [_StackItem], container_size: AxisSize, max_main_size: bool):
         self.items = items
         self.container_size = container_size
         main_size, cross_size = 0, 0
@@ -69,7 +69,7 @@ class _StackLayout:
             main_size += item.main_size
             if item.is_view:
                 cross_size = max(cross_size, item.content_size.cross_size)
-        self.content_size = AxisSize(main_size, cross_size)
+        self.content_size = AxisSize(container_size.main_size if max_main_size else main_size, cross_size)
 
 
 class _Stack(View, ABC):
@@ -83,7 +83,6 @@ class _Stack(View, ABC):
     ):
         self.children = children
         self.spacing = spacing
-        self.spacing_count = max(len(children) - 1, 1)
         self.distribution = distribution
         self.alignment = alignment
 
@@ -108,13 +107,14 @@ class _Stack(View, ABC):
 
             items.append(_StackItem.spacing(self.spacing, next_item_main_axis + child_content_size.main_size))
             next_item_main_axis += child_content_size.main_size + self.spacing
+        items.pop()
 
-        return _StackLayout(items, container_size)
+        return _StackLayout(items, container_size, max_main_size=False)
 
     def _calculate_layout_end_distribution(self, container_size: AxisSize) -> _StackLayout:
         items = []
         next_item_end_main_axis = container_size.main_size
-        for child in reversed(self.children):
+        for child in list(reversed(self.children)):
             child_container_size = self.axes_to_size(AxisSize(next_item_end_main_axis, container_size.cross_size))
             child_content_size = self.size_to_axes(child.content_size(child_container_size))
             item_main_axis = next_item_end_main_axis - child_content_size.main_size
@@ -122,9 +122,10 @@ class _Stack(View, ABC):
                                          child_content_size, child_container_size))
 
             items.append(_StackItem.spacing(self.spacing, item_main_axis - self.spacing))
-            next_item_end_main_axis -= item_main_axis + self.spacing
+            next_item_end_main_axis -= child_content_size.main_size + self.spacing
+        items.pop()
 
-        return _StackLayout(items, container_size)
+        return _StackLayout(items, container_size, max_main_size=True)
 
     def _calculate_layout_equal_distribution(self, container_size: AxisSize) -> _StackLayout:
         items = []
@@ -137,10 +138,11 @@ class _Stack(View, ABC):
             items.append(_StackItem.view(child, next_item_main_axis,
                                          child_content_size, child_container_size))
 
-            items.append(_StackItem.spacing(self.spacing, child_content_main_size))
+            items.append(_StackItem.spacing(self.spacing, next_item_main_axis + child_content_main_size))
             next_item_main_axis += child_content_main_size + self.spacing
+        items.pop()
 
-        return _StackLayout(items, container_size)
+        return _StackLayout(items, container_size, max_main_size=True)
 
     def content_size(self, container_size: Size) -> Size:
         layout = self._calculate_layout(container_size)
@@ -154,6 +156,19 @@ class _Stack(View, ABC):
                     origin=context.origin + self._get_item_origin(layout, item),
                     container_size=item.container_size
                 ))
+            else:
+                if item.spacing > 0:
+                    self.render_view_filled_bounds(
+                        context,
+                        frame=Rect(context.origin + self.axes_to_point(AxisPoint(item.main_axis, 0)),
+                                   self.axes_to_size(AxisSize(item.main_size, layout.content_size.cross_size))),
+                        color=Color.red().copy(alpha=0.05),
+                    )
+        self.render_view_bounds(
+            context,
+            frame=Rect(context.origin, self.axes_to_size(layout.content_size)),
+            color=Color.red().copy(alpha=0.4),
+        )
 
     def _get_item_origin(self, layout: _StackLayout, item: _StackItem) -> Point:
         if self.alignment == StackAlignment.Start:
@@ -166,19 +181,6 @@ class _Stack(View, ABC):
             return self.axes_to_point(AxisPoint(item.main_axis, cross_axis))
         else:
             raise ValueError("alignment has illegal value: %s" % self.alignment)
-
-    def get_axes_content_size(self, container_size: Size) -> (int, int):
-        main_axis, cross_axis = self.get_axes_children_size(container_size)
-        main_axis += self.spacing * self.spacing_count
-        return main_axis, cross_axis
-
-    def get_axes_children_size(self, container_size: Size) -> (int, int):
-        main_axis, cross_axis = 0, 0
-        for child in self.children:
-            child_main_axis, child_cross_axis = self.size_to_axes(child.content_size(container_size))
-            main_axis += child_main_axis
-            cross_axis = max(cross_axis, child_cross_axis)
-        return main_axis, cross_axis
 
     def point_to_axes(self, point: Point) -> AxisPoint:
         axes = self.size_to_axes(Size(point.x, point.y))

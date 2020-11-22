@@ -6,6 +6,9 @@ from tests.MagicView import MagicView
 
 class TestText(unittest.TestCase):
 
+    def setUp(self):
+        MagicView.reset()
+
     def test_render(self):
         text = Text(
             "Hello world!"
