@@ -14,6 +14,7 @@ from raspberry_home.sensor.covid19monitor import COVID19Monitor
 from raspberry_home.view.center import Center
 from raspberry_home.view.font import Font, FontWeight
 from raspberry_home.view.geometry import Size
+from raspberry_home.view.grid_widget import GridWidget
 from raspberry_home.view.image import Image
 from raspberry_home.view.render import FixedSizeRender, ColorSpace
 from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackDistribution, StackAlignment
@@ -50,17 +51,16 @@ class HomeController(MeasurementsListener, NavigationItem):
             root_view=GridWidget(
                 rows=2,
                 columns=3,
-                builder=lambda index, row, col: self._build_cell(index, row, col, measurements)
+                builder=lambda index: self._build_cell(index, measurements)
             ),
         )
         self.display.show(image)
 
-    def _build_cell(self, index: int, row: int, column: int, measurements: List[Measurement]) -> View:
-        if row == 0 and column == 0:
+    def _build_cell(self, index: GridWidget.Index, measurements: List[Measurement]) -> View:
+        if index.row == 0 and index.column == 0:
             return self._build_time_cell()
         else:
-            index -= 1
-            measurement = measurements[index]
+            measurement = measurements[index.index - 1]
             return self._build_measurement(measurement)
 
     def _build_time_cell(self) -> View:
@@ -164,29 +164,3 @@ class HomeController(MeasurementsListener, NavigationItem):
             return "{:,}".format(value[0]) + "\n" + "{:,}".format(value[1])
         else:
             return Sensor.formatted_value_with_unit(characteristic, value)
-
-
-class GridWidget(Widget):
-
-    def __init__(self, columns: int, rows: int, builder: Callable[[int, int, int], View]):
-        self.columns = columns
-        self.rows = rows
-        self.builder = builder
-
-    def build(self) -> View:
-        rows = []
-        index = 0
-        for row in range(0, self.rows):
-            cells = []
-            for column in range(0, self.columns):
-                cell = self.builder(index, row, column)
-                index += 1
-                cells.append(cell)
-            rows.append(HorizontalStack(
-                distribution=StackDistribution.Equal,
-                children=cells
-            ))
-        return VerticalStack(
-            distribution=StackDistribution.Equal,
-            children=rows
-        )
