@@ -11,6 +11,7 @@ from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
+from raspberry_home.view.center import Center
 from raspberry_home.view.font import Font, FontWeight
 from raspberry_home.view.geometry import Size
 from raspberry_home.view.image import Image
@@ -53,34 +54,34 @@ class HomeController(MeasurementsListener, NavigationItem):
         )
         self.display.show(image)
 
-    def _build_cell(self, index: int, row: int, column: int, measurements: List[Measurement]):
+    def _build_cell(self, index: int, row: int, column: int, measurements: List[Measurement]) -> View:
         if row == 0 and column == 0:
             return self._build_time_and_date()
-        elif row == 0 and column == 1:
+        elif row == 1 and column == 0:
             return self._build_moon_and_sun()
         else:
             index -= 2
             measurement = measurements[index]
             return self._build_measurement(measurement)
 
-    def _build_time_and_date(self):
+    def _build_time_and_date(self) -> View:
         now = datetime.now()
         time = now.strftime("%H:%M")
         date = now.strftime("%d.%m")
 
-        return VerticalStack(
+        return Center(VerticalStack(
             alignment=StackAlignment.Center,
             children=[
                 Text(time, font=Fonts.timeFont),
                 Text(date, font=Fonts.dateFont)
             ]
-        )
+        ))
 
     def _build_moon_and_sun(self):
         sun = Sun()
         sun_rise = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=True))
         sun_set = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=False))
-        return HorizontalStack(
+        return Center(HorizontalStack(
             spacing=4,
             alignment=StackAlignment.Center,
             children=[
@@ -96,7 +97,7 @@ class HomeController(MeasurementsListener, NavigationItem):
                     ])
                 ])
             ]
-        )
+        ))
 
     def time_to_text(self, time):
         shifted_time = time['decimal'] + self.timezone_offset / 3600
@@ -119,14 +120,14 @@ class HomeController(MeasurementsListener, NavigationItem):
     def _build_measurement(self, measurement: Measurement) -> View:
         icon = self._get_icon_filename(measurement.sensor, measurement.characteristic, measurement.value)
         value_text = self._get_title(measurement.sensor, measurement.characteristic, measurement.value)
-        return VerticalStack(
+        return Center(VerticalStack(
             spacing=4,
             alignment=StackAlignment.Center,
             children=[
                 Image(icon, invert=False),
                 Text(value_text, font=Fonts.valueFont)
             ]
-        )
+        ))
 
     @staticmethod
     def _get_icon_filename(sensor: Sensor, characteristic: Characteristic, value):
@@ -182,11 +183,10 @@ class GridWidget(Widget):
                 index += 1
                 cells.append(cell)
             rows.append(HorizontalStack(
-                distribution=StackDistribution.EqualSpacing,
-                alignment=StackAlignment.Center,
+                distribution=StackDistribution.Equal,
                 children=cells
             ))
         return VerticalStack(
-            distribution=StackDistribution.EqualSpacing,
+            distribution=StackDistribution.Equal,
             children=rows
         )

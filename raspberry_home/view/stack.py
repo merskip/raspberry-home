@@ -9,7 +9,7 @@ from raspberry_home.view.view import *
 class StackDistribution(Enum):
     Start = 'START'
     End = 'END'
-    EqualSpacing = 'EQUAL_SPACING'
+    Equal = 'EQUAL'
 
 
 class StackAlignment(Enum):
@@ -90,8 +90,12 @@ class _Stack(View, ABC):
     def _calculate_layout(self, container_size: Size) -> _StackLayout:
         if self.distribution == StackDistribution.Start:
             return self._calculate_layout_start_distribution(self.size_to_axes(container_size))
+        elif self.distribution == StackDistribution.End:
+            return self._calculate_layout_end_distribution(self.size_to_axes(container_size))
+        elif self.distribution == StackDistribution.Equal:
+            return self._calculate_layout_equal_distribution(self.size_to_axes(container_size))
         else:
-            raise ArithmeticError("Not implemented yet")
+            raise ValueError("distribution has illegal value: %s" % self.distribution)
 
     def _calculate_layout_start_distribution(self, container_size: AxisSize) -> _StackLayout:
         items = []
@@ -107,6 +111,37 @@ class _Stack(View, ABC):
 
         return _StackLayout(items, container_size)
 
+    def _calculate_layout_end_distribution(self, container_size: AxisSize) -> _StackLayout:
+        items = []
+        next_item_end_main_axis = container_size.main_size
+        for child in reversed(self.children):
+            child_container_size = self.axes_to_size(AxisSize(next_item_end_main_axis, container_size.cross_size))
+            child_content_size = self.size_to_axes(child.content_size(child_container_size))
+            item_main_axis = next_item_end_main_axis - child_content_size.main_size
+            items.append(_StackItem.view(child, item_main_axis,
+                                         child_content_size, child_container_size))
+
+            items.append(_StackItem.spacing(self.spacing, item_main_axis - self.spacing))
+            next_item_end_main_axis -= item_main_axis + self.spacing
+
+        return _StackLayout(items, container_size)
+
+    def _calculate_layout_equal_distribution(self, container_size: AxisSize) -> _StackLayout:
+        items = []
+        available_container_main_size = container_size.main_size - self.spacing * (len(self.children) - 1)
+        child_content_main_size = available_container_main_size // len(self.children)
+        next_item_main_axis = 0
+        child_container_size = self.axes_to_size(AxisSize(child_content_main_size, container_size.cross_size))
+        for child in self.children:
+            child_content_size = self.size_to_axes(child.content_size(child_container_size))
+            items.append(_StackItem.view(child, next_item_main_axis,
+                                         child_content_size, child_container_size))
+
+            items.append(_StackItem.spacing(self.spacing, child_content_main_size))
+            next_item_main_axis += child_content_main_size + self.spacing
+
+        return _StackLayout(items, container_size)
+
     def content_size(self, container_size: Size) -> Size:
         layout = self._calculate_layout(container_size)
         return self.axes_to_size(layout.content_size)
@@ -116,7 +151,7 @@ class _Stack(View, ABC):
         for item in layout.items:
             if item.is_view:
                 item.view.render(context.copy(
-                    origin=self._get_item_origin(layout, item),
+                    origin=context.origin + self._get_item_origin(layout, item),
                     container_size=item.container_size
                 ))
 
@@ -167,7 +202,7 @@ class VerticalStack(_Stack):
     def __init__(
             self,
             children: List[View],
-            spacing: float = 0,
+            spacing: int = 0,
             distribution: StackDistribution = StackDistribution.Start,
             alignment: StackAlignment = StackAlignment.Start
     ): super().__init__(children, spacing, distribution, alignment)
@@ -184,7 +219,7 @@ class HorizontalStack(_Stack):
     def __init__(
             self,
             children: List[View],
-            spacing: float = 0,
+            spacing: int = 0,
             distribution: StackDistribution = StackDistribution.Start,
             alignment: StackAlignment = StackAlignment.Start
     ): super().__init__(children, spacing, distribution, alignment)
