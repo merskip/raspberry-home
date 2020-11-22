@@ -22,20 +22,32 @@ class MagicView(View):
         self.expected_container_size = expected_container_size
         self.expected_origin = expected_origin
         self.test_case = TestCase()
+        self.name = None
+
+    def named(self, name: str):
+        self.name = name
+        return self
 
     def content_size(self, container_size: Size) -> Size:
         if self.expected_container_size is not None:
             self.test_case.assertEqual(self.expected_container_size, container_size,
-                                       msg="Container size while call content size")
+                                       msg=self._msg("Container size while call content size"))
         return self._content_size
 
     def render(self, context: RenderContext):
         if self.expected_container_size is not None:
             self.test_case.assertEqual(self.expected_container_size, context.container_size,
-                                       msg="Container size while call render")
+                                       msg=self._msg("Container size while call render"))
         if self.expected_origin is not None:
             self.test_case.assertEqual(self.expected_origin, context.origin,
-                                       msg="Origin while call render")
+                                       msg=self._msg("Origin while call render"))
+
+    def _msg(self, msg: str):
+        msg += " (in "
+        if self.name is not None:
+            msg += "name=\"%s\", " % self.name
+        msg += "content_size=%s)" % self._content_size
+        return msg
 
     @staticmethod
     def test_render(root_view: View, container_size: Size, expected_content_size: Size = None):
