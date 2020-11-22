@@ -20,4 +20,4 @@ class ChartController(NavigationItem):
             .centered(in_width=width, in_height=height)
         label.draw(image_draw)
 
-        self.display.show(image)
+        self.display._show(image)

@@ -16,7 +16,7 @@ class EPD2in7Display(Display):
     def get_size(self) -> (int, int):
         return self._driver.width, self._driver.height
 
-    def show(self, image):
+    def _show(self, image):
         black_image = image.convert('1')
         red_image = Image.new('1', self.get_size(), 255)
 

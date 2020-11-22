@@ -12,7 +12,7 @@ class SaveFileDisplay(Display):
     def get_size(self) -> (int, int):
         return self._size
 
-    def show(self, image: Image):
+    def _show(self, image: Image):
         image = image.convert('1')
         image.save(self._filename + ".bmp")
-        image.show()
+        image._show()

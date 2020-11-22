@@ -7,11 +7,11 @@ from raspberry_home.view.render import RenderContext
 
 class Renderable(ABC):
 
-    is_show_bounds = False
+    is_show_frames = False
 
     @staticmethod
-    def set_show_bounds(is_show_bounds: bool):
-        Renderable.is_show_bounds = is_show_bounds
+    def set_show_frames(is_show_frames: bool):
+        Renderable.is_show_frames = is_show_frames
 
     @abstractmethod
     def render(self, context: RenderContext):
@@ -19,7 +19,7 @@ class Renderable(ABC):
 
     @staticmethod
     def render_view_bounds(context: RenderContext, frame: Rect, color: Color, width: int = 1):
-        if not Renderable.is_show_bounds:
+        if not Renderable.is_show_frames:
             return
 
         frame = frame.adding(width=-1, height=-1)
@@ -59,13 +59,13 @@ class Renderable(ABC):
 
     @staticmethod
     def render_view_line(context: RenderContext, start: Point, end: Point, color: Color):
-        if not Renderable.is_show_bounds:
+        if not Renderable.is_show_frames:
             return
         context.draw.line((start.xy, end.xy), fill=color.rgba)
 
     @staticmethod
     def render_view_filled_bounds(context: RenderContext, frame: Rect, color: Color):
-        if not Renderable.is_show_bounds:
+        if not Renderable.is_show_frames:
             return
         frame = frame.adding(width=-1, height=-1)
         context.draw.rectangle(xy=frame.xy, fill=color.rgba)

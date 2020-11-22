@@ -7,7 +7,7 @@ from raspberry_home.view.renderable import Renderable
 
 def run(is_simulator: bool):
     if is_simulator:
-        Renderable.set_show_bounds(True)
+        Renderable.set_show_frames(True)
 
     if is_simulator:
         from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider

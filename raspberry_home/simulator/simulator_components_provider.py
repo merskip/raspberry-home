@@ -9,6 +9,7 @@ from raspberry_home.platform.sensor import Sensor
 from raspberry_home.simulator.simulator_display import SimulatorDisplay
 from raspberry_home.simulator.simulator_window import SimulatorWindow
 from raspberry_home.stub.stub_platform import StubPlatform
+from raspberry_home.view.renderable import Renderable
 
 
 class SimulatorComponentsProvider(ComponentsProvider):
@@ -18,6 +19,7 @@ class SimulatorComponentsProvider(ComponentsProvider):
         self.app = QApplication(sys.argv)
         self.simulator_window = SimulatorWindow()
         self.display = SimulatorDisplay((264, 176), self.simulator_window)
+        self.simulator_window.frames_check_box.stateChanged.connect(self.handle_toggles_frames)
 
     def on_measurement_begin(self):
         self.simulator_window.show()
@@ -34,3 +36,8 @@ class SimulatorComponentsProvider(ComponentsProvider):
 
     def get_scheduler_time_intervals(self) -> int:
         return 10  # 10 seconds
+
+    def handle_toggles_frames(self, check_state):
+        is_checked = check_state == 2
+        Renderable.set_show_frames(is_checked)
+        self.display.refresh()
