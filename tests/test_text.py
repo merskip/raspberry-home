@@ -1,7 +1,7 @@
 import unittest
 
 from raspberry_home.view.text import Text, Size
-from tests.MockView import MockView
+from tests.MagicView import MagicView
 
 
 class TestText(unittest.TestCase):
@@ -10,10 +10,10 @@ class TestText(unittest.TestCase):
         text = Text(
             "Hello world!"
         )
-        MockView.test_render(
+        MagicView.test_render(
             root_view=text,
             container_size=Size(200, 200),
-            check_content_size=lambda content_size: self.assertEqual(Size(86, 17), content_size)
+            expected_content_size=Size(86, 17)  # Some fixed value
         )
 
 
