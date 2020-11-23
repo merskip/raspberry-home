@@ -56,9 +56,8 @@ class HomeController(MeasurementsListener, NavigationItem):
             self._get_measurements_cell([Characteristics.temperature], measurements),
             self._get_measurements_cell([Characteristics.pressure], measurements),
             # Second Row
-            self._get_measurements_cell([Characteristics.wind_speed, Characteristics.wind_direction], measurements,
-                                        only_primary=False),
             None,
+            self._get_wind_cell(measurements),
             self._get_measurements_cell([Characteristics.virusCases], measurements)
         ]
 
@@ -72,10 +71,33 @@ class HomeController(MeasurementsListener, NavigationItem):
             measurements: List[Measurement],
             only_primary: bool = True
     ) -> View:
-        measurements = list(filter(
-            lambda m: m.characteristic.name in map(lambda t: t.name, of_types) and (not only_primary or m.is_primary()),
+        measurements_of_types = []
+        for of_type in of_types:
+            measurements_of_types += self._get_measurements(of_type, measurements, only_primary)
+        return MeasurementsCell(measurements_of_types) if len(measurements_of_types) > 0 else None
+
+    def _get_wind_cell(
+            self,
+            measurements: List[Measurement],
+    ) -> View:
+        speed_measurement = self._get_measurements(
+            Characteristics.wind_speed, measurements, only_primary=False
+        )[0]
+        direction_measurement = self._get_measurements(
+            Characteristics.wind_direction, measurements, only_primary=False
+        )[0]
+
+        return MeasurementsCell([speed_measurement, direction_measurement], icon_rotation=-direction_measurement.value)
+
+    def _get_measurements(
+            self,
+            of_type: Characteristic,
+            measurements: List[Measurement],
+            only_primary: bool = True
+    ) -> List[Measurement]:
+        return list(filter(
+            lambda m: m.characteristic.name == of_type.name and (not only_primary or m.is_primary()),
             measurements))
-        return MeasurementsCell(measurements) if len(measurements) > 0 else None
 
 
 class NowCell(Widget):
@@ -147,8 +169,9 @@ class NowCell(Widget):
 
 class MeasurementsCell(Widget):
 
-    def __init__(self, measurements: [Measurement]):
+    def __init__(self, measurements: [Measurement], icon_rotation: int = None):
         self.measurements = measurements
+        self.icon_rotation = icon_rotation
 
     def build(self) -> View:
         primary_measurement = self.measurements[0]
@@ -158,7 +181,7 @@ class MeasurementsCell(Widget):
             spacing=4,
             alignment=StackAlignment.Center,
             children=[
-                Image(icon, invert=False),
+                Image(icon, invert=False, rotation=self.icon_rotation),
                 Text(value_text, font=Fonts.valueFont, align=Text.Align.CENTER)
             ]
         ))
@@ -203,5 +226,13 @@ class MeasurementsCell(Widget):
             return str(round(value)) + " " + characteristic.unit
         elif isinstance(sensor, COVID19Monitor):
             return "{:,}".format(value[0]) + "\n" + "{:,}".format(value[1])
+        elif characteristic == Characteristics.wind_direction:
+            return MeasurementsCell.degToCompass(measurement.value)
         else:
             return Sensor.formatted_value_with_unit(characteristic, value)
+
+    @staticmethod
+    def degToCompass(deg):
+        val = int((deg / 22.5) + .5)
+        arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+        return arr[(val % 16)]

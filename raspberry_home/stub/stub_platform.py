@@ -1,6 +1,7 @@
 from raspberry_home.platform.characteristic import Characteristics
 from raspberry_home.platform.platform import Platform
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
+from raspberry_home.sensor.open_weather_monitor import OpenWeatherMonitor
 from raspberry_home.stub.stub_sensor import StubSensor
 
 
@@ -13,7 +14,7 @@ class StubPlatform(Platform):
             self._create_light_sensor(),
             self._create_pressure_sensor(),
             self._create_door_sensor(),
-            self._create_wind_sensor(),
+            OpenWeatherMonitor(8, 'OWM'),
             COVID19Monitor(7, "COVID19-Poland", "poland")
         ])
 
@@ -55,12 +56,4 @@ class StubPlatform(Platform):
             6, "BMP180",
             [Characteristics.pressure.set(accuracy=0.1), Characteristics.temperature],
             lambda c: 25.0 if c is Characteristics.temperature else 980.0 * 1.029850746268657
-        )
-
-    @staticmethod
-    def _create_wind_sensor():
-        return StubSensor(
-            8, "WIND_SENSOR",
-            [Characteristics.wind_speed.set(accuracy=1), Characteristics.wind_direction],
-            lambda c: 5.0 if c is Characteristics.wind_speed else 'NE'
         )

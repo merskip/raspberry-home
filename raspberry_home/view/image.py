@@ -8,14 +8,17 @@ from raspberry_home.view.view import *
 
 class Image(View):
 
-    def __init__(self, filename: str, invert: bool = True):
+    def __init__(self, filename: str, invert: bool = True, rotation: int = None):
         self.filename = filename
         self.invert = invert
+        self.rotation = rotation
         image = PILImage.open(self.filename)
         if self.invert:
             image = ImageOps.invert(image).convert('1')
         else:
             image = image.convert('1')
+        if self.rotation is not None:
+            image = image.rotate(self.rotation)
         self.image = image
 
     def content_size(self, container_size: Size) -> Size:

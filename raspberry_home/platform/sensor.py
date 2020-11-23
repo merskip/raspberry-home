@@ -39,7 +39,10 @@ class Sensor(ABC):
     def formatted_value_with_unit(characteristic: Characteristic, value):
         formatted_value = Sensor.formatted_value(characteristic, value)
         if characteristic.unit is not None:
-            return "{} {}".format(formatted_value, characteristic.unit)
+            if characteristic.unit == "%":
+                return formatted_value + characteristic.unit
+            else:
+                return "{} {}".format(formatted_value, characteristic.unit)
         else:
             return formatted_value
 
