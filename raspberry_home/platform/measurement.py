@@ -13,3 +13,6 @@ class Measurement:
         self.value = value
         self.time_start = time_start
         self.time_end = time_end
+
+    def is_primary(self):
+        return self.sensor.get_characteristics()[0] == self.characteristic

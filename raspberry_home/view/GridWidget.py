@@ -1,5 +1,7 @@
+import math
 from typing import Callable, Optional
 
+from raspberry_home.view.EmptyView import EmptyView
 from raspberry_home.view.stack import HorizontalStack, StackDistribution, VerticalStack
 from raspberry_home.view.view import View
 from raspberry_home.view.widget import Widget
@@ -18,6 +20,13 @@ class GridWidget(Widget):
         self.rows = rows
         self.builder = builder
 
+    @staticmethod
+    def from_list(columns: int, rows: int, cells: [View]):
+        return GridWidget(
+            columns, rows,
+            lambda index: cells[index.index] if index.index < len(cells) else None
+        )
+
     def build(self) -> View:
         rows = []
         _index = 0
@@ -26,8 +35,10 @@ class GridWidget(Widget):
             for column in range(0, self.columns):
                 index = GridWidget.Index(row, column, _index)
                 cell = self.builder(index)
-                _index += 1
+                if cell is None:
+                    cell = EmptyView()
                 cells.append(cell)
+                _index += 1
             rows.append(HorizontalStack(
                 distribution=StackDistribution.Equal,
                 children=cells

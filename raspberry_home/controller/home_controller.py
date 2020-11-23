@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import Callable, List, Optional
+from itertools import groupby
+from typing import Callable, List, Optional, Iterator
 
 from raspberry_home.assets import Assets
 from raspberry_home.controller.input_controller import NavigationItem
@@ -14,7 +15,7 @@ from raspberry_home.sensor.covid19monitor import COVID19Monitor
 from raspberry_home.view.center import Center
 from raspberry_home.view.font import Font, FontWeight
 from raspberry_home.view.geometry import Size, Point
-from raspberry_home.view.grid_widget import GridWidget
+from raspberry_home.view.GridWidget import GridWidget
 from raspberry_home.view.image import Image
 from raspberry_home.view.offset import Offset
 from raspberry_home.view.render import FixedSizeRender, ColorSpace
@@ -45,27 +46,33 @@ class HomeController(MeasurementsListener, NavigationItem):
         self.display_measurements(measurements)
 
     def display_measurements(self, measurements: List[Measurement]):
-        measurements = list(filter(lambda m: m.sensor.get_characteristics()[0] == m.characteristic, measurements))
-        self.display.set_view(
-            root_view=GridWidget(
-                rows=2,
-                columns=3,
-                builder=lambda index: self._build_cell(index, measurements)
-            )
-        )
-
-    def _build_cell(self, index: GridWidget.Index, measurements: List[Measurement]) -> Optional[View]:
-        if index.row == 0 and index.column == 0:
-            return NowCell(
+        cells = [
+            # First Row
+            NowCell(
                 timezone_offset=self.timezone_offset,
                 sun=Sun(coords=self.coordinates),
                 moon=Moon(),
-            )
-        elif index.index - 1 < len(measurements):
-            measurement = measurements[index.index - 1]
-            return MeasurementCell([measurement])
-        else:
-            return None
+            ),
+            self._get_measurements_cell(Characteristics.temperature, measurements),
+            self._get_measurements_cell(Characteristics.pressure, measurements),
+            # Second Row
+            None,
+            None,
+            self._get_measurements_cell(Characteristics.virusCases, measurements)
+        ]
+
+        self.display.set_view(
+            root_view=GridWidget.from_list(columns=3, rows=2, cells=cells)
+        )
+
+    def _get_measurements_cell(
+            self,
+            of_type: Characteristic,
+            measurements: List[Measurement]
+    ) -> View:
+        return MeasurementsCell(
+            list(filter(lambda m: m.is_primary() and m.characteristic.name == of_type.name, measurements))
+        )
 
 
 class NowCell(Widget):
@@ -135,26 +142,28 @@ class NowCell(Widget):
         }[phase]
 
 
-class MeasurementCell(Widget):
+class MeasurementsCell(Widget):
 
     def __init__(self, measurements: [Measurement]):
         self.measurements = measurements
 
     def build(self) -> View:
-        measurement = self.measurements[0]
-        icon = self._get_icon_filename(measurement.sensor, measurement.characteristic, measurement.value)
-        value_text = self._get_title(measurement.sensor, measurement.characteristic, measurement.value)
+        primary_measurement = self.measurements[0]
+        icon = self._get_icon_filename(primary_measurement)
+        value_text = "\n".join(map(lambda m: self._get_title(m), self.measurements))
         return Center(VerticalStack(
             spacing=4,
             alignment=StackAlignment.Center,
             children=[
                 Image(icon, invert=False),
-                Text(value_text, font=Fonts.valueFont)
+                Text(value_text, font=Fonts.valueFont, align=Text.Align.CENTER)
             ]
         ))
 
     @staticmethod
-    def _get_icon_filename(sensor: Sensor, characteristic: Characteristic, value):
+    def _get_icon_filename(measurement: Measurement):
+        sensor = measurement.sensor
+        characteristic = measurement.characteristic
         if characteristic == Characteristics.temperature:
             if sensor.has_flag("outside"):
                 return Assets.Images.ic_temperature_outside
@@ -166,9 +175,9 @@ class MeasurementCell(Widget):
             return Assets.Images.ic_pressure_gauge
         elif characteristic == Characteristics.boolean:
             if sensor.has_flag("door"):
-                return Assets.Images.ic_door_closed if value else Assets.Images.ic_door_open
+                return Assets.Images.ic_door_closed if measurement.value else Assets.Images.ic_door_open
             else:
-                return Assets.Images.ic_boolean_true if value else Assets.Images.ic_boolean_false
+                return Assets.Images.ic_boolean_true if measurement.value else Assets.Images.ic_boolean_false
         elif characteristic == Characteristics.humidity:
             return Assets.Images.ic_humidity
         elif characteristic == Characteristics.virusCases:
@@ -179,7 +188,10 @@ class MeasurementCell(Widget):
             raise ValueError("Unknown characteristic: " + characteristic.name)
 
     @staticmethod
-    def _get_title(sensor: Sensor, characteristic: Characteristic, value):
+    def _get_title(measurement: Measurement):
+        sensor = measurement.sensor
+        characteristic = measurement.characteristic
+        value = measurement.value
         if characteristic == Characteristics.boolean and sensor.has_flag("door"):
             return sensor.name
         if characteristic.name == "pressure":
