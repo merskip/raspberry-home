@@ -53,12 +53,13 @@ class HomeController(MeasurementsListener, NavigationItem):
                 sun=Sun(coords=self.coordinates),
                 moon=Moon(),
             ),
-            self._get_measurements_cell(Characteristics.temperature, measurements),
-            self._get_measurements_cell(Characteristics.pressure, measurements),
+            self._get_measurements_cell([Characteristics.temperature], measurements),
+            self._get_measurements_cell([Characteristics.pressure], measurements),
             # Second Row
+            self._get_measurements_cell([Characteristics.wind_speed, Characteristics.wind_direction], measurements,
+                                        only_primary=False),
             None,
-            None,
-            self._get_measurements_cell(Characteristics.virusCases, measurements)
+            self._get_measurements_cell([Characteristics.virusCases], measurements)
         ]
 
         self.display.set_view(
@@ -67,12 +68,14 @@ class HomeController(MeasurementsListener, NavigationItem):
 
     def _get_measurements_cell(
             self,
-            of_type: Characteristic,
-            measurements: List[Measurement]
+            of_types: List[Characteristic],
+            measurements: List[Measurement],
+            only_primary: bool = True
     ) -> View:
-        return MeasurementsCell(
-            list(filter(lambda m: m.is_primary() and m.characteristic.name == of_type.name, measurements))
-        )
+        measurements = list(filter(
+            lambda m: m.characteristic.name in map(lambda t: t.name, of_types) and (not only_primary or m.is_primary()),
+            measurements))
+        return MeasurementsCell(measurements) if len(measurements) > 0 else None
 
 
 class NowCell(Widget):
@@ -184,6 +187,8 @@ class MeasurementsCell(Widget):
             return Assets.Images.ic_virus
         elif characteristic == Characteristics.soilMoisture:
             return Assets.Images.ic_flower
+        elif characteristic == Characteristics.wind_speed or characteristic == Characteristics.wind_direction:
+            return Assets.Images.ic_wind
         else:
             raise ValueError("Unknown characteristic: " + characteristic.name)
 

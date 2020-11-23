@@ -21,6 +21,7 @@ class Images:
     ic_temperature = _dir + "images/ic-temperature.bmp"
     ic_temperature_outside = _dir + "images/ic-temperature-outside.bmp"
     ic_virus = _dir + "images/ic-virus.bmp"
+    ic_wind = _dir + "images/ic-wind.bmp"
     moon_first_quarter = _dir + "images/moon-first-quarter.png"
     moon_full_moon = _dir + "images/moon-full-moon.png"
     moon_last_quarter = _dir + "images/moon-last-quarter.png"

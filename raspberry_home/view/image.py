@@ -22,7 +22,6 @@ class Image(View):
         return Size(self.image.size[0], self.image.size[1])
 
     def render(self, context: RenderContext):
-
         context.draw.bitmap(
             context.origin.xy,
             self.image,

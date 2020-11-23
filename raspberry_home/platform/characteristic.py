@@ -33,3 +33,5 @@ class Characteristics(object):
     boolean = Characteristic("boolean", bool)
     virusCases = Characteristic("virus", list)
     soilMoisture = Characteristic("soil_moisture", float, "%")
+    wind_speed = Characteristic("wind_speed", float, "%")
+    wind_direction = Characteristic("wind_direction", str)
