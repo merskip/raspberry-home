@@ -6,11 +6,18 @@ from raspberry_home.view.view import View, Size
 
 class Widget(View, ABC):
 
+    view = None
+
     def content_size(self, container_size: Size) -> Size:
-        return self.build().content_size(container_size)
+        return self.get_view().content_size(container_size)
 
     def render(self, context: RenderContext):
-        self.build().render(context)
+        self.get_view().render(context)
+
+    def get_view(self) -> View:
+        if self.view is None:
+            self.view = self.build()
+        return self.view
 
     @abstractmethod
     def build(self) -> View:

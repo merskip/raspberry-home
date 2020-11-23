@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional
 
 from raspberry_home.view.stack import HorizontalStack, StackDistribution, VerticalStack
 from raspberry_home.view.view import View
@@ -13,7 +13,7 @@ class GridWidget(Widget):
             self.row = row
             self.index = index
 
-    def __init__(self, columns: int, rows: int, builder: Callable[[Index], View]):
+    def __init__(self, columns: int, rows: int, builder: Callable[[Index], Optional[View]]):
         self.columns = columns
         self.rows = rows
         self.builder = builder

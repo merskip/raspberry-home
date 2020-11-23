@@ -7,21 +7,21 @@ class Sun:
     From https://stackoverflow.com/a/39867990
     """
 
-    def getSunriseTime(self, coords):
-        return self.calcSunTime(coords, True)
+    def __init__(self, coords):
+        self.coords = coords
 
-    def getSunsetTime(self, coords):
-        return self.calcSunTime(coords, False)
+    def get_sunrise_time(self):
+        return self._calculate_sun_time(self.coords, True)
 
-    def getCurrentUTC(self):
+    def get_sunset_time(self):
+        return self._calculate_sun_time(self.coords, False)
+
+    def get_current_utc(self):
         now = datetime.datetime.now()
         return [now.day, now.month, now.year]
 
-    def calcSunTime(self, coords, isRiseTime, zenith=90.8):
-
-        # isRiseTime == False, returns sunsetTime
-
-        day, month, year = self.getCurrentUTC()
+    def _calculate_sun_time(self, coords, is_rise: bool, zenith=90.8):
+        day, month, year = self.get_current_utc()
 
         longitude = coords['longitude']
         latitude = coords['latitude']
@@ -37,7 +37,7 @@ class Sun:
         # 2. convert the longitude to hour value and calculate an approximate time
         lngHour = longitude / 15
 
-        if isRiseTime:
+        if is_rise:
             t = N + ((6 - lngHour) / 24)
         else:  # sunset
             t = N + ((18 - lngHour) / 24)
@@ -68,7 +68,7 @@ class Sun:
 
         # 7a. calculate the Sun's local hour angle
         cosH = (math.cos(TO_RAD * zenith) - (sinDec * math.sin(TO_RAD * latitude))) / (
-                    cosDec * math.cos(TO_RAD * latitude))
+                cosDec * math.cos(TO_RAD * latitude))
 
         if cosH > 1:
             return {'status': False, 'msg': 'the sun never rises on this location (on the specified date)'}
@@ -78,7 +78,7 @@ class Sun:
 
         # 7b. finish calculating H and convert into hours
 
-        if isRiseTime:
+        if is_rise:
             H = 360 - (1 / TO_RAD) * math.acos(cosH)
         else:  # setting
             H = (1 / TO_RAD) * math.acos(cosH)

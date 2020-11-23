@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from raspberry_home.assets import Assets
 from raspberry_home.controller.input_controller import NavigationItem
@@ -45,6 +45,7 @@ class HomeController(MeasurementsListener, NavigationItem):
         self.display_measurements(measurements)
 
     def display_measurements(self, measurements: List[Measurement]):
+        measurements = list(filter(lambda m: m.sensor.get_characteristics()[0] == m.characteristic, measurements))
         self.display.set_view(
             root_view=GridWidget(
                 rows=2,
@@ -53,14 +54,28 @@ class HomeController(MeasurementsListener, NavigationItem):
             )
         )
 
-    def _build_cell(self, index: GridWidget.Index, measurements: List[Measurement]) -> View:
+    def _build_cell(self, index: GridWidget.Index, measurements: List[Measurement]) -> Optional[View]:
         if index.row == 0 and index.column == 0:
-            return self._build_time_cell()
-        else:
+            return NowCell(
+                timezone_offset=self.timezone_offset,
+                sun=Sun(coords=self.coordinates),
+                moon=Moon(),
+            )
+        elif index.index - 1 < len(measurements):
             measurement = measurements[index.index - 1]
-            return self._build_measurement(measurement)
+            return MeasurementCell([measurement])
+        else:
+            return None
 
-    def _build_time_cell(self) -> View:
+
+class NowCell(Widget):
+
+    def __init__(self, timezone_offset, sun: Sun, moon: Moon):
+        self.timezone_offset = timezone_offset
+        self.sun = sun
+        self.moon = moon
+
+    def build(self) -> View:
         now = datetime.now()
         time = now.strftime("%H:%M")
         date = now.strftime("%d.%m")
@@ -81,9 +96,8 @@ class HomeController(MeasurementsListener, NavigationItem):
         ))
 
     def _build_moon_and_sun(self):
-        sun = Sun()
-        sun_rise = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=True))
-        sun_set = self.time_to_text(sun.calcSunTime(coords=self.coordinates, isRiseTime=False))
+        sun_rise = self.time_to_text(self.sun.get_sunrise_time())
+        sun_set = self.time_to_text(self.sun.get_sunset_time())
         return HorizontalStack(
             spacing=8,
             alignment=StackAlignment.Center,
@@ -120,7 +134,14 @@ class HomeController(MeasurementsListener, NavigationItem):
             MoonPhase.WANING_CRESCENT: Assets.Images.moon_waning_crescent,
         }[phase]
 
-    def _build_measurement(self, measurement: Measurement) -> View:
+
+class MeasurementCell(Widget):
+
+    def __init__(self, measurements: [Measurement]):
+        self.measurements = measurements
+
+    def build(self) -> View:
+        measurement = self.measurements[0]
         icon = self._get_icon_filename(measurement.sensor, measurement.characteristic, measurement.value)
         value_text = self._get_title(measurement.sensor, measurement.characteristic, measurement.value)
         return Center(VerticalStack(
