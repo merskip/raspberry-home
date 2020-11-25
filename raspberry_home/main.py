@@ -1,4 +1,7 @@
 from raspberry_home.controller.home_controller import HomeController
+from raspberry_home.controller.utils.moon import Moon
+from raspberry_home.controller.utils.sun import Sun
+from raspberry_home.open_weather_api import OpenWeatherApi
 from raspberry_home.platform.measurements_scheduler import MeasurementsScheduler
 from raspberry_home.platform.platform_measurements_executor import PlatformMeasurementsExecutor
 
@@ -25,8 +28,18 @@ def run(is_simulator: bool):
 
     home_controller = HomeController(
         display=display,
-        coordinates={'longitude': 22.4937312, 'latitude': 51.2181956},  # Lublin
-        timezone_offset=7200  # UTC+2
+        sun=Sun(
+            coords={
+                'longitude': 22.4937312,  # Lublin
+                'latitude': 51.2181956
+            },
+            timezone_offset=7200  # UTC+2
+        ),
+        moon=Moon(),
+        open_weather_api=OpenWeatherApi(
+            city='Lublin',
+            app_id='41e4c8c15e16553fddc1103361723979'
+        )
     )
 
     for measurements_listener in components_provider.get_measurements_listeners():

@@ -1,7 +1,7 @@
 from raspberry_home.platform.characteristic import Characteristics
 from raspberry_home.platform.platform import Platform
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
-from raspberry_home.sensor.open_weather_monitor import OpenWeatherMonitor
+from raspberry_home.open_weather_api import OpenWeatherApi
 from raspberry_home.stub.stub_sensor import StubSensor
 
 
@@ -14,7 +14,6 @@ class StubPlatform(Platform):
             self._create_light_sensor(),
             self._create_pressure_sensor(),
             self._create_door_sensor(),
-            OpenWeatherMonitor(8, 'OWM'),
             COVID19Monitor(7, "COVID19-Poland", "poland")
         ])
 

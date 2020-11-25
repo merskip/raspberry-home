@@ -7,8 +7,9 @@ class Sun:
     From https://stackoverflow.com/a/39867990
     """
 
-    def __init__(self, coords):
+    def __init__(self, coords, timezone_offset):
         self.coords = coords
+        self.timezone_offset = timezone_offset
 
     def get_sunrise_time(self):
         return self._calculate_sun_time(self.coords, True)
@@ -93,15 +94,7 @@ class Sun:
         UT = self.forceRange(UT, 24)  # UTC time in decimal format (e.g. 23.23)
 
         # 10. Return
-        hr = self.forceRange(int(UT), 24)
-        min = round((UT - int(UT)) * 60, 0)
-
-        return {
-            'status': True,
-            'decimal': UT,
-            'hr': hr,
-            'min': min
-        }
+        return int(UT + self.timezone_offset / 3600)
 
     def forceRange(self, v, max):
         # force v to be >= 0 and < max

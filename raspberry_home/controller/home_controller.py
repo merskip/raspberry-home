@@ -7,6 +7,7 @@ from raspberry_home.controller.input_controller import NavigationItem
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
 from raspberry_home.display.display import Display
+from raspberry_home.open_weather_api import OpenWeatherApi
 from raspberry_home.platform.characteristic import Characteristic, Characteristics
 from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
@@ -34,10 +35,11 @@ class Fonts:
 
 class HomeController(MeasurementsListener, NavigationItem):
 
-    def __init__(self, display: Display, coordinates, timezone_offset):
+    def __init__(self, display: Display, sun: Sun, moon: Moon, open_weather_api: OpenWeatherApi):
         self.display = display
-        self.coordinates = coordinates
-        self.timezone_offset = timezone_offset
+        self.sun = sun
+        self.moon = moon
+        self.open_weather_api = open_weather_api
 
     def selected_show(self):
         pass
@@ -48,16 +50,15 @@ class HomeController(MeasurementsListener, NavigationItem):
     def display_measurements(self, measurements: List[Measurement]):
         cells = [
             # First Row
-            NowCell(
-                timezone_offset=self.timezone_offset,
-                sun=Sun(coords=self.coordinates),
-                moon=Moon(),
+            HomeNowCell(
+                sun=self.sun,
+                moon=self.moon,
             ),
             self._get_measurements_cell([Characteristics.temperature], measurements),
             self._get_measurements_cell([Characteristics.pressure], measurements),
             # Second Row
             None,
-            self._get_wind_cell(measurements),
+            self._get_wind_cell(),
             self._get_measurements_cell([Characteristics.virusCases], measurements)
         ]
 
@@ -76,18 +77,15 @@ class HomeController(MeasurementsListener, NavigationItem):
             measurements_of_types += self._get_measurements(of_type, measurements, only_primary)
         return MeasurementsCell(measurements_of_types) if len(measurements_of_types) > 0 else None
 
-    def _get_wind_cell(
-            self,
-            measurements: List[Measurement],
-    ) -> View:
-        speed_measurement = self._get_measurements(
-            Characteristics.wind_speed, measurements, only_primary=False
-        )[0]
-        direction_measurement = self._get_measurements(
-            Characteristics.wind_direction, measurements, only_primary=False
-        )[0]
+    def _get_wind_cell(self) -> View:
 
-        return MeasurementsCell([speed_measurement, direction_measurement], icon_rotation=-direction_measurement.value)
+        weather = self.open_weather_api.fetch()
+        wind_speed = weather['wind']['speed']
+        wind_direction = weather['wind']['deg']
+        return HomeItemCell(
+            icon=Image(Assets.Images.ic_wind, invert=False, rotation=-wind_direction),
+            title="%.1f m/s\n%s" % (wind_speed, HomeController._degrees_to_compass(wind_direction))
+        )
 
     def _get_measurements(
             self,
@@ -99,11 +97,16 @@ class HomeController(MeasurementsListener, NavigationItem):
             lambda m: m.characteristic.name == of_type.name and (not only_primary or m.is_primary()),
             measurements))
 
+    @staticmethod
+    def _degrees_to_compass(deg):
+        val = int((deg / 22.5) + .5)
+        arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+        return arr[(val % 16)]
 
-class NowCell(Widget):
 
-    def __init__(self, timezone_offset, sun: Sun, moon: Moon):
-        self.timezone_offset = timezone_offset
+class HomeNowCell(Widget):
+
+    def __init__(self, sun: Sun, moon: Moon):
         self.sun = sun
         self.moon = moon
 
@@ -149,8 +152,7 @@ class NowCell(Widget):
         )
 
     def time_to_text(self, time):
-        shifted_time = time['decimal'] + self.timezone_offset / 3600
-        return "%s:%s" % (int(shifted_time), int(shifted_time % 1.0 * 60))
+        return "%2d:%2d" % (time, time % 1.0 * 60)
 
     @staticmethod
     def _get_moon_phase_filename():
@@ -177,14 +179,14 @@ class MeasurementsCell(Widget):
         primary_measurement = self.measurements[0]
         icon = self._get_icon_filename(primary_measurement)
         value_text = "\n".join(map(lambda m: self._get_title(m), self.measurements))
-        return Center(VerticalStack(
+        return VerticalStack(
             spacing=4,
             alignment=StackAlignment.Center,
             children=[
                 Image(icon, invert=False, rotation=self.icon_rotation),
-                Text(value_text, font=Fonts.valueFont, align=Text.Align.CENTER)
+                Center(Text(value_text, font=Fonts.valueFont, align=Text.Align.CENTER))
             ]
-        ))
+        )
 
     @staticmethod
     def _get_icon_filename(measurement: Measurement):
@@ -226,13 +228,24 @@ class MeasurementsCell(Widget):
             return str(round(value)) + " " + characteristic.unit
         elif isinstance(sensor, COVID19Monitor):
             return "{:,}".format(value[0]) + "\n" + "{:,}".format(value[1])
-        elif characteristic == Characteristics.wind_direction:
-            return MeasurementsCell.degToCompass(measurement.value)
         else:
             return Sensor.formatted_value_with_unit(characteristic, value)
 
-    @staticmethod
-    def degToCompass(deg):
-        val = int((deg / 22.5) + .5)
-        arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
-        return arr[(val % 16)]
+
+class HomeItemCell(Widget):
+
+    def __init__(self, icon: View, title: str):
+        self.icon = icon
+        self.title = title
+
+    def build(self) -> View:
+        return VerticalStack(
+            spacing=4,
+            alignment=StackAlignment.Center,
+            children=[
+                self.icon,
+                Center(
+                    Text(self.title, font=Fonts.valueFont, align=Text.Align.CENTER)
+                ),
+            ]
+        )
