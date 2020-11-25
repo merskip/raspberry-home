@@ -15,10 +15,11 @@ from raspberry_home.platform.sensor import Sensor
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
 from raspberry_home.view.center import Center
 from raspberry_home.view.font import Font, FontWeight
-from raspberry_home.view.geometry import Size, Point
+from raspberry_home.view.geometry import Size, Point, EdgeInsets
 from raspberry_home.view.GridWidget import GridWidget
 from raspberry_home.view.image import Image
 from raspberry_home.view.offset import Offset
+from raspberry_home.view.padding import Padding
 from raspberry_home.view.render import FixedSizeRender, ColorSpace
 from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackDistribution, StackAlignment
 from raspberry_home.view.text import Text
@@ -48,6 +49,7 @@ class HomeController(MeasurementsListener, NavigationItem):
         self.display_measurements(measurements)
 
     def display_measurements(self, measurements: List[Measurement]):
+        weather = self.open_weather_api.fetch()
         cells = [
             # First Row
             HomeNowCell(
@@ -57,8 +59,8 @@ class HomeController(MeasurementsListener, NavigationItem):
             self._get_measurements_cell([Characteristics.temperature], measurements),
             self._get_measurements_cell([Characteristics.pressure], measurements),
             # Second Row
-            None,
-            self._get_wind_cell(),
+            self._get_weather_cell(weather),
+            self._get_wind_cell(weather),
             self._get_measurements_cell([Characteristics.virusCases], measurements)
         ]
 
@@ -77,9 +79,15 @@ class HomeController(MeasurementsListener, NavigationItem):
             measurements_of_types += self._get_measurements(of_type, measurements, only_primary)
         return MeasurementsCell(measurements_of_types) if len(measurements_of_types) > 0 else None
 
-    def _get_wind_cell(self) -> View:
+    def _get_weather_cell(self, weather) -> View:
+        weather_icon = self._get_weather_icon(weather['weather'][0]['icon'][:2])
+        weather_description = weather['weather'][0]['description']
+        return HomeItemCell(
+            icon=Image(weather_icon),
+            title=weather_description,
+        )
 
-        weather = self.open_weather_api.fetch()
+    def _get_wind_cell(self, weather) -> View:
         wind_speed = weather['wind']['speed']
         wind_direction = weather['wind']['deg']
         return HomeItemCell(
@@ -96,6 +104,20 @@ class HomeController(MeasurementsListener, NavigationItem):
         return list(filter(
             lambda m: m.characteristic.name == of_type.name and (not only_primary or m.is_primary()),
             measurements))
+
+    def _get_weather_icon(self, icon_id) -> str:
+        icons = {
+            '01': Assets.Images.ic_weather_clear_sky,
+            '02': Assets.Images.ic_weather_few_clouds,
+            '03': Assets.Images.ic_weather_scattered_clouds,
+            '04': Assets.Images.ic_weather_broken_clouds,
+            '09': Assets.Images.ic_weather_shower_rain,
+            '10': Assets.Images.ic_weather_rain,
+            '11': Assets.Images.ic_weather_thunderstorm,
+            '13': Assets.Images.ic_weather_snow,
+            '50': Assets.Images.ic_weather_mist,
+        }
+        return icons[icon_id]
 
     @staticmethod
     def _degrees_to_compass(deg):
@@ -179,13 +201,16 @@ class MeasurementsCell(Widget):
         primary_measurement = self.measurements[0]
         icon = self._get_icon_filename(primary_measurement)
         value_text = "\n".join(map(lambda m: self._get_title(m), self.measurements))
-        return VerticalStack(
-            spacing=4,
-            alignment=StackAlignment.Center,
-            children=[
-                Image(icon, invert=False, rotation=self.icon_rotation),
-                Center(Text(value_text, font=Fonts.valueFont, align=Text.Align.CENTER))
-            ]
+        return Padding(
+            padding=EdgeInsets(top=8),
+            child=VerticalStack(
+                spacing=4,
+                alignment=StackAlignment.Center,
+                children=[
+                    Image(icon, invert=False, rotation=self.icon_rotation),
+                    Center(Text(value_text, font=Fonts.valueFont, align=Text.Align.CENTER))
+                ]
+            )
         )
 
     @staticmethod
@@ -239,13 +264,16 @@ class HomeItemCell(Widget):
         self.title = title
 
     def build(self) -> View:
-        return VerticalStack(
-            spacing=4,
-            alignment=StackAlignment.Center,
-            children=[
-                self.icon,
-                Center(
-                    Text(self.title, font=Fonts.valueFont, align=Text.Align.CENTER)
-                ),
-            ]
+        return Padding(
+            padding=EdgeInsets(top=8),
+            child=VerticalStack(
+                spacing=4,
+                alignment=StackAlignment.Center,
+                children=[
+                    self.icon,
+                    Center(
+                        Text(self.title, font=Fonts.valueFont, align=Text.Align.CENTER)
+                    ),
+                ]
+            )
         )
