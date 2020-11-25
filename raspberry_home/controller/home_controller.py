@@ -174,7 +174,7 @@ class HomeNowCell(Widget):
         )
 
     def time_to_text(self, time):
-        return "%2d:%2d" % (time, time % 1.0 * 60)
+        return "%2d:%02d" % (time, time % 1.0 * 60)
 
     @staticmethod
     def _get_moon_phase_filename():
