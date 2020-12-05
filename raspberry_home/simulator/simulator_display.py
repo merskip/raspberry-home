@@ -13,7 +13,6 @@ class SimulatorDisplay(Display):
     def __init__(self, size: (int, int), simulator_window: SimulatorWindow):
         self.size = size
         self.simulator_window = simulator_window
-        # self._show(self.create_image())
         super().__init__()
 
     def get_size(self) -> (int, int):

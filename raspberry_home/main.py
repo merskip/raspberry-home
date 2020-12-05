@@ -46,6 +46,7 @@ def run(is_simulator: bool):
         measurement_scheduler.append(measurements_listener)
     measurement_scheduler.append(home_controller)
 
+    print("Begin measurements")
     measurement_scheduler.begin_measurements_in_thread()
     components_provider.on_measurement_begin()
     measurement_scheduler.wait_until_finish_measurements()
