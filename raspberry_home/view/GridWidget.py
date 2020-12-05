@@ -1,4 +1,3 @@
-import math
 from typing import Callable, Optional
 
 from raspberry_home.view.EmptyView import EmptyView

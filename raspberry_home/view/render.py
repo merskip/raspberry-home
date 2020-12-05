@@ -4,8 +4,8 @@ from enum import Enum
 import PIL.Image as PILImage
 from PIL.ImageDraw import ImageDraw
 
-from raspberry_home.view.geometry import Size, Point
 from raspberry_home.view.color import Color
+from raspberry_home.view.geometry import Size, Point
 
 
 class ColorSpace(Enum):

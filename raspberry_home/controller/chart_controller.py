@@ -1,8 +1,8 @@
 from PIL import ImageDraw
+from raspberry_home.controller.view.view import _Label
 
 from raspberry_home.controller.home_controller import Fonts
 from raspberry_home.controller.input_controller import NavigationItem
-from raspberry_home.controller.view.view import _Label
 from raspberry_home.display.display import Display
 
 

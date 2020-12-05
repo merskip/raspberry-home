@@ -1,6 +1,5 @@
 from datetime import datetime
-from itertools import groupby
-from typing import Callable, List, Optional, Iterator
+from typing import List
 
 from raspberry_home.assets import Assets
 from raspberry_home.controller.input_controller import NavigationItem
@@ -13,15 +12,14 @@ from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
+from raspberry_home.view.GridWidget import GridWidget
 from raspberry_home.view.center import Center
 from raspberry_home.view.font import Font, FontWeight
-from raspberry_home.view.geometry import Size, Point, EdgeInsets
-from raspberry_home.view.GridWidget import GridWidget
+from raspberry_home.view.geometry import Point, EdgeInsets
 from raspberry_home.view.image import Image
 from raspberry_home.view.offset import Offset
 from raspberry_home.view.padding import Padding
-from raspberry_home.view.render import FixedSizeRender, ColorSpace
-from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackDistribution, StackAlignment
+from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackAlignment
 from raspberry_home.view.text import Text
 from raspberry_home.view.view import View
 from raspberry_home.view.widget import Widget
