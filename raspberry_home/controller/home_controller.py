@@ -81,7 +81,7 @@ class HomeController(MeasurementsListener, NavigationItem):
 
     def _get_weather_cell(self, weather) -> View:
         weather_icon = self._get_weather_icon(weather['weather'][0]['icon'][:2])
-        weather_description = weather['weather'][0]['description']
+        weather_description = weather['weather'][0]['description'].replace(" ", "\n")
         return HomeItemCell(
             icon=Image(weather_icon),
             title=weather_description,
