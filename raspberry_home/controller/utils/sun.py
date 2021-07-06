@@ -12,10 +12,10 @@ class Sun:
         self.timezone_offset = timezone_offset
 
     def get_sunrise_time(self):
-        return self._calculate_sun_time(self.coords, True)
+        return self._calculate_sun_time(self.coords, is_rise=True)
 
     def get_sunset_time(self):
-        return self._calculate_sun_time(self.coords, False)
+        return self._calculate_sun_time(self.coords, is_rise=False)
 
     def get_current_utc(self):
         now = datetime.datetime.now()
@@ -94,7 +94,7 @@ class Sun:
         UT = self.forceRange(UT, 24)  # UTC time in decimal format (e.g. 23.23)
 
         # 10. Return
-        return int(UT + self.timezone_offset / 3600)
+        return UT + self.timezone_offset / 3600
 
     def forceRange(self, v, max):
         # force v to be >= 0 and < max
