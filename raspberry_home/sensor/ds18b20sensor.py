@@ -13,7 +13,7 @@ class DS18B20Sensor(Sensor):
         :type device_id: Device identifier for wire-1, eg. 01186e6706ff
         """
         super().__init__(id, name)
-        self._sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, device_id)
+        self._sensor = W1ThermSensor(sensor_id=device_id)
 
     def get_characteristics(self) -> List[Characteristic]:
         return [
