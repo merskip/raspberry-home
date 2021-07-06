@@ -2,8 +2,11 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig authType="PASSWORD" host="192.168.1.8" id="f2d9bde9-fdd1-4d12-b83d-ce4bcc384a2a" port="22" customName="raspberry" nameFormat="CUSTOM" username="pi" />
-      <sshConfig authType="PASSWORD" host="192.168.1.8" id="88eb9004-c8b1-4d37-a45b-d7c1c49187d3" nameFormat="DESCRIPTIVE" username="pi" />
+      <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="192.168.1.8" id="f2d9bde9-fdd1-4d12-b83d-ce4bcc384a2a" port="22" customName="raspberry" nameFormat="CUSTOM" username="pi">
+        <option name="customName" value="raspberry" />
+      </sshConfig>
+      <sshConfig authType="PASSWORD" host="192.168.1.8" id="88eb9004-c8b1-4d37-a45b-d7c1c49187d3" port="22" nameFormat="DESCRIPTIVE" username="pi" />
+      <sshConfig authType="PASSWORD" host="192.168.0.16" id="2e596d7e-4556-4fea-b473-400ae3f8a926" port="22" nameFormat="DESCRIPTIVE" username="pi" />
     </configs>
   </component>
 </project>
