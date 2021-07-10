@@ -58,7 +58,6 @@ class HomeController(MeasurementsListener, NavigationItem):
             self._get_measurements_cell([Characteristics.pressure], measurements),
             # Second Row
             self._get_weather_cell(weather),
-            self._get_wind_cell(weather),
             self._get_measurements_cell([Characteristics.virusCases], measurements)
         ]
 
@@ -79,18 +78,17 @@ class HomeController(MeasurementsListener, NavigationItem):
 
     def _get_weather_cell(self, weather) -> View:
         weather_icon = self._get_weather_icon(weather['weather'][0]['icon'][:2])
-        weather_description = weather['weather'][0]['description'].replace(" ", "\n")
-        return HomeItemCell(
-            icon=Image(weather_icon),
-            title=weather_description,
-        )
-
-    def _get_wind_cell(self, weather) -> View:
         wind_speed = weather['wind']['speed']
         wind_direction = weather['wind']['deg']
+
         return HomeItemCell(
-            icon=Image(Assets.Images.ic_wind, invert=False, rotation=-wind_direction),
-            title="%.1f m/s\n%s" % (wind_speed, HomeController._degrees_to_compass(wind_direction))
+            icon=HorizontalStack(
+                children=[
+                    Image(weather_icon),
+                    Image(Assets.Images.ic_wind, invert=False, rotation=-wind_direction),
+                ]
+            ),
+            title="%.1f m/s\n%s" % (wind_speed, HomeController._degrees_to_compass(wind_direction)),
         )
 
     def _get_measurements(
