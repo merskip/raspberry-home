@@ -149,6 +149,21 @@ class TestStack(unittest.TestCase):
             expected_content_size=Size(50, 200),
         )
 
+    def test_horizontal_align_end_super(self):
+        MagicView.test_render(
+            container_size=Size(200, 200),
+            root_view=HorizontalStack(
+                children=[
+                    MagicView(
+                        content_size=Size(250, 50),
+                        expected_container_size=Size(200, 200),
+                        expected_origin=Point(-50, 0),
+                    ).named("first view"),
+                ],
+                alignment=StackAlignment.End
+            ),
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

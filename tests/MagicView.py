@@ -67,7 +67,8 @@ class MagicView(View):
             color_space=ColorSpace.RGB
         )
         content_size = root_view.content_size(container_size)
-        TestCase().assertTrue(expected_content_size, content_size)
+        TestCase().assertEqual(expected_content_size, content_size,
+                               msg="Expected %s, but is %s" % (expected_content_size, content_size))
         root_view.render(context)
 
         for render_call in MagicView.renders_called:
