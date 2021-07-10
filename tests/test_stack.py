@@ -42,12 +42,12 @@ class TestStack(unittest.TestCase):
                     MagicView(
                         content_size=Size(50, 50),
                         expected_container_size=Size(200, 200),
-                        expected_origin=Point(0, 50),
+                        expected_origin=Point(0, 150),
                     ).named("first view"),
                     MagicView(
                         content_size=Size(100, 100),
                         expected_container_size=Size(140, 200),
-                        expected_origin=Point(60, 0),
+                        expected_origin=Point(60, 100),
                     ).named("second view"),
                 ],
                 spacing=10,
@@ -123,7 +123,7 @@ class TestStack(unittest.TestCase):
                 distribution=StackDistribution.Equal,
                 alignment=StackAlignment.Start
             ),
-            expected_content_size=Size(200, 100),
+            expected_content_size=Size(200, 50),
         )
 
     def test_vertical_spacing_ten_dist_start_align_start(self):
@@ -146,13 +146,13 @@ class TestStack(unittest.TestCase):
                 distribution=StackDistribution.Start,
                 alignment=StackAlignment.Start
             ),
-            expected_content_size=Size(50, 200),
+            expected_content_size=Size(50, 110),
         )
 
     def test_horizontal_align_end_super(self):
         MagicView.test_render(
             container_size=Size(200, 200),
-            root_view=HorizontalStack(
+            root_view=VerticalStack(
                 children=[
                     MagicView(
                         content_size=Size(250, 50),

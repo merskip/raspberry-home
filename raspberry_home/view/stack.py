@@ -177,7 +177,7 @@ class _Stack(View, ABC):
             cross_axis = (layout.content_size.cross_size - item.content_size.cross_size) // 2
             return self.axes_to_point(AxisPoint(item.main_axis, cross_axis))
         elif self.alignment == StackAlignment.End:
-            cross_axis = layout.content_size.cross_size - item.content_size.cross_size
+            cross_axis = layout.container_size.cross_size - item.content_size.cross_size
             return self.axes_to_point(AxisPoint(item.main_axis, cross_axis))
         else:
             raise ValueError("alignment has illegal value: %s" % self.alignment)
