@@ -58,7 +58,7 @@ class HomeController(MeasurementsListener, NavigationItem):
             self._get_measurements_cell([Characteristics.pressure], measurements),
             # Second Row
             self._get_weather_cell(weather),
-            self._get_measurements_cell([Characteristics.virusCases], measurements)
+            self._get_measurements_cell([Characteristics.humidity], measurements),
         ]
 
         self.display.set_view(
