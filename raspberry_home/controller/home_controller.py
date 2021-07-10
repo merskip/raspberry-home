@@ -12,16 +12,14 @@ from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
-from raspberry_home.view.EmptyView import EmptyView
 from raspberry_home.view.GridWidget import GridWidget
-from raspberry_home.view.SizedBox import SizedBox
 from raspberry_home.view.center import Center
 from raspberry_home.view.font import Font, FontWeight
-from raspberry_home.view.geometry import Point, EdgeInsets, Size
+from raspberry_home.view.geometry import Point, EdgeInsets
 from raspberry_home.view.image import Image
 from raspberry_home.view.offset import Offset
 from raspberry_home.view.padding import Padding
-from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackAlignment, StackDistribution
+from raspberry_home.view.stack import HorizontalStack, VerticalStack, StackAlignment
 from raspberry_home.view.text import Text
 from raspberry_home.view.view import View
 from raspberry_home.view.widget import Widget
@@ -61,11 +59,6 @@ class HomeController(MeasurementsListener, NavigationItem):
             # Second Row
             self._get_weather_cell(weather),
             self._get_measurements_cell([Characteristics.humidity], measurements),
-            HomeItemCell(
-                icon=Image(filename=Assets.Images.ic_stonks_man, invert=False),
-                title="11.335,96 PLN\n+100,53 18,3%",
-                font=Font(size=13, weight=FontWeight.BOLD)
-            )
         ]
 
         self.display.set_view(
@@ -258,6 +251,7 @@ class MeasurementsCell(Widget):
             return "{:,}".format(value[0]) + "\n" + "{:,}".format(value[1])
         else:
             return Sensor.formatted_value_with_unit(characteristic, value)
+
 
 class HomeItemCell(Widget):
 
