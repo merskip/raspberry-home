@@ -1,3 +1,6 @@
+from typing import cast
+
+
 class Point:
     xy = property(lambda self: (self.x, self.y))
 
@@ -15,10 +18,10 @@ class Point:
     def adding(self, x=0, y=0):
         return Point(self.x + x, self.y + y)
 
-    def __eq__(self, o: object) -> bool:
-        if o is Size:
-            return False
-        return self.xy == o.xy
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Point):
+            return self.xy == other.xy
+        return False
 
     def __str__(self) -> str:
         return "Point(%s, %s)" % (self.x, self.y)
@@ -41,10 +44,10 @@ class Size:
     def adding(self, width=0, height=0):
         return Size(self.width + width, self.height + height)
 
-    def __eq__(self, o: object) -> bool:
-        if o is Size:
-            return False
-        return self.xy == o.xy
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Size):
+            return self.xy == other.xy
+        return False
 
     def __str__(self) -> str:
         return "Size(%s, %s)" % (self.width, self.height)
