@@ -31,7 +31,11 @@ class SimulatorWindow(QWidget):
         self.frames_check_box = QCheckBox("Frames", self)
         self.frames_check_box.setChecked(Renderable.is_show_frames)
 
-        right_layout.addWidget(self.frames_check_box, alignment=Qt.AlignTrailing)
+        self.rgb_check_box = QCheckBox("RGB", self)
+        self.rgb_check_box.setChecked(True)
+
+        right_layout.addWidget(self.frames_check_box)
+        right_layout.addWidget(self.rgb_check_box)
         right_layout.addWidget(self.led_output, alignment=Qt.AlignCenter)
 
         self.layout = QHBoxLayout()

@@ -20,6 +20,7 @@ class SimulatorComponentsProvider(ComponentsProvider):
         self.simulator_window = SimulatorWindow()
         self.display = SimulatorDisplay((264, 176), self.simulator_window)
         self.simulator_window.frames_check_box.stateChanged.connect(self.handle_toggles_frames)
+        self.simulator_window.rgb_check_box.stateChanged.connect(self.handle_toggles_rgb)
 
     def on_measurement_begin(self):
         self.simulator_window.show()
@@ -40,4 +41,7 @@ class SimulatorComponentsProvider(ComponentsProvider):
     def handle_toggles_frames(self, check_state):
         is_checked = check_state == 2
         Renderable.set_show_frames(is_checked)
+        self.display.refresh()
+
+    def handle_toggles_rgb(self, _):
         self.display.refresh()

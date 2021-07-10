@@ -20,10 +20,17 @@ class SimulatorDisplay(Display):
 
     def _show(self, root_view: View):
         width, height = self.get_size()
-        render = FixedSizeRender(size=Size(width, height), color_space=ColorSpace.RGB)
+        render = FixedSizeRender(size=Size(width, height),
+                                 color_space=self._get_color_space())
         image = render.render(root_view)
         image = self._convert_image(image)
         self.simulator_window.set_display(image)
+
+    def _get_color_space(self):
+        if self.simulator_window.rgb_check_box.isChecked():
+            return ColorSpace.RGB
+        else:
+            return ColorSpace.BINARY
 
     def _convert_image(self, image: Image):
         image = image.convert('RGB')
