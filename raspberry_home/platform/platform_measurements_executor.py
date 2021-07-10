@@ -12,19 +12,24 @@ class PlatformMeasurementsExecutor(MeasurementsExecutor):
         self.sensors = sensors
 
     def perform_measurements(self) -> List[Measurement]:
+        print("Begin measurements...")
         measurements = []
         for sensor in self.sensors:
             for characteristic in sensor.get_characteristics():
                 start_time = datetime.now()
-                value = sensor.get_value(characteristic)
-                end_time = datetime.now()
+                try:
+                    value = sensor.get_value(characteristic)
+                    end_time = datetime.now()
 
-                print("%s [PlatformMeasurementsExecutor]: {sensor: %s, characteristic: %s} value: %s (in %f ms)"
-                      % (datetime.now().strftime("%H:%M:%S.%f"), sensor.name, characteristic.name,
-                         sensor.formatted_value_with_unit(characteristic, value),
-                         (end_time - start_time).total_seconds() * 1000.0))
+                    print("%s [PlatformMeasurementsExecutor]: {sensor: %s, characteristic: %s} value: %s (in %f ms)"
+                          % (datetime.now().strftime("%H:%M:%S.%f"), sensor.name, characteristic.name,
+                             sensor.formatted_value_with_unit(characteristic, value),
+                             (end_time - start_time).total_seconds() * 1000.0))
 
-                measurement = Measurement(sensor, characteristic, value, start_time, end_time)
-                measurements.append(measurement)
-
+                    measurement = Measurement(sensor, characteristic, value, start_time, end_time)
+                    measurements.append(measurement)
+                except Exception as error:
+                    print("%s [PlatformMeasurementsExecutor]: {sensor: %s, characteristic: %s} Error: %s"
+                          % (datetime.now().strftime("%H:%M:%S.%f"), sensor.name, characteristic.name, error))
+        print("Finished measurements")
         return measurements
