@@ -10,7 +10,7 @@ class DTH22Sensor(Sensor):
 
     def __init__(self, id: int, name: str, pin):
         super().__init__(id, name)
-        self._pin = pin
+        self._dht22 = adafruit_dht.DHT22(pin)
 
     def get_characteristics(self) -> List[Characteristic]:
         return [
@@ -18,8 +18,7 @@ class DTH22Sensor(Sensor):
         ]
 
     def get_value(self, characteristic: Characteristic) -> object:
-        result = adafruit_dht.DHT22(self._pin, use_pulseio=False)
         if characteristic == Characteristics.humidity:
-            return result.humidity
+            return self._dht22.humidity
         else:
-            return result.temperature
+            return self._dht22.temperature
