@@ -1,4 +1,6 @@
+from raspberry_home.controller.chart_controller import ChartController
 from raspberry_home.controller.home_controller import HomeController
+from raspberry_home.controller.input_controller import InputController
 from raspberry_home.controller.utils.moon import Moon
 from raspberry_home.controller.utils.sun import Sun
 from raspberry_home.open_weather_api import OpenWeatherApi
@@ -41,6 +43,19 @@ def run(is_simulator: bool):
             app_id='41e4c8c15e16553fddc1103361723979'
         )
     )
+
+    chart_controller = ChartController(
+        display=display
+    )
+
+    input_controller = InputController(
+        items=[
+            home_controller,
+            chart_controller
+        ]
+    )
+
+    components_provider.get_input_controls().add_listener(input_controller)
 
     for measurements_listener in components_provider.get_measurements_listeners():
         measurement_scheduler.append(measurements_listener)

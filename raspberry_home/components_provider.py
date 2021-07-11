@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from configparser import ConfigParser
 
+from raspberry_home.controller.input_controls import InputControls
 from raspberry_home.display.display import Display
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
@@ -31,4 +32,8 @@ class ComponentsProvider(ABC):
 
     @abstractmethod
     def on_measurement_begin(self):
+        pass
+
+    @abstractmethod
+    def get_input_controls(self) -> InputControls:
         pass

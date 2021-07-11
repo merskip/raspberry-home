@@ -41,7 +41,11 @@ class HomeController(MeasurementsListener, NavigationItem):
         self.open_weather_api = open_weather_api
 
     def selected_show(self):
-        pass
+        self.display.set_view(
+            root_view=Center(
+                child=Text("Home controller")
+            )
+        )
 
     def on_measurements(self, measurements: List[Measurement]):
         self.display_measurements(measurements)

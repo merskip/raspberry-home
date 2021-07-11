@@ -7,6 +7,7 @@ from raspberry_home.simulator.simulator_window import SimulatorWindow
 class SimulatorInputControls(InputControls):
 
     def __init__(self, simulator_window: SimulatorWindow):
+        super().__init__()
         for index, button in enumerate(simulator_window.buttons):
             button.clicked.connect(partial(self._button_clicked, index))
 

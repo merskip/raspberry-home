@@ -1,9 +1,9 @@
-from PIL import ImageDraw
-from raspberry_home.controller.view.view import _Label
 
 from raspberry_home.controller.home_controller import Fonts
 from raspberry_home.controller.input_controller import NavigationItem
 from raspberry_home.display.display import Display
+from raspberry_home.view.center import Center
+from raspberry_home.view.text import Text
 
 
 class ChartController(NavigationItem):
@@ -12,12 +12,8 @@ class ChartController(NavigationItem):
         self.display = display
 
     def selected_show(self):
-        image = self.display.create_image()
-        image_draw = ImageDraw.Draw(image)
-
-        width, height = self.display.get_size()
-        label = _Label("ChartController", Fonts.valueFont) \
-            .centered(in_width=width, in_height=height)
-        label.draw(image_draw)
-
-        self.display._show(image)
+        self.display.set_view(
+            root_view=Center(
+                child=Text("Chart controller")
+            )
+        )

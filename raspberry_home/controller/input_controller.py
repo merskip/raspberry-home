@@ -16,4 +16,5 @@ class InputController(InputControls.Listener):
         self.items = items
 
     def on_clicked_button(self, index: int):
-        self.items[index].selected_show()
+        if index < len(self.items):
+            self.items[index].selected_show()

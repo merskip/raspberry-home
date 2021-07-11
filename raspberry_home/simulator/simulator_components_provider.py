@@ -3,10 +3,12 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 from raspberry_home.components_provider import ComponentsProvider
+from raspberry_home.controller.input_controls import InputControls
 from raspberry_home.display.display import Display
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.simulator.simulator_display import SimulatorDisplay
+from raspberry_home.simulator.simulator_input_controls import SimulatorInputControls
 from raspberry_home.simulator.simulator_window import SimulatorWindow
 from raspberry_home.stub.stub_platform import StubPlatform
 from raspberry_home.view.renderable import Renderable
@@ -19,6 +21,8 @@ class SimulatorComponentsProvider(ComponentsProvider):
         self.app = QApplication(sys.argv)
         self.simulator_window = SimulatorWindow()
         self.display = SimulatorDisplay((264, 176), self.simulator_window)
+        self.input_controls = SimulatorInputControls(self.simulator_window)
+
         self.simulator_window.frames_check_box.stateChanged.connect(self.handle_toggles_frames)
         self.simulator_window.rgb_check_box.stateChanged.connect(self.handle_toggles_rgb)
 
@@ -45,3 +49,6 @@ class SimulatorComponentsProvider(ComponentsProvider):
 
     def handle_toggles_rgb(self, _):
         self.display.refresh()
+
+    def get_input_controls(self) -> InputControls:
+        return self.input_controls
