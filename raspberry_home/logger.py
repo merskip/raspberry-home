@@ -12,11 +12,11 @@ class Logger:
     def start_timer(self):
         self._start_time = datetime.now()
 
-    def error(self, message: str):
-        self._log("ERROR", message)
+    def error(self, message: str, error: Exception = None):
+        self._log("ERROR", message, error)
 
-    def warning(self, message: str):
-        self._log("WARNING", message)
+    def warning(self, message: str, error: Exception = None):
+        self._log("WARNING", message, error)
 
     def info(self, message: str):
         self._log("INFO", message)
@@ -32,7 +32,7 @@ class Logger:
         thread = currentThread()
         text = "%s [%s] [%s] [%s] %s" % (time.isoformat(), thread.name, self.name, level, message)
         if error is not None:
-            text += "Error: %s" % error
+            text += "\nError: %s" % error
         if self._start_time is not None:
             text += " (in %s)" % (time - self._start_time)
             self._start_time = None

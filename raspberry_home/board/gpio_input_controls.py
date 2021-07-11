@@ -4,9 +4,12 @@ from raspberry_home.controller.input_controls import InputControls
 
 import RPi.GPIO as GPIO
 
+from raspberry_home.logger import Logger
+
 
 class GPIOInputControls(InputControls):
 
+    logger = Logger("GPIOInputControls")
     pins = [5, 6, 13, 19]
 
     def __init__(self):
@@ -17,5 +20,5 @@ class GPIOInputControls(InputControls):
 
     def _detected_pin_changed(self, channel):
         button_index = self.pins.index(channel)
-        print("Button pressed: channel=%d, index=%d" % (channel, button_index))
+        self.logger.verbose("Button pressed: channel=%d, index=%d" % (channel, button_index))
         self._notify_listener_clicked_button(button_index)

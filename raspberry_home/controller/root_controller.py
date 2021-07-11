@@ -2,12 +2,15 @@ from typing import List
 
 from raspberry_home.controller.input_controls import InputControls
 from raspberry_home.display.display import Display
+from raspberry_home.logger import Logger
 from raspberry_home.platform.measurement import Measurement
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.view.widget import Widget
 
 
 class RootController(InputControls.Listener, MeasurementsListener):
+
+    logger = Logger("RootController")
 
     def __init__(self, display: Display, screens: List[Widget]):
         self.display = display
@@ -25,10 +28,10 @@ class RootController(InputControls.Listener, MeasurementsListener):
 
     def _show_screen_at_index(self, index: int):
         if index < len(self.screens):
-            print("Displaying screen at index %d" % index)
+            self.logger.info("Showing screen at index %d" % index)
             self.display.set_view(
                 root_view=self.screens[index]
             )
             self.current_screen_index = index
         else:
-            print("No screen at index %d" % index)
+            self.logger.warning("No screen at index %d" % index)
