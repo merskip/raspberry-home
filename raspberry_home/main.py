@@ -6,8 +6,10 @@ from raspberry_home.controller.utils.sun import Sun
 from raspberry_home.open_weather_api import OpenWeatherApi
 from raspberry_home.platform.measurements_scheduler import MeasurementsScheduler
 from raspberry_home.platform.platform_measurements_executor import PlatformMeasurementsExecutor
+from raspberry_home.view.center import Center
 
 from raspberry_home.view.renderable import Renderable
+from raspberry_home.view.text import Text
 
 
 def run(is_simulator: bool):
@@ -47,7 +49,9 @@ def run(is_simulator: bool):
         display=components_provider.get_display(),
         screens=[
             home_controller,
-            chart_controller
+            Center(child=Text("Screen 2")),
+            Center(child=Text("Screen 3")),
+            Center(child=Text("Screen 4")),
         ]
     )
     components_provider.get_input_controls().add_listener(root_controller)

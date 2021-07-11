@@ -11,7 +11,7 @@ class DTH22Sensor(Sensor):
 
     def __init__(self, id: int, name: str, pin: int):
         super().__init__(id, name)
-        self._dht22 = adafruit_dht.DHT22(Pin(pin))
+        self._dht22 = adafruit_dht.DHT22(Pin(pin), use_pulseio=False)
 
     def get_characteristics(self) -> List[Characteristic]:
         return [

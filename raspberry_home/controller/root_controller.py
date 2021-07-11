@@ -25,6 +25,7 @@ class RootController(InputControls.Listener, MeasurementsListener):
 
     def _show_screen_at_index(self, index: int):
         if index < len(self.screens):
+            print("Displaying screen at index %d" % index)
             self.display.set_view(
                 root_view=self.screens[index]
             )

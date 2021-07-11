@@ -1,3 +1,5 @@
+from adafruit_blinka.board.raspberrypi.raspi_1b_rev2 import D27
+
 from raspberry_home.platform.platform import Platform
 from raspberry_home.sensor.bh1750sensor import BH1750Sensor
 from raspberry_home.sensor.bmp180sensor import BMP180Sensor
