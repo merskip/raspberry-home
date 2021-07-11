@@ -1,3 +1,4 @@
+from adafruit_blinka.microcontroller.bcm283x.pin import Pin
 from typing import List
 
 import adafruit_dht
@@ -8,9 +9,9 @@ from raspberry_home.platform.sensor import Sensor
 
 class DTH22Sensor(Sensor):
 
-    def __init__(self, id: int, name: str, pin):
+    def __init__(self, id: int, name: str, pin: int):
         super().__init__(id, name)
-        self._dht22 = adafruit_dht.DHT22(pin)
+        self._dht22 = adafruit_dht.DHT22(Pin(pin))
 
     def get_characteristics(self) -> List[Characteristic]:
         return [

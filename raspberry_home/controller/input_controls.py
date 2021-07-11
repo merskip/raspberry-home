@@ -14,3 +14,7 @@ class InputControls(ABC):
 
     def add_listener(self, listener: Listener):
         self.listeners.append(listener)
+
+    def _notify_listener_clicked_button(self, index: int):
+        for listener in self.listeners:
+            listener.on_clicked_button(index=index)

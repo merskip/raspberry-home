@@ -18,7 +18,7 @@ def run(is_simulator: bool):
         from raspberry_home.simulator.simulator_components_provider import SimulatorComponentsProvider
         components_provider = SimulatorComponentsProvider()
     else:
-        from raspberry_home.board_components_provider import BoardComponentsProvider
+        from raspberry_home.board.board_components_provider import BoardComponentsProvider
         components_provider = BoardComponentsProvider()
 
     measurements_executor = PlatformMeasurementsExecutor(components_provider.get_sensors())

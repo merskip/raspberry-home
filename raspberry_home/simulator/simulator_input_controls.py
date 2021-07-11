@@ -12,5 +12,4 @@ class SimulatorInputControls(InputControls):
             button.clicked.connect(partial(self._button_clicked, index))
 
     def _button_clicked(self, index):
-        for listener in self.listeners:
-            listener.on_clicked_button(index=index)
+        self._notify_listener_clicked_button(index)
