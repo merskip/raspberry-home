@@ -13,6 +13,7 @@ class Widget(View, ABC):
 
     def render(self, context: RenderContext):
         self.get_view().render(context)
+        self.view = None
 
     def get_view(self) -> View:
         if self.view is None:

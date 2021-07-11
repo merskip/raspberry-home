@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import List
 
 from raspberry_home.assets import Assets
-from raspberry_home.controller.input_controller import NavigationItem
 from raspberry_home.controller.utils.moon import MoonPhase, Moon
 from raspberry_home.controller.utils.sun import Sun
 from raspberry_home.display.display import Display
@@ -32,25 +31,18 @@ class Fonts:
     sunTimeFont = Font(12, FontWeight.MEDIUM)
 
 
-class HomeController(MeasurementsListener, NavigationItem):
+class HomeController(Widget, MeasurementsListener):
 
-    def __init__(self, display: Display, sun: Sun, moon: Moon, open_weather_api: OpenWeatherApi):
-        self.display = display
+    def __init__(self, sun: Sun, moon: Moon, open_weather_api: OpenWeatherApi):
         self.sun = sun
         self.moon = moon
         self.open_weather_api = open_weather_api
-
-    def selected_show(self):
-        self.display.set_view(
-            root_view=Center(
-                child=Text("Home controller")
-            )
-        )
+        self.latest_measurements = []
 
     def on_measurements(self, measurements: List[Measurement]):
-        self.display_measurements(measurements)
+        self.latest_measurements = measurements
 
-    def display_measurements(self, measurements: List[Measurement]):
+    def build(self) -> View:
         weather = self.open_weather_api.fetch()
         cells = [
             # First Row
@@ -58,16 +50,14 @@ class HomeController(MeasurementsListener, NavigationItem):
                 sun=self.sun,
                 moon=self.moon,
             ),
-            self._get_measurements_cell([Characteristics.temperature], measurements),
-            self._get_measurements_cell([Characteristics.pressure], measurements),
+            self._get_measurements_cell([Characteristics.temperature], self.latest_measurements),
+            self._get_measurements_cell([Characteristics.pressure], self.latest_measurements),
             # Second Row
             self._get_weather_cell(weather),
-            self._get_measurements_cell([Characteristics.humidity], measurements),
+            self._get_measurements_cell([Characteristics.humidity], self.latest_measurements),
         ]
 
-        self.display.set_view(
-            root_view=GridWidget.from_list(columns=3, rows=2, cells=cells)
-        )
+        return GridWidget.from_list(columns=3, rows=2, cells=cells)
 
     def _get_measurements_cell(
             self,

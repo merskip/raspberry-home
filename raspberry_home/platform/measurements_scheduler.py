@@ -20,21 +20,21 @@ class MeasurementsListener(ABC):
     def on_begin_measurements(self):
         pass
 
+    @abstractmethod
     def on_measurements(self, measurements: List[Measurement]):
         pass
 
 
 class MeasurementsScheduler:
-    active = False
-    # listeners: List[MeasurementsListener]
 
     def __init__(self, time_intervals: int, measurements_executor: MeasurementsExecutor):
+        self.active = False
         self.thread = threading.Thread(target=self.begin_measurements, name='measuring-thread')
         self.listeners = []
         self.time_intervals = time_intervals
         self.measurements_executor = measurements_executor
 
-    def append(self, listener: MeasurementsListener):
+    def add_listener(self, listener: MeasurementsListener):
         self.listeners.append(listener)
 
     def begin_measurements_in_thread(self):

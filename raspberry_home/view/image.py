@@ -6,7 +6,7 @@ from raspberry_home.view.render import RenderContext
 from raspberry_home.view.view import *
 
 
-class Image(View):
+class Image(View, Renderable):
 
     def __init__(self, filename: str, invert: bool = True, rotation: int = None):
         self.filename = filename
