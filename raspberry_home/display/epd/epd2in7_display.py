@@ -3,7 +3,7 @@ from PIL import Image
 from raspberry_home.display.display import Display
 from raspberry_home.display.epd.epd2in7_driver import EPD2in7Driver
 from raspberry_home.display.epd.epd_hardware import EPDHardware
-from raspberry_home.display.epd.epd_lut import EPD2in7DefaultLUTSet
+from raspberry_home.display.epd.epd_lut import EPD2in7DefaultLUTSet, EPD2in7FastLUTSet
 from raspberry_home.view.geometry import Size
 from raspberry_home.view.render import FixedSizeRender, ColorSpace
 from raspberry_home.view.view import View
@@ -27,6 +27,6 @@ class EPD2in7Display(Display):
         black_image = image.convert('1')
         red_image = Image.new('1', self.get_size(), 255)
 
-        self._driver.init_sequence(EPD2in7DefaultLUTSet())
+        self._driver.init_sequence(EPD2in7FastLUTSet())
         self._driver.display(black_image, red_image)
         self._driver.deep_sleep()
