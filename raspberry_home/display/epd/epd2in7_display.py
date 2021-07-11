@@ -4,12 +4,15 @@ from raspberry_home.display.display import Display
 from raspberry_home.display.epd.epd2in7_driver import EPD2in7Driver
 from raspberry_home.display.epd.epd_hardware import EPDHardware
 from raspberry_home.display.epd.epd_lut import EPD2in7DefaultLUTSet, EPD2in7FastLUTSet
+from raspberry_home.logger import Logger
 from raspberry_home.view.geometry import Size
 from raspberry_home.view.render import FixedSizeRender, ColorSpace
 from raspberry_home.view.view import View
 
 
 class EPD2in7Display(Display):
+
+    logger = Logger("EPD2in7Display")
 
     def __init__(self):
         epd_hardware = EPDHardware(spi_bus=0, spi_device=0,
@@ -21,12 +24,16 @@ class EPD2in7Display(Display):
         return self._driver.width, self._driver.height
 
     def _show(self, root_view: View):
+        self.logger.start_timer()
         render = FixedSizeRender(size=Size(self._driver.width, self._driver.height),
                                  color_space=ColorSpace.BINARY)
         image = render.render(root_view)
         black_image = image.convert('1')
         red_image = Image.new('1', self.get_size(), 255)
+        self.logger.verbose("Finished rendering")
 
+        self.logger.start_timer()
         self._driver.init_sequence(EPD2in7FastLUTSet())
         self._driver.display(black_image, red_image)
         self._driver.deep_sleep()
+        self.logger.debug("Finished displaying")
