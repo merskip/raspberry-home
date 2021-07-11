@@ -42,7 +42,10 @@ class MeasurementsScheduler:
         self.thread.start()
 
     def wait_until_finish_measurements(self):
-        self.thread.join()
+        try:
+            self.thread.join()
+        except KeyboardInterrupt:
+            pass
 
     def stop_measurements(self):
         self.active = False
