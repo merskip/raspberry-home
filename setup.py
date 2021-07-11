@@ -16,7 +16,6 @@ setup(
         'SQLAlchemy',
         'schedule',
         'requests',
-        'PyQT5',
         'pyqt-led'
     ],
     entry_points={

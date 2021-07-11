@@ -1,0 +1,11 @@
+Pillow~=5.4.1
+setuptools~=40.8.0
+enum34~=1.1.10
+w1thermsensor~=2.0.0
+requests~=2.21.0
+pyserial~=3.4
+spidev~=3.4
+SQLAlchemy~=1.4.20
+schedule~=0.6.0
+configparser~=4.0.2
+RPi.GPIO~=0.7.0

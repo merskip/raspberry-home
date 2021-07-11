@@ -6,7 +6,6 @@
         <option name="customName" value="raspberry" />
       </sshConfig>
       <sshConfig authType="PASSWORD" host="192.168.1.8" id="88eb9004-c8b1-4d37-a45b-d7c1c49187d3" port="22" nameFormat="DESCRIPTIVE" username="pi" />
-      <sshConfig authType="PASSWORD" host="192.168.0.16" id="2e596d7e-4556-4fea-b473-400ae3f8a926" port="22" nameFormat="DESCRIPTIVE" username="pi" />
     </configs>
   </component>
 </project>
