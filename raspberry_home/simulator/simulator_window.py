@@ -11,7 +11,7 @@ from raspberry_home.view.renderable import Renderable
 class SimulatorWindow(QWidget):
 
     def __init__(self):
-        super().__init__(flags=Qt.WindowFlags())
+        super().__init__()
         self.setWindowTitle("Raspberry Home - Simulator")
 
         buttons_layout = QVBoxLayout()

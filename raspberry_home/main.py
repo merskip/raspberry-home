@@ -59,4 +59,7 @@ def run(is_simulator: bool):
 
     measurement_scheduler.begin_measurements_in_thread()
     components_provider.on_measurement_begin()
-    measurement_scheduler.wait_until_finish_measurements()
+    if is_simulator:
+        measurement_scheduler.stop_measurements()
+    else:
+        measurement_scheduler.wait_until_finish_measurements()
