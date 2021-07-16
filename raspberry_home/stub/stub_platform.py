@@ -47,11 +47,10 @@ class StubPlatform(Platform):
             lambda c: 25.0 if c is Characteristics.temperature else 980.0 * 1.029850746268657
         )
 
-
     @staticmethod
     def _create_humidity_sensor():
         return StubSensor(
-            6, "DTH22",
+            7, "DTH22",
             [Characteristics.humidity.set(min_value=0, max_value=95, accuracy=2)],
             lambda c: 60.0
         )

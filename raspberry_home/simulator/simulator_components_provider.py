@@ -4,7 +4,10 @@ from PyQt5.QtWidgets import QApplication
 
 from raspberry_home.components_provider import ComponentsProvider
 from raspberry_home.controller.input_controls import InputControls
+from raspberry_home.database.DatabaseWriter import DatabaseWriter
+from raspberry_home.database.sqllite_repository import SqliteRepository
 from raspberry_home.display.display import Display
+from raspberry_home.platform.characteristic import Characteristics
 from raspberry_home.platform.measurements_scheduler import MeasurementsListener
 from raspberry_home.platform.sensor import Sensor
 from raspberry_home.simulator.simulator_display import SimulatorDisplay
@@ -26,7 +29,10 @@ class SimulatorComponentsProvider(ComponentsProvider):
         self.simulator_window.frames_check_box.stateChanged.connect(self.handle_toggles_frames)
         self.simulator_window.rgb_check_box.stateChanged.connect(self.handle_toggles_rgb)
 
+        self.repository = SqliteRepository(filename="database.sqlite")
+
     def on_measurement_begin(self):
+        self.repository.update(sensors=self.get_sensors())
         self.simulator_window.show()
         self.app.exec()
 
@@ -37,7 +43,7 @@ class SimulatorComponentsProvider(ComponentsProvider):
         return StubPlatform().get_sensors()  # TODO: Remove Platform class
 
     def get_measurements_listeners(self) -> [MeasurementsListener]:
-        return []
+        return [self.repository]
 
     def get_scheduler_time_intervals(self) -> int:
         return 10  # 10 seconds

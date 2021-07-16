@@ -13,7 +13,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'Pillow',
-        'SQLAlchemy',
         'schedule',
         'requests',
         'pyqt-led'
