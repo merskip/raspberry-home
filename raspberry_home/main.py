@@ -61,8 +61,8 @@ def run(is_simulator: bool):
     measurement_scheduler.add_listener(home_controller)
     measurement_scheduler.add_listener(root_controller)
 
-    measurement_scheduler.begin_measurements_in_thread()
     components_provider.on_measurement_begin()
+    measurement_scheduler.begin_measurements_in_thread()
     if is_simulator:
         measurement_scheduler.stop_measurements()
     else:

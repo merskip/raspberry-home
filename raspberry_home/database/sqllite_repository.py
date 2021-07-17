@@ -23,22 +23,37 @@ class SqliteRepository(MeasurementsListener):
     def _create_tables(self):
         self.connection.execute("""
             create table if not exists `sensors` (
-                `sensor_id` int not null constraint `sensors_pk` primary key,
+                `sensor_id` integer not null constraint `sensors_pk` primary key,
                 `name` text not null,
                 `class_name` text not null,
-                `flags` text)""")
+                `flags` text
+                )""")
 
         self.connection.execute("""
             create table if not exists `characteristics` (
                 `characteristic_id` text not null constraint `characteristics_pk` primary key,
-                'sensor_id' int not null,
+                'sensor_id' integer not null,
                 `name` text not null,
                 `type` text not null ,
                 `unit` text,
                 `min_value` float,
                 `max_value` float,
                 `accuracy` float,
-                foreign key(sensor_id) references sensors(sensor_id))""")
+                foreign key(`sensor_id`) references sensors(`sensor_id`)
+                )""")
+
+        self.connection.execute("""
+            create table if not exists `measurements` (
+                `id` integer not null constraint `measurements_pk` primary key autoincrement,
+                `sensor_id` integer not null,
+                `characteristic_id` text not null,
+                `value` float not null,
+                `formatted_value` text not null,
+                `time_start` datetime not null,
+                `time_end` datetime not null,
+                foreign key(`sensor_id`) references sensors(`sensor_id`),
+                foreign key(`characteristic_id`) references characteristic(`characteristic_id`)
+            )""")
 
         self.connection.commit()
 
@@ -62,11 +77,20 @@ class SqliteRepository(MeasurementsListener):
                     characteristic.max_value,
                     characteristic.accuracy
                 ])
-
         self.connection.commit()
 
     def on_measurements(self, measurements: List[Measurement]):
-        pass
+        for measurement in measurements:
+            self.connection.execute("insert into `measurements` values (?, ?, ?, ?, ?, ?, ?)", [
+                None,
+                measurement.sensor.id,
+                _generate_id(measurement.sensor, measurement.characteristic),
+                measurement.value,
+                Sensor.formatted_value(measurement.characteristic, measurement.value),
+                measurement.time_start.isoformat(),
+                measurement.time_end.isoformat()
+            ])
+        self.connection.commit()
 
 
 def _sensor_flags(sensor: Sensor) -> str:
