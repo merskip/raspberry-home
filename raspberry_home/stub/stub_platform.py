@@ -1,3 +1,6 @@
+import random
+from random import randint, Random
+
 from raspberry_home.platform.characteristic import Characteristics
 from raspberry_home.platform.platform import Platform
 from raspberry_home.sensor.covid19monitor import COVID19Monitor
@@ -20,7 +23,7 @@ class StubPlatform(Platform):
         return StubSensor(
             1, "DS18B20",
             [Characteristics.temperature.set(min_value=0, accuracy=0.5)],
-            lambda c: 24.33
+            lambda c: 24.33 + randint(-5, 5)
         )
 
     @staticmethod
@@ -28,7 +31,7 @@ class StubPlatform(Platform):
         return StubSensor(
             2, "DS18B20 Outside",
             [Characteristics.temperature],
-            lambda c: 30.5
+            lambda c: 30.5 + randint(-5, 5)
         ).with_flag("outside")
 
     @staticmethod
@@ -36,7 +39,7 @@ class StubPlatform(Platform):
         return StubSensor(
             3, "TSL2561",
             [Characteristics.light.set(min_value=1.0, accuracy=1.0)],
-            lambda c: 250.23
+            lambda c: 250.23 + randint(-200, 1000)
         )
 
     @staticmethod
@@ -52,5 +55,5 @@ class StubPlatform(Platform):
         return StubSensor(
             7, "DTH22",
             [Characteristics.humidity.set(min_value=0, max_value=95, accuracy=2)],
-            lambda c: 60.0
+            lambda c: 60.0 + randint(-30, 30)
         )
