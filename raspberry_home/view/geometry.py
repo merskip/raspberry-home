@@ -1,5 +1,3 @@
-from typing import cast
-
 
 class Point:
     xy = property(lambda self: (self.x, self.y))
