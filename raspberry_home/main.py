@@ -43,13 +43,16 @@ def run(is_simulator: bool):
         )
     )
 
-    chart_controller = ChartController()
+    chart_controller = ChartController(
+        repository=components_provider.repository,
+        sensors=components_provider.get_sensors(),
+    )
 
     root_controller = RootController(
         display=components_provider.get_display(),
         screens=[
             home_controller,
-            Center(child=Text("Screen 2")),
+            chart_controller,
             Center(child=Text("Screen 3")),
             Center(child=Text("Screen 4")),
         ]

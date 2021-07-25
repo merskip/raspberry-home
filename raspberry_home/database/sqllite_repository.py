@@ -1,8 +1,8 @@
 import hashlib
 import sqlite3
-from functools import reduce
 
-from typing import List, Set
+from datetime import datetime
+from typing import List
 
 from raspberry_home.logger import Logger
 from raspberry_home.platform.characteristic import Characteristic
@@ -17,6 +17,7 @@ class SqliteRepository(MeasurementsListener):
     def __init__(self, filename: str):
         self.logger.info("Using SQLite database: %s" % filename)
         self.connection = sqlite3.connect(filename, check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
         self.connection.set_trace_callback(lambda sql: self.logger.verbose("Executing SQL: %s" % sql))
         self._create_tables()
 
@@ -91,6 +92,20 @@ class SqliteRepository(MeasurementsListener):
                 measurement.time_end.isoformat()
             ])
         self.connection.commit()
+
+    def get_measurements(self, sensor: Sensor, characteristic: Characteristic) -> List[Measurement]:
+        cursor = self.connection.cursor()
+        result = cursor.execute("select * from `measurements` where `sensor_id` = ? and `characteristic_id` = ?", [
+            sensor.id,
+            _generate_id(sensor, characteristic)
+        ])
+        return list(map(lambda row: Measurement(
+            sensor=sensor,
+            characteristic=characteristic,
+            value=row['value'],
+            time_start=datetime.fromisoformat(row['time_start']),
+            time_end=datetime.fromisoformat(row['time_end'])
+        ), result))
 
 
 def _sensor_flags(sensor: Sensor) -> str:
